@@ -12,9 +12,47 @@ const stickyCta = document.querySelector<HTMLElement>('[data-sticky-cta]');
 const progress = document.querySelector<HTMLElement>('[data-progress]');
 let ticking = false;
 
+/* — Portada narrativa: progreso 0→1 mientras la portada está fijada — */
+const story = document.querySelector<HTMLElement>('[data-story]');
+if (story && !reduceMotion) document.documentElement.classList.add('story-live');
+const driftEls = Array.from(document.querySelectorAll<HTMLElement>('[data-drift]'));
+
+/** Hasta dónde la cabecera superpuesta sigue transparente (fin de la foto de portada). */
+function headerThreshold() {
+  if (!header?.classList.contains('is-overlay')) return 8;
+  const first = document.querySelector<HTMLElement>('main > section');
+  if (!first) return 8;
+  // En la portada narrativa basta con superar la primera pantalla
+  const end = first.offsetTop + first.offsetHeight;
+  return Math.max(8, end - header.offsetHeight);
+}
+
+function updateStory() {
+  if (!story || reduceMotion) return;
+  const range = Math.max(1, story.offsetHeight - window.innerHeight);
+  const p = Math.min(1, Math.max(0, (window.scrollY - story.offsetTop) / range));
+  story.style.setProperty('--p', p.toFixed(4));
+  document.documentElement.classList.toggle('story-past', p > 0.42);
+}
+
+/** Desplazamiento horizontal muy sutil (máx. ±60 px) de franjas tipográficas. */
+function updateDrift() {
+  const vh = window.innerHeight;
+  for (const el of driftEls) {
+    const r = el.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > vh) continue;
+    const t = (r.top + r.height / 2 - vh / 2) / vh; // -0.5 … 0.5
+    el.style.setProperty('--dx', `${(t * 120).toFixed(1)}px`);
+  }
+}
+
 function onScroll() {
   const y = window.scrollY;
-  header?.classList.toggle('is-scrolled', y > 8);
+  header?.classList.toggle('is-scrolled', y > headerThreshold());
+  if (!reduceMotion) {
+    updateStory();
+    updateDrift();
+  }
   if (stickyCta) {
     const nearEnd = window.innerHeight + y > document.body.scrollHeight - 700;
     const shown = y > 640 && !nearEnd;

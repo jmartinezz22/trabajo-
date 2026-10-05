@@ -3,6 +3,7 @@ import '@/styles/global.css';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import Icon from '@/components/Icon.astro';
+import Intro from '@/components/Intro.astro';
 import { site } from '@/data/site';
 
 export interface Crumb {
@@ -22,6 +23,8 @@ interface Props {
   hideStickyCta?: boolean;
   /** Hero fotográfico oscuro bajo una cabecera transparente. */
   overlay?: boolean;
+  /** Introducción de entrada (solo Home, primera visita de la sesión). */
+  intro?: boolean;
 }
 
 const {
@@ -34,6 +37,7 @@ const {
   noindex = false,
   hideStickyCta = false,
   overlay = false,
+  intro = false,
 } = Astro.props;
 
 const pageTitle = fullTitle ?? `${title} · ${site.name}`;
@@ -105,11 +109,19 @@ const jsonLd = [organization, ...(breadcrumbSchema ? [breadcrumbSchema] : []), .
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script is:inline>document.documentElement.classList.add('js');</script>
+    {intro && (
+      <script is:inline>
+        try {
+          if (!matchMedia('(prefers-reduced-motion: reduce)').matches && !sessionStorage.getItem('palex-intro'))
+            document.documentElement.classList.add('intro-on');
+        } catch (e) {}
+      </script>
+    )}
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex, follow" />}
-    <meta name="theme-color" content="#0d0d0f" />
+    <meta name="theme-color" content="#0b2a30" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
@@ -141,6 +153,7 @@ const jsonLd = [organization, ...(breadcrumbSchema ? [breadcrumbSchema] : []), .
   <body>
     <a href="#contenido" class="skip-link">Saltar al contenido</a>
     <div class="scroll-progress" data-progress aria-hidden="true"></div>
+    {intro && <Intro />}
     <Header overlay={overlay} />
     <main id="contenido">
       <slot />

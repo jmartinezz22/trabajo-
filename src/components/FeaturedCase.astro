@@ -1,5 +1,10 @@
 ---
-/** Caso real verificado en composición editorial. Solo resultados publicados. */
+/**
+ * Caso real verificado (sección completa, a sangre).
+ * Composición editorial: fotografía principal + fotografía superpuesta, titular de impacto,
+ * cifras verificadas y resultados publicados. No se añaden cifras ni resultados no publicados.
+ * Las fotografías son ilustrativas (no corresponden al hospital) y se etiquetan como tal.
+ */
 import Icon from './Icon.astro';
 import Photo from './Photo.astro';
 import type { CaseStudy } from '@/data/cases';
@@ -8,57 +13,80 @@ interface Props {
   c: CaseStudy;
   /** En la página del proyecto no se repite el enlace. */
   link?: boolean;
-  title?: string;
 }
-const { c, link = true, title = '176 almacenes. Un hospital. Trazabilidad de extremo a extremo.' } = Astro.props;
+const { c, link = true } = Astro.props;
 ---
-<article class="case" id={c.id}>
-  <div class="media" data-reveal="left">
-    <Photo image="hospital" label sizes="(max-width: 1024px) 100vw, 50vw" parallax />
+<section class="case on-petrol" id={c.id} aria-labelledby={`${c.id}-title`}>
+  <div class="media">
+    <div class="main-photo" data-reveal="scale">
+      <Photo image="hospital" sizes="(max-width: 1024px) 100vw, 55vw" parallax />
+    </div>
+    <div class="inset-photo" data-reveal="right" style="--reveal-i:2">
+      <Photo image="hospital2" sizes="(max-width: 1024px) 50vw, 22vw" />
+    </div>
+    <p class="ctx">Imágenes ilustrativas</p>
   </div>
+
   <div class="body">
-    <p class="eyebrow" data-reveal>Caso de éxito · {c.client}</p>
-    <h2 data-reveal style="--reveal-i:1">{title}</h2>
-    <p class="lead" data-reveal style="--reveal-i:2">{c.solution}</p>
+    <p class="eyebrow" data-reveal>Caso de éxito</p>
+    <h2 id={`${c.id}-title`} data-reveal="mask" style="--reveal-i:1">176 almacenes. Un hospital. <em>Trazabilidad de extremo a extremo.</em></h2>
+    <div class="who" data-reveal style="--reveal-i:2">
+      <p class="client">Hospital Sant Joan de Déu — Barcelona</p>
+      <p class="muted">Automatización y digitalización de procesos logísticos.</p>
+    </div>
 
     <dl class="facts" data-reveal style="--reveal-i:3">
-      <div><dt>Alcance</dt><dd>176 <span>almacenes</span></dd></div>
+      <div><dt>Almacenes</dt><dd data-count="176">176</dd></div>
       <div><dt>Tecnología</dt><dd>RFID</dd></div>
       <div><dt>Soluciones</dt><dd>Dyane</dd></div>
     </dl>
 
-    <div class="results" data-reveal style="--reveal-i:4">
-      <p class="eyebrow">Resultados publicados</p>
-      <ul role="list">
-        {c.results.map((r) => <li>{r}</li>)}
-      </ul>
-    </div>
+    <ul role="list" class="results" data-reveal style="--reveal-i:4" aria-label="Resultados publicados">
+      {c.results.map((r) => <li>{r}</li>)}
+    </ul>
 
     {link && (
-      <div data-reveal style="--reveal-i:5">
-        <a href={`/proyectos/${c.id}/`} class="btn">Ver proyecto <Icon name="arrow" /></a>
-      </div>
+      <a href={`/proyectos/${c.id}/`} class="btn" data-reveal style="--reveal-i:5">Ver proyecto <Icon name="arrow" /></a>
     )}
   </div>
-</article>
+</section>
 
 <style>
-  .case { display: grid; gap: var(--space-7); }
-  .media { position: relative; min-height: 420px; }
-  .media :global(.photo) { position: absolute; inset: 0; }
-  .body { display: grid; gap: var(--space-6); align-content: center; justify-items: start; }
-  .body h2 { font-size: clamp(2.25rem, 1.4rem + 3.2vw, 4.5rem); max-width: 14ch; }
-  .facts { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: var(--space-7); width: 100%; padding-block: var(--space-5); border-block: 1px solid var(--line); }
-  .facts dt { font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-muted); }
-  .facts dd { margin: var(--space-2) 0 0; font-family: var(--font-display); font-size: clamp(1.75rem, 1.3rem + 1.5vw, 2.75rem); letter-spacing: -0.04em; line-height: 1; color: var(--fg); }
-  .facts dd span { font-size: 0.45em; letter-spacing: -0.01em; color: var(--text-muted); }
-  .results { display: grid; gap: var(--space-4); width: 100%; }
-  .results ul { display: grid; }
-  .results li { padding: 0.6rem 0; border-bottom: 1px solid var(--line); }
-  .results li::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 0.85rem; border-radius: 50%; background: var(--brand); vertical-align: middle; }
+  .case { display: grid; overflow: hidden; }
+  .media { position: relative; min-height: 78vw; }
+  .main-photo { position: absolute; inset: 0 0 12% 0; }
+  .main-photo :global(.photo) { position: absolute; inset: 0; }
+  .inset-photo {
+    position: absolute;
+    right: var(--gutter);
+    bottom: 0;
+    width: 42%;
+    aspect-ratio: 4 / 5;
+    box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.55);
+    outline: 8px solid var(--petrol);
+  }
+  .inset-photo :global(.photo) { position: absolute; inset: 0; }
+  .ctx { position: absolute; left: var(--gutter); bottom: 0.5rem; z-index: 2; font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-soft); }
+
+  .body { display: grid; gap: var(--space-6); align-content: center; justify-items: start; padding: var(--space-9) var(--gutter); }
+  .body h2 { font-size: clamp(2.5rem, 1.4rem + 3.8vw, 5.25rem); max-width: 13ch; }
+  .who { display: grid; gap: var(--space-1); padding-left: var(--space-5); border-left: 2px solid var(--accent); }
+  .client { font-family: var(--font-display); font-size: var(--fs-lg); color: var(--fg); }
+  .facts { display: grid; grid-template-columns: repeat(3, auto); gap: var(--space-8); padding-block: var(--space-5); border-block: 1px solid var(--line); width: 100%; }
+  .facts dt { font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); }
+  .facts dd { margin: var(--space-2) 0 0; font-family: var(--font-display); font-size: clamp(2.25rem, 1.6rem + 2vw, 3.75rem); font-weight: 300; line-height: 1; color: var(--fg); font-variant-numeric: tabular-nums; }
+  .results { display: grid; width: 100%; }
+  .results li { padding: 0.7rem 0; border-bottom: 1px solid var(--line); font-size: var(--fs-sm); color: var(--text); }
+  .results li::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 0.85rem; border-radius: 50%; background: var(--accent); vertical-align: middle; }
+
+  @media (min-width: 640px) { .results { grid-template-columns: 1fr 1fr; column-gap: var(--space-6); } }
+  @media (max-width: 520px) { .facts { gap: var(--space-5); } }
   @media (min-width: 1024px) {
-    .case { grid-template-columns: 1fr 1fr; gap: var(--space-9); align-items: stretch; }
-    .media { min-height: 760px; }
-    .results ul { grid-template-columns: 1fr 1fr; column-gap: var(--space-6); }
+    .case { grid-template-columns: 55fr 45fr; min-height: 100vh; }
+    .media { min-height: 0; }
+    .main-photo { inset: 0 18% 0 0; }
+    .inset-photo { right: 4%; bottom: 12%; width: 34%; }
+    .ctx { left: var(--space-5); bottom: var(--space-4); color: rgba(243, 245, 244, 0.75); }
+    .body { padding: var(--space-9) var(--gutter) var(--space-9) var(--space-8); }
   }
 </style>

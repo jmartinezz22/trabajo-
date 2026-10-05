@@ -79,7 +79,7 @@ const remoteSrcset = REMOTE_WIDTHS.map((w) => `${remoteUrl(slot.unsplash, w)} ${
     position: relative;
     overflow: hidden;
     /* Fondo de respaldo: tono neutro oscuro con leve degradado */
-    background: linear-gradient(160deg, #2a2724 0%, #17161a 55%, #0d0d0f 100%);
+    background: linear-gradient(160deg, #22333a 0%, #12201f 55%, #080b0d 100%);
     isolation: isolate;
   }
   .photo :global(img) {
@@ -89,7 +89,7 @@ const remoteSrcset = REMOTE_WIDTHS.map((w) => `${remoteUrl(slot.unsplash, w)} ${
     height: 100%;
     object-fit: cover;
     color: transparent; /* oculta el texto alternativo si la imagen falla */
-    filter: grayscale(0.55) sepia(0.12) contrast(1.06) brightness(0.88);
+    filter: saturate(0.78) contrast(1.06) brightness(0.94);
     transition: transform 1.2s var(--ease-out);
   }
   .photo :global(picture) { position: absolute; inset: 0; }

@@ -1,0 +1,97 @@
+---
+/**
+ * Introducción de entrada (≈2 s): PALEX → MOVEMOS → CONECTAMOS → OPTIMIZAMOS → PALEX MEDICAL.
+ *  - Solo la primera visita de la sesión, nunca con prefers-reduced-motion.
+ *  - Se salta con clic, tecla, rueda o gesto táctil.
+ *  - La página se carga debajo: no retrasa el contenido.
+ * La clase html.intro-on la activa un script inline en <head> (BaseLayout) antes de pintar.
+ */
+const words = ['Movemos', 'Conectamos', 'Optimizamos'];
+---
+<div class="intro" data-intro>
+  <div class="words" aria-hidden="true">
+    <span class="w w0">PALEX</span>
+    {words.map((w, i) => <span class={`w w${i + 1}`}>{w}</span>)}
+    <span class="w final">PALEX <em>MEDICAL</em></span>
+  </div>
+  <span class="bar" aria-hidden="true"></span>
+  <button type="button" class="skip" data-intro-skip>Saltar introducción</button>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const intro = document.querySelector<HTMLElement>('[data-intro]');
+  if (intro && root.classList.contains('intro-on')) {
+    let done = false;
+    const end = (fast = false) => {
+      if (done) return;
+      done = true;
+      try { sessionStorage.setItem('palex-intro', '1'); } catch {}
+      intro.classList.add(fast ? 'is-skip' : 'is-out');
+      window.setTimeout(() => {
+        root.classList.remove('intro-on');
+        intro.remove();
+      }, fast ? 320 : 750);
+      ['keydown', 'wheel', 'touchstart'].forEach((ev) => window.removeEventListener(ev, skip));
+    };
+    const skip = () => end(true);
+    intro.querySelector('[data-intro-skip]')?.addEventListener('click', skip);
+    intro.addEventListener('click', skip);
+    ['keydown', 'wheel', 'touchstart'].forEach((ev) => window.addEventListener(ev, skip, { passive: true }));
+    window.setTimeout(() => end(false), 2050);
+  } else {
+    intro?.remove();
+  }
+</script>
+
+<style>
+  .intro { display: none; }
+  :global(.intro-on) .intro {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    display: grid;
+    place-items: center;
+    background: var(--black);
+    color: #fff;
+    cursor: pointer;
+    transition: clip-path 750ms var(--ease-out), opacity 320ms var(--ease);
+    clip-path: inset(0 0 0 0);
+  }
+  .intro.is-out { clip-path: inset(0 0 100% 0); }
+  .intro.is-skip { opacity: 0; }
+
+  .words { position: relative; width: min(92vw, 60rem); height: 1.2em; font-family: var(--font-display); font-size: clamp(2.5rem, 1.5rem + 5vw, 6rem); font-weight: 300; letter-spacing: -0.02em; text-align: center; }
+  .w { position: absolute; inset: 0; opacity: 0; transform: translateY(0.25em); animation: word 380ms var(--ease-out) forwards; }
+  .w0 { font-family: var(--font-body); font-weight: 600; font-size: 0.5em; letter-spacing: 0.4em; line-height: 2.4; animation-delay: 0ms; }
+  .w1 { animation-delay: 380ms; }
+  .w2 { animation-delay: 760ms; }
+  .w3 { animation-delay: 1140ms; }
+  .final { animation: final 520ms var(--ease-out) 1520ms forwards; }
+  .final em { font-style: italic; color: #2fd1ad; }
+  .w0, .w1, .w2, .w3 { animation-name: word; }
+  @keyframes word {
+    0% { opacity: 0; transform: translateY(0.25em); }
+    35% { opacity: 1; transform: none; }
+    75% { opacity: 1; transform: none; }
+    100% { opacity: 0; transform: translateY(-0.2em); }
+  }
+  @keyframes final { from { opacity: 0; transform: translateY(0.2em); } to { opacity: 1; transform: none; } }
+
+  .bar { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); animation: bar 2050ms linear forwards; }
+  @keyframes bar { to { transform: scaleX(1); } }
+
+  .skip {
+    position: absolute;
+    right: var(--gutter);
+    bottom: var(--space-6);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(243, 245, 244, 0.75);
+    border-bottom: 1px solid rgba(243, 245, 244, 0.35);
+    padding-bottom: 0.2rem;
+  }
+  .skip:hover { color: #fff; }
+</style>

@@ -14,7 +14,7 @@ export default defineConfig({
   integrations: [
     sitemap({
       // Excluye páginas noindex (404 y legales)
-      filter: (page) => !/\/(404|aviso-legal|politica-de-privacidad|politica-de-cookies)\/?$/.test(page),
+      filter: (page) => !/\/(404|aviso-legal|politica-de-privacidad|politica-de-cookies|revision-imagenes)\/?$/.test(page),
       i18n: undefined,
     }),
   ],

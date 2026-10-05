@@ -1,12 +1,12 @@
 # PALEX MEDICAL · Web corporativa de soluciones logísticas
 
-Web B2B estática construida con **Astro 5 + TypeScript + CSS propio**. Tema oscuro (negro, grafito y dorado‑cobre), titulares en Fraunces (serif) y texto en Manrope. Cero dependencias de UI,
+Web B2B estática construida con **Astro 5 + TypeScript + CSS propio**. Identidad PALEX (blanco, negro y petróleo con verde corporativo), titulares en Fraunces (serif) y texto en Manrope. Cero dependencias de UI,
 ≈1 KB de JavaScript (gzip), diseño editorial sin dependencias de UI y HTML pre‑renderizado para SEO y Core Web Vitals.
 
 - Estrategia, investigación y arquitectura: [`docs/01-investigacion-y-estrategia.md`](docs/01-investigacion-y-estrategia.md)
 - Test, auditoría y **lista de datos pendientes**: [`docs/02-auditoria-y-pendientes.md`](docs/02-auditoria-y-pendientes.md)
 - **Registro de datos** (verificado / en validación / no encontrado): [`docs/03-registro-de-datos.md`](docs/03-registro-de-datos.md)
-- **Rediseño visual v3** (auditoría, referencias, sistema visual y fotografía): [`docs/04-rediseno-visual.md`](docs/04-rediseno-visual.md)
+- **Diseño visual v3–v5** (auditorías, referencias, sistema visual, fotografía): [`docs/04-rediseno-visual.md`](docs/04-rediseno-visual.md)
 
 ## Puesta en marcha
 
@@ -42,6 +42,8 @@ Variables de entorno (copiar `.env.example` a `.env`):
 | Iconos | `src/data/icons.ts` |
 
 ### Fotografía
+**Revisión rápida:** abre `/revision-imagenes/` (página interna, sin indexar) para ver todas las fotos, dónde se usan y su enlace.
+
 Registro central en `src/data/images.ts`: fotos de Unsplash (licencia libre de uso comercial)
 usadas como **imágenes de contexto**, nunca como instalaciones propias.
 

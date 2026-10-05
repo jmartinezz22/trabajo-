@@ -1,47 +1,51 @@
 /* ==========================================================================
-   PALEX MEDICAL · Design tokens (v4 — oscuro, grafito y dorado‑cobre)
-   Único archivo a editar para ajustar la paleta y la tipografía.
-   Nota: el acento dorado sustituye al verde corporativo por decisión de diseño;
-   para volver a la identidad Palex basta con cambiar --accent.
+   PALEX MEDICAL · Design tokens (v5 — identidad PALEX, editorial premium)
+   Blanco / negro / petróleo oscuro + verde corporativo como acento.
+   Los tokens se redefinen por tema de sección: claro (por defecto),
+   .on-dark (negro) y .on-petrol (azul‑verde oscuro).
+   [CONFIRMAR] Valores exactos con el manual de marca oficial.
    ========================================================================== */
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  /* — Acento dorado‑cobre: solo CTA, enlaces, indicadores y detalles — */
-  --accent: #c9a066;          /* Oro envejecido */
-  --accent-strong: #dcb984;   /* Hover / brillo */
-  --accent-deep: #9a6b3c;     /* Cobre profundo (líneas, degradados) */
-  --accent-wash: rgba(201, 160, 102, 0.1);
+  /* — Acento corporativo — */
+  --accent: #00a886;          /* Verde PALEX: botones, líneas, indicadores */
+  --accent-strong: #00c49c;   /* Hover */
+  --accent-deep: #007a62;
+  --accent-wash: rgba(0, 168, 134, 0.1);
+  --accent-text: #00775f;     /* Verde para texto sobre claro (AA) */
+  --on-accent: #04110e;       /* Texto sobre botón verde */
 
-  /* Alias heredados (los componentes usan --brand*) */
+  /* Alias heredados */
   --brand: var(--accent);
   --brand-strong: var(--accent-strong);
-  --brand-ink: var(--accent);
-  --signal: #e2a26f;          /* Marcadores de contenido pendiente */
+  --brand-ink: var(--accent-text);
+  --signal: #9c4a10;          /* Marcadores de contenido pendiente */
 
-  /* — Negros y grafitos — */
-  --ink: #070708;             /* Negro profundo (secciones de máximo contraste) */
-  --paper: #0d0d0f;           /* Fondo principal */
-  --surface: #141417;         /* Grafito */
-  --stone: #1a1b1e;           /* Grafito claro */
-  --ink-2: #1f2023;
-  --ink-3: #2c2d31;           /* Divisores sobre negro */
+  /* — Fondos de referencia (fijos) — */
+  --black: #080b0d;
+  --petrol: #0b2a30;
+  --petrol-2: #103740;
 
-  /* — Texto — */
-  --fg: #f2ede4;              /* Titulares: marfil cálido */
-  --text: #d9d3c9;
-  --text-muted: #a49e94;
-  --text-soft: #8f897f;
-  --text-on-dark: #f2ede4;
-  --text-on-dark-muted: #a49e94;
+  /* — Tema claro (por defecto) — */
+  --ink: var(--black);        /* Fondo de secciones negras */
+  --paper: #ffffff;
+  --surface: #f5f5f2;         /* Blanco roto */
+  --stone: #ebebe7;           /* Gris claro */
+  --ink-2: #1a2226;
+  --ink-3: #2a3438;
+  --fg: #0b1215;              /* Titulares */
+  --text: #2a3236;
+  --text-muted: #5a6468;
+  --text-soft: #5f696d;
+  --text-on-dark: #f3f5f4;
+  --text-on-dark-muted: #a9b4b6;
+  --line: #e1e2de;
+  --line-strong: #b9bdbb;
+  --rule: #0b1215;
 
-  /* — Líneas — */
-  --line: #2a2a2e;
-  --line-strong: #44434a;
-  --rule: #5a554c;            /* Línea de énfasis (cálida) */
-
-  /* — Tipografía: serif con personalidad + sans limpia — */
+  /* — Tipografía: serif potente para títulos, sans limpia para texto — */
   --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
   --font-body: 'Manrope', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
@@ -51,10 +55,10 @@
   --fs-md: clamp(1.125rem, 1.05rem + 0.3vw, 1.3125rem);
   --fs-lg: clamp(1.375rem, 1.2rem + 0.7vw, 1.75rem);
   --fs-xl: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem);
-  --fs-2xl: clamp(2.25rem, 1.6rem + 2.8vw, 4rem);
+  --fs-2xl: clamp(2.25rem, 1.6rem + 2.8vw, 4.25rem);
   --fs-3xl: clamp(2.75rem, 1.6rem + 5vw, 7rem);
 
-  /* — Espaciado — */
+  /* — Espaciado: más aire entre bloques — */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -62,22 +66,60 @@
   --space-5: 1.5rem;
   --space-6: 2rem;
   --space-7: 3rem;
-  --space-8: 4.5rem;
-  --space-9: 7rem;
-  --section-y: clamp(6rem, 3.5rem + 9vw, 13rem);
-  --gutter: clamp(1.25rem, 0.5rem + 3vw, 3.5rem);
-  --container: 1360px;
-  --container-narrow: 880px;
+  --space-8: 5rem;
+  --space-9: 8rem;
+  --section-y: clamp(7rem, 4rem + 10vw, 15rem);
+  --gutter: clamp(1.25rem, 0.5rem + 3.5vw, 4rem);
+  --container: 1400px;
+  --container-narrow: 900px;
 
-  /* — Forma y movimiento — */
+  /* — Forma y movimiento: lento y preciso — */
   --radius: 2px;
-  --header-h: 84px;
+  --header-h: 88px;
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --dur: 320ms;
-  --dur-slow: 1100ms;
+  --dur: 360ms;
+  --dur-slow: 1300ms;
+}
+
+/* Tema negro */
+.on-dark {
+  color-scheme: dark;
+  --paper: #080b0d;
+  --surface: #0f1417;
+  --stone: #151b1e;
+  --fg: #f3f5f4;
+  --text: #d4dadb;
+  --text-muted: #a9b4b6;
+  --text-soft: #9aa5a8;
+  --line: #222b2f;
+  --line-strong: #3a4549;
+  --rule: #f3f5f4;
+  --accent-text: #2fd1ad;
+  --signal: #f0a46e;
+  background: var(--black);
+  color: var(--text);
+}
+
+/* Tema petróleo (azul‑verde oscuro de marca) */
+.on-petrol {
+  color-scheme: dark;
+  --paper: #0b2a30;
+  --surface: #0e3239;
+  --stone: #123a42;
+  --fg: #f2f6f5;
+  --text: #d1dfde;
+  --text-muted: #a3bcbc;
+  --text-soft: #97b2b2;
+  --line: #1d4850;
+  --line-strong: #2f5f68;
+  --rule: #f2f6f5;
+  --accent-text: #3ddbb6;
+  --signal: #f0a46e;
+  background: var(--petrol);
+  color: var(--text);
 }
 
 @media (max-width: 900px) {
-  :root { --header-h: 64px; }
+  :root { --header-h: 66px; }
 }

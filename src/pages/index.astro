@@ -2,7 +2,9 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Icon from '@/components/Icon.astro';
 import Photo from '@/components/Photo.astro';
+import HeroStory from '@/components/HeroStory.astro';
 import Stats from '@/components/Stats.astro';
+import PhotoBand from '@/components/PhotoBand.astro';
 import ServiceIndex from '@/components/ServiceIndex.astro';
 import FeaturedCase from '@/components/FeaturedCase.astro';
 import TechList from '@/components/TechList.astro';
@@ -26,8 +28,7 @@ const schema = [
   },
 ];
 
-const pillars = ['Transporte', 'Logística', 'Tecnología', 'Consultoría'];
-const specials = ['Embalaje', 'Equipos de alto valor', 'Manipulación especial', 'Transporte', 'Soluciones a medida'];
+const capabilities = ['Transporte', 'Almacenaje', 'Distribución', 'Tecnología', 'Consultoría'];
 ---
 <BaseLayout
   title="Operador logístico B2B"
@@ -35,68 +36,72 @@ const specials = ['Embalaje', 'Equipos de alto valor', 'Manipulación especial',
   description="Transporte, logística, tecnología y soluciones a medida para operaciones que requieren precisión, trazabilidad y control. Experiencia en logística hospitalaria desde 1998."
   schema={schema}
   overlay
+  intro
 >
-  <!-- 01 · HERO -->
-  <section class="hero on-dark">
-    <Photo image="hero" eager overlay="left" class="hero-bg" parallax />
-    <div class="container hero-inner">
-      <div class="hero-copy">
-        <p class="eyebrow" data-reveal>PALEX MEDICAL · Soluciones logísticas</p>
-        <h1 data-reveal="mask" style="--reveal-i:1">Soluciones logísticas para operaciones que <em>no pueden fallar.</em></h1>
-        <p class="lead" data-reveal style="--reveal-i:2">
-          Transporte, logística, tecnología y soluciones a medida para operaciones que requieren precisión, trazabilidad y control.
-        </p>
-        <div class="btn-row" data-reveal style="--reveal-i:3">
-          <a href="/contacto/" class="btn">Solicitar una solución <Icon name="arrow" /></a>
-          <a href="#servicios" class="btn btn-ghost">Conocer nuestros servicios</a>
+  <!-- 01 · PORTADA NARRATIVA -->
+  <HeroStory />
+
+  <!-- 02 · CAPACIDAD -->
+  <section class="capacity">
+    <div class="container cap-head">
+      <p class="eyebrow" data-reveal>Capacidad</p>
+      <h2 data-reveal="mask" style="--reveal-i:1">Más que transporte. Diseñamos soluciones para <em>toda la operación logística.</em></h2>
+    </div>
+
+    <div class="cap-words" aria-label="Capacidades">
+      <ul role="list" class="drift" data-drift>
+        {capabilities.map((c) => <li>{c}</li>)}
+      </ul>
+    </div>
+
+    <div class="cap-figure">
+      <div class="cap-photo" data-reveal="scale">
+        <Photo image="capacity" sizes="100vw" parallax />
+      </div>
+      <div class="container">
+        <div class="cap-note" data-reveal="right" style="--reveal-i:2">
+          <p>
+            Combinamos logística, transporte, tecnología, trazabilidad y consultoría para diseñar operaciones adaptadas a cada cliente, y las gestionamos con un único interlocutor.
+          </p>
+          <p class="muted">Una experiencia formada en el entorno hospitalario, donde cada referencia, cada plazo y cada registro cuentan.</p>
+          <a href="/empresa/" class="link-arrow">Conocer la empresa <Icon name="arrow" /></a>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- 02 · DECLARACIÓN -->
-  <section class="section statement">
-    <div class="container">
-      <p class="eyebrow" data-reveal>Más que transporte</p>
-      <h2 class="statement-title" data-reveal="mask" style="--reveal-i:1"><em>Más que transporte.</em> Diseñamos y gestionamos soluciones logísticas completas.</h2>
-      <ul role="list" class="pillars">
-        {pillars.map((p, i) => <li data-reveal style={`--reveal-i:${i + 2}`}>{p}</li>)}
-      </ul>
-    </div>
-  </section>
-
-  <!-- 03 · CIFRAS VERIFICADAS -->
-  <section class="section tight numbers" aria-label="Experiencia en cifras">
-    <div class="container">
+    <div class="container cap-stats">
       <Stats />
     </div>
   </section>
 
-  <!-- 04 · CAPACIDAD -->
-  <section class="capacity">
-    <div class="cap-media" data-reveal="scale">
-      <Photo image="capacity" sizes="(max-width: 1024px) 100vw, 58vw" parallax />
-    </div>
-    <div class="cap-copy">
-      <p class="eyebrow" data-reveal>Capacidad</p>
-      <h2 data-reveal="right" style="--reveal-i:1">Una solución. <em>Todas las fases</em> de la operación.</h2>
-      <p class="lead" data-reveal style="--reveal-i:2">
-        Combinamos logística, transporte, tecnología, trazabilidad y consultoría para diseñar operaciones adaptadas a cada cliente, y las gestionamos con un único interlocutor.
-      </p>
-      <p class="muted" data-reveal style="--reveal-i:3">
-        Una experiencia formada en el entorno hospitalario, donde cada referencia, cada plazo y cada registro cuentan.
-      </p>
-      <a href="/empresa/" class="link-arrow" data-reveal style="--reveal-i:4">Conocer la empresa <Icon name="arrow" /></a>
-    </div>
-  </section>
+  <!-- 03 · TRANSPORTE Y LOGÍSTICA: identidad visual por área -->
+  <PhotoBand
+    image="transporte2"
+    num="01"
+    eyebrow="Transporte"
+    title="Movemos mercancías con <em>precisión y control.</em>"
+    text="Paquetería, grupaje y camión completo. Temperatura ambiente, refrigerada, congelada o controlada. Servicio express."
+    href="/servicios/transporte/"
+    linkLabel="Ver transporte"
+  />
+  <PhotoBand
+    image="logistica2"
+    num="02"
+    eyebrow="Logística"
+    title="Del almacenaje <em>a la distribución.</em>"
+    text="Almacenaje, preparación de pedidos, picking, packing, manipulados, e-commerce y fulfillment, adaptados a cada operación."
+    href="/servicios/logistica/"
+    linkLabel="Ver logística"
+    align="right"
+  />
 
-  <!-- 05 · SERVICIOS -->
+  <!-- 04 · SERVICIOS -->
   <section class="section" id="servicios">
     <div class="container">
       <div class="section-head split">
         <div>
           <p class="eyebrow" data-reveal>Servicios</p>
-          <h2 data-reveal style="--reveal-i:1">Seis líneas de servicio. Una operación coordinada.</h2>
+          <h2 data-reveal="mask" style="--reveal-i:1">Seis líneas de servicio. <em>Una operación coordinada.</em></h2>
         </div>
         <p class="lead" data-reveal style="--reveal-i:2">Desde una necesidad puntual hasta la externalización completa de la logística.</p>
       </div>
@@ -104,53 +109,43 @@ const specials = ['Embalaje', 'Equipos de alto valor', 'Manipulación especial',
     </div>
   </section>
 
-  <!-- 06 · CASO REAL -->
-  <section class="section bg-surface">
-    <div class="container">
-      <FeaturedCase c={featuredCase} />
-    </div>
-  </section>
+  <!-- 05 · CASO REAL -->
+  <FeaturedCase c={featuredCase} />
 
-  <!-- 07 · TECNOLOGÍA -->
-  <section class="section on-dark tech">
-    <div class="container">
-      <div class="section-head split">
-        <div>
-          <p class="eyebrow" data-reveal>Tecnología</p>
-          <h2 data-reveal="mask" style="--reveal-i:1">Tecnología aplicada <em>a la logística.</em></h2>
-        </div>
+  <!-- 06 · TECNOLOGÍA -->
+  <section class="tech on-dark">
+    <div class="tech-photo" aria-hidden="true" data-reveal="scale"><Photo image="tecnologia" sizes="(max-width: 1024px) 100vw, 45vw" parallax /></div>
+    <div class="container tech-inner">
+      <div class="tech-copy">
+        <p class="eyebrow" data-reveal>Tecnología</p>
+        <h2 data-reveal="mask" style="--reveal-i:1">Tecnología aplicada <em>a la logística.</em></h2>
         <p class="lead" data-reveal style="--reveal-i:2">
           Digitalizamos procesos para mejorar la trazabilidad, el control y la eficiencia de las operaciones.
         </p>
+        <TechList />
+        <a href="/tecnologia/" class="link-arrow more" data-reveal>Ver tecnología <Icon name="arrow" /></a>
       </div>
-      <TechList />
-      <a href="/tecnologia/" class="link-arrow more" data-reveal>Ver tecnología <Icon name="arrow" /></a>
     </div>
   </section>
 
-  <!-- 08 · SERVICIOS ESPECIALES -->
-  <section class="specials on-dark">
-    <Photo image="especiales" overlay="full" class="specials-bg" parallax />
-    <div class="container specials-inner">
-      <p class="eyebrow" data-reveal>Servicios especiales</p>
-      <h2 data-reveal="mask" style="--reveal-i:1">Cuando una operación requiere <em>algo diferente.</em></h2>
-      <p class="lead" data-reveal style="--reveal-i:2">
-        Analizamos las necesidades específicas de cada operación y diseñamos una solución adaptada.
-      </p>
-      <ul role="list" class="specials-list" data-reveal style="--reveal-i:3">
-        {specials.map((s) => <li>{s}</li>)}
-      </ul>
-      <a href="/servicios/servicios-especiales/" class="link-arrow" data-reveal style="--reveal-i:4">Ver servicios especiales <Icon name="arrow" /></a>
-    </div>
-  </section>
+  <!-- 07 · OPERACIONES ESPECIALES -->
+  <PhotoBand
+    image="especiales2"
+    eyebrow="Operaciones especiales"
+    title="Cuando una operación requiere <em>algo diferente.</em>"
+    text="Analizamos las necesidades específicas de cada operación y diseñamos una solución adaptada."
+    items={['Embalaje', 'Equipos de alto valor', 'Manipulación especial', 'Transporte', 'Soluciones a medida']}
+    href="/servicios/servicios-especiales/"
+    linkLabel="Ver servicios especiales"
+  />
 
-  <!-- 09 · SECTORES -->
+  <!-- 08 · SECTORES -->
   <section class="section">
     <div class="container">
       <div class="section-head split">
         <div>
           <p class="eyebrow" data-reveal>Sectores</p>
-          <h2 data-reveal style="--reveal-i:1">Necesidades distintas. La misma exigencia.</h2>
+          <h2 data-reveal="mask" style="--reveal-i:1">Necesidades distintas. <em>La misma exigencia.</em></h2>
         </div>
         <a href="/sectores/" class="link-arrow head-link" data-reveal style="--reveal-i:2">Ver sectores <Icon name="arrow" /></a>
       </div>
@@ -158,25 +153,23 @@ const specials = ['Embalaje', 'Equipos de alto valor', 'Manipulación especial',
     </div>
   </section>
 
-  <!-- 10 · PROCESO -->
-  <section class="section bg-stone">
+  <!-- 09 · PROCESO -->
+  <section class="section bg-surface">
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Cómo trabajamos</p>
-        <h2 data-reveal style="--reveal-i:1">Un método para cada operación.</h2>
+        <h2 data-reveal="mask" style="--reveal-i:1">Un método para <em>cada operación.</em></h2>
       </div>
       <FlowSteps steps={methodSteps} />
     </div>
   </section>
 
-  <!-- 11 · CALIDAD Y CUMPLIMIENTO -->
+  <!-- 10 · CALIDAD Y CUMPLIMIENTO -->
   <section class="section quality">
-    <div class="container">
-      <div class="section-head split">
-        <div>
-          <p class="eyebrow" data-reveal>Confianza</p>
-          <h2 data-reveal style="--reveal-i:1">Calidad y cumplimiento.</h2>
-        </div>
+    <div class="container q-grid">
+      <div class="q-head">
+        <p class="eyebrow" data-reveal>Confianza</p>
+        <h2 data-reveal="mask" style="--reveal-i:1">Calidad y <em>cumplimiento.</em></h2>
         <p class="lead" data-reveal style="--reveal-i:2">
           Nuestro compromiso con la calidad, la seguridad y la mejora continua forma parte de nuestra forma de trabajar.
         </p>
@@ -185,61 +178,85 @@ const specials = ['Embalaje', 'Equipos de alto valor', 'Manipulación especial',
     </div>
   </section>
 
-  <!-- 12 · UBICACIÓN Y HORARIO -->
+  <!-- 11 · UBICACIÓN Y HORARIO -->
   <VisitSection />
 
-  <!-- 13 · CTA -->
+  <!-- 12 · CTA -->
   <CtaBand />
 </BaseLayout>
 
 <style>
-  /* HERO */
-  .hero { position: relative; display: flex; min-height: 100svh; overflow: hidden; }
-  .hero :global(.hero-bg) { position: absolute; inset: 0; }
-  .hero-inner { position: relative; z-index: 1; display: flex; align-items: flex-end; padding-top: calc(var(--header-h) + var(--space-8)); padding-bottom: clamp(4rem, 3rem + 6vw, 9rem); }
-  .hero-copy { display: grid; gap: var(--space-6); justify-items: start; max-width: 70rem; }
-  .hero h1 { font-size: clamp(2.75rem, 1.2rem + 6vw, 7.25rem); max-width: 15ch; }
-  .hero .lead { max-width: 44ch; color: rgba(255, 255, 255, 0.82); }
-  .hero .btn-row { margin-top: var(--space-4); }
-  @media (max-width: 560px) {
-    .hero .btn-row { width: 100%; }
-    .hero .btn-row .btn { flex: 1 1 100%; }
-  }
-
-  /* DECLARACIÓN */
-  .statement .container { display: grid; gap: var(--space-6); }
-  .statement-title { font-size: clamp(2.25rem, 1.3rem + 4vw, 5.5rem); font-weight: 400; max-width: 20ch; }
-  .pillars { display: flex; flex-wrap: wrap; gap: var(--space-3) clamp(1.5rem, 1rem + 3vw, 4rem); margin-top: var(--space-6); padding-top: var(--space-6); border-top: 1px solid var(--line); }
-  .pillars li { font-size: var(--fs-sm); font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg); }
-  .pillars li::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 0.9rem; border-radius: 50%; background: var(--brand); vertical-align: middle; }
-  .numbers { padding-top: 0; }
-
   /* CAPACIDAD */
-  .capacity { display: grid; background: var(--surface); }
-  .cap-media { position: relative; min-height: 62vw; }
-  .cap-media :global(.photo) { position: absolute; inset: 0; }
-  .cap-copy { display: grid; gap: var(--space-5); align-content: center; justify-items: start; padding: var(--space-9) var(--gutter); }
-  .cap-copy h2 { max-width: 13ch; }
-  .cap-copy .muted { max-width: 46ch; }
-  .cap-copy .link-arrow { margin-top: var(--space-4); }
-  @media (min-width: 1024px) {
-    .capacity { grid-template-columns: 7fr 5fr; min-height: 90vh; }
-    .cap-media { min-height: 0; }
-    .cap-copy { padding: var(--space-9) var(--gutter) var(--space-9) var(--space-9); }
+  .capacity { padding-top: var(--section-y); overflow: hidden; }
+  .cap-head { display: grid; gap: var(--space-5); }
+  .cap-head h2 { font-size: clamp(2.5rem, 1.4rem + 4.4vw, 6.25rem); max-width: 17ch; }
+  .cap-words { margin-block: clamp(3rem, 2rem + 4vw, 6rem); border-block: 1px solid var(--line); overflow: hidden; }
+  .drift {
+    display: flex;
+    gap: clamp(2rem, 1rem + 4vw, 6rem);
+    padding: var(--space-5) var(--gutter);
+    white-space: nowrap;
+    transform: translate3d(var(--dx, 0px), 0, 0);
+    will-change: transform;
+  }
+  .drift li {
+    font-size: clamp(0.8125rem, 0.75rem + 0.3vw, 1rem);
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--fg);
+  }
+  .drift li::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 1.1rem; border-radius: 50%; background: var(--accent); vertical-align: middle; }
+
+  @media (max-width: 760px) {
+    .drift { flex-wrap: wrap; gap: var(--space-3) var(--space-5); white-space: normal; transform: none; }
+    .drift li { letter-spacing: 0.16em; }
+  }
+  .cap-figure { position: relative; }
+  .cap-photo { position: relative; height: clamp(420px, 78vh, 860px); }
+  .cap-photo :global(.photo) { position: absolute; inset: 0; }
+  .cap-note {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+    max-width: 34rem;
+    margin: -6rem 0 0 auto;
+    padding: var(--space-7) var(--space-6);
+    background: var(--paper);
+    box-shadow: 0 40px 80px -40px rgba(8, 11, 13, 0.35);
+  }
+  .cap-note p:first-child { font-family: var(--font-display); font-size: var(--fs-lg); line-height: 1.3; color: var(--fg); }
+  .cap-note .muted { font-size: var(--fs-sm); }
+  .cap-stats { padding-block: var(--space-9) var(--section-y); }
+  @media (max-width: 640px) {
+    .cap-note { margin: -3rem 0 0; padding: var(--space-6) var(--space-5); }
   }
 
   /* TECNOLOGÍA */
-  .tech .more { margin-top: var(--space-7); }
+  .tech { position: relative; overflow: hidden; }
+  .tech-photo { position: relative; height: 60vw; max-height: 520px; }
+  .tech-photo :global(.photo) { position: absolute; inset: 0; }
+  .tech-photo::after { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(0deg, var(--black) 0%, rgba(8, 11, 13, 0) 60%); }
+  .tech-inner { position: relative; z-index: 2; padding-block: var(--space-8) var(--section-y); }
+  .tech-copy { display: grid; gap: var(--space-6); }
+  .tech-copy h2 { max-width: 14ch; }
+  .tech .more { margin-top: var(--space-3); justify-self: start; }
+  @media (min-width: 1024px) {
+    .tech-photo { position: absolute; top: 0; right: 0; bottom: 0; width: 46%; height: auto; max-height: none; }
+    .tech-photo::after { background: linear-gradient(90deg, var(--black) 0%, rgba(8, 11, 13, 0.4) 35%, rgba(8, 11, 13, 0) 70%); }
+    .tech-inner { padding-block: var(--section-y); }
+    .tech-copy { max-width: 58%; }
+  }
 
-  /* ESPECIALES */
-  .specials { position: relative; overflow: hidden; }
-  .specials :global(.specials-bg) { position: absolute; inset: 0; }
-  .specials-inner { position: relative; z-index: 1; display: grid; gap: var(--space-6); justify-items: start; padding-block: clamp(8rem, 5rem + 12vw, 18rem); }
-  .specials h2 { max-width: 14ch; font-size: clamp(2.5rem, 1.4rem + 4.6vw, 6rem); }
-  .specials .lead { color: rgba(255, 255, 255, 0.82); }
-  .specials-list { display: flex; flex-wrap: wrap; gap: var(--space-3) 0; margin-top: var(--space-4); }
-  .specials-list li { font-size: var(--fs-sm); letter-spacing: 0.14em; text-transform: uppercase; color: #fff; }
-  .specials-list li + li::before { content: '—'; margin: 0 1rem; opacity: 0.45; }
+  /* CALIDAD */
+  .q-grid { display: grid; gap: var(--space-8); }
+  .q-head { display: grid; gap: var(--space-5); align-content: start; }
+  @media (min-width: 1024px) {
+    .q-grid { grid-template-columns: 5fr 7fr; gap: var(--space-9); }
+    .q-head { position: sticky; top: calc(var(--header-h) + var(--space-6)); }
+  }
 
   .head-link { justify-self: start; }
   @media (min-width: 1024px) { .head-link { justify-self: end; } }

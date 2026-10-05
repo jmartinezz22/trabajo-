@@ -55,7 +55,7 @@ const { eyebrow, title, intro, breadcrumbs = [], image, size = 'large' } = Astro
 
   .is-photo { display: flex; min-height: 78svh; }
   .is-photo.is-full { min-height: 100svh; }
-  .is-photo .inner { justify-content: space-between; padding-top: calc(var(--header-h) + var(--space-6)); padding-bottom: clamp(3rem, 2rem + 5vw, 7rem); }
+  .is-photo .inner { justify-content: space-between; gap: var(--space-7); padding-top: calc(var(--header-h) + var(--space-6)); padding-bottom: clamp(3rem, 2rem + 5vw, 7rem); }
   .is-photo .lead { color: rgba(255, 255, 255, 0.82); }
 
   .is-plain .inner { padding-block: var(--space-7) clamp(4rem, 3rem + 5vw, 8rem); gap: clamp(3rem, 2rem + 5vw, 7rem); }

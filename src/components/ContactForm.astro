@@ -238,7 +238,7 @@ const endpoint = site.formEndpoint ?? '';
   }
   select {
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23c9a066' stroke-width='1.5'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%2300775f' stroke-width='1.5'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 1rem center;
     padding-right: 2.5rem;
@@ -246,7 +246,7 @@ const endpoint = site.formEndpoint ?? '';
   textarea { resize: vertical; min-height: 140px; }
   input:hover, select:hover, textarea:hover { border-color: var(--fg); }
   input:focus, select:focus, textarea:focus { outline: none; border-color: var(--fg); box-shadow: 0 1px 0 0 var(--accent); }
-  ::placeholder { color: #7c766d; }
+  ::placeholder { color: #7d878a; }
   .checks { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .checks .check {
     display: inline-flex;
@@ -270,12 +270,12 @@ const endpoint = site.formEndpoint ?? '';
   .note { color: var(--text-muted); }
   .lead-form :global(.has-error) input,
   .lead-form :global(.has-error) select,
-  .lead-form :global(.has-error) textarea { border-color: #d0705f; }
-  .lead-form :global(.err) { color: #f0a597; font-size: var(--fs-sm); }
+  .lead-form :global(.has-error) textarea { border-color: #c0392b; }
+  .lead-form :global(.err) { color: #b0281a; font-size: var(--fs-sm); }
   .status:empty { display: none; }
   .status { padding: var(--space-4); border-radius: var(--radius); border: 1px solid var(--line); font-size: var(--fs-sm); }
   .status.is-ok { border-color: var(--accent); background: var(--accent-wash); color: var(--fg); }
-  .status.is-error { border-color: #a5463a; background: rgba(165, 70, 58, 0.12); color: #f0b3a9; }
-  .status.is-warn { border-color: var(--signal); background: rgba(226, 162, 111, 0.1); color: #f2c39b; }
+  .status.is-error { border-color: #e2a59e; background: #fdf1ef; color: #8c2215; }
+  .status.is-warn { border-color: #e9b48c; background: #fff4ec; color: #7a3c0e; }
   button[disabled] { opacity: 0.6; pointer-events: none; }
 </style>

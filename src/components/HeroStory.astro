@@ -1,0 +1,146 @@
+---
+/**
+ * Portada con narrativa de scroll.
+ *  1. Fotografía a pantalla completa + titular.
+ *  2. Al hacer scroll la foto se desplaza y acerca lentamente, el titular se retira
+ *     y aparecen las áreas: Transporte · Logística · Tecnología · Consultoría.
+ * Mejora progresiva: sin JS o con reduced-motion es una portada estática.
+ * El progreso (--p, 0→1) lo calcula src/scripts/main.ts.
+ */
+import Icon from './Icon.astro';
+import Photo from './Photo.astro';
+
+const areas = ['Transporte', 'Logística', 'Tecnología', 'Consultoría'];
+---
+<section class="story on-dark" data-story aria-label="Presentación">
+  <div class="pin">
+    <Photo image="hero" eager class="bg" sizes="100vw" />
+    <div class="shade" aria-hidden="true"></div>
+
+    <div class="container stage">
+      <div class="s1" data-story-s1>
+        <p class="eyebrow">PALEX MEDICAL</p>
+        <h1>Soluciones logísticas para operaciones que <em>no pueden fallar.</em></h1>
+        <p class="lead">
+          Transporte, logística, tecnología y soluciones a medida para operaciones que requieren precisión y control.
+        </p>
+        <div class="btn-row">
+          <a href="/contacto/" class="btn">Solicitar una solución <Icon name="arrow" /></a>
+          <a href="#servicios" class="btn btn-ghost">Descubrir nuestros servicios</a>
+        </div>
+      </div>
+
+      <ul role="list" class="s2" aria-label="Áreas de actividad">
+        {areas.map((a, i) => (
+          <li style={`--i:${i}`}><span class="n">{String(i + 1).padStart(2, '0')}</span>{a}</li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="hint" aria-hidden="true"><span class="hint-line"></span>Desliza</div>
+  </div>
+</section>
+
+<style>
+  .story { position: relative; background: var(--black); }
+  .pin { position: relative; min-height: max(100svh, 620px); overflow: hidden; display: flex; }
+  .pin :global(.bg) { position: absolute; inset: 0; }
+  .pin :global(.bg img) { transform: scale(1.06); transform-origin: 50% 60%; }
+  .shade {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      linear-gradient(90deg, rgba(8, 11, 13, 0.86) 0%, rgba(8, 11, 13, 0.55) 48%, rgba(8, 11, 13, 0.15) 100%),
+      linear-gradient(0deg, rgba(8, 11, 13, 0.7) 0%, rgba(8, 11, 13, 0) 45%);
+  }
+  .stage {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: var(--space-8);
+    width: 100%;
+    min-height: max(100svh, 620px);
+    padding-top: calc(var(--header-h) + var(--space-7));
+    padding-bottom: clamp(4.5rem, 3rem + 6vw, 9rem);
+  }
+  .s1 { display: grid; gap: var(--space-6); justify-items: start; max-width: 72rem; }
+  .s1 h1 { font-size: clamp(2.5rem, min(1.2rem + 6vw, 10.5svh), 7.5rem); max-width: 15ch; }
+  .s1 .lead { max-width: 46ch; color: rgba(243, 245, 244, 0.84); }
+  .s1 .btn-row { margin-top: var(--space-3); }
+
+  .s2 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) 0;
+    padding-top: var(--space-5);
+    border-top: 1px solid rgba(243, 245, 244, 0.22);
+  }
+  .s2 li {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-right: clamp(1.5rem, 1rem + 3vw, 4.5rem);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  .s2 .n { font-size: 0.6875rem; letter-spacing: 0.1em; color: var(--accent-text); }
+
+  .hint {
+    position: absolute;
+    z-index: 2;
+    right: var(--gutter);
+    bottom: clamp(4.5rem, 3rem + 6vw, 9rem);
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    writing-mode: vertical-rl;
+    font-size: 0.6875rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgba(243, 245, 244, 0.7);
+  }
+  .hint-line { width: 1px; height: 48px; background: linear-gradient(rgba(243, 245, 244, 0), rgba(243, 245, 244, 0.8)); }
+
+  @media (max-width: 560px) {
+    .s1 .btn-row { width: 100%; }
+    .s1 .btn-row .btn { flex: 1 1 100%; }
+    .s2 li { margin-right: 1.25rem; letter-spacing: 0.14em; font-size: 0.75rem; }
+  }
+
+  /* — Modo narrativo (lo activa main.ts si hay JS y no se pide reducir movimiento) — */
+  :global(.story-live) .story { height: 230svh; }
+  :global(.story-live) .pin { position: sticky; top: 0; height: 100svh; min-height: 0; }
+  :global(.story-live) .stage { min-height: 0; height: 100%; }
+  :global(.story-live) .pin :global(.bg img) {
+    transform: scale(calc(1.14 - var(--p, 0) * 0.12)) translate3d(0, calc(var(--p, 0) * -3%), 0);
+    transition: none;
+    will-change: transform;
+  }
+  :global(.story-live) .shade { opacity: calc(0.9 + var(--p, 0) * 0.1); }
+  :global(.story-live) .s1 {
+    opacity: clamp(0, calc(1 - (var(--p, 0) - 0.22) * 3.2), 1);
+    transform: translate3d(0, calc(max(0, var(--p, 0) - 0.22) * -160px), 0);
+    will-change: opacity, transform;
+  }
+  :global(.story-live) .s2 { border-top-color: transparent; position: absolute; left: var(--gutter); right: var(--gutter); bottom: clamp(4.5rem, 3rem + 6vw, 9rem); flex-direction: column; gap: var(--space-2); padding: 0; }
+  :global(.story-live) .s2 li {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 1.2rem + 5.4vw, 6.5rem);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    text-transform: none;
+    line-height: 1.02;
+    opacity: clamp(0, calc((var(--p, 0) - 0.42 - var(--i) * 0.09) * 9), 1);
+    transform: translate3d(calc((1 - clamp(0, calc((var(--p, 0) - 0.42 - var(--i) * 0.09) * 9), 1)) * 40px), 0, 0);
+  }
+  :global(.story-live) .s2 .n { font-family: var(--font-body); font-size: 0.75rem; align-self: center; }
+  :global(.story-live) .hint { display: flex; opacity: clamp(0, calc(1 - var(--p, 0) * 6), 1); }
+  :global(.story-live.story-past) .s1 { pointer-events: none; }
+</style>
