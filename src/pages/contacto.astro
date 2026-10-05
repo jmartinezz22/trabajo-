@@ -2,7 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import ContactForm from '@/components/ContactForm.astro';
 import Icon from '@/components/Icon.astro';
-import { site, telHref, PENDING } from '@/data/site';
+import { site, telHref, formatAddress, PENDING } from '@/data/site';
 
 const crumbs = [{ name: 'Contacto', href: '/contacto/' }];
 const { contact } = site;
@@ -45,18 +45,26 @@ const steps = [
         </ol>
 
         <ul role="list" class="direct">
-          <li>
-            <Icon name="phone" size={18} />
-            {contact.phone ? <a href={telHref(contact.phone)}>{contact.phone}</a> : <span class="pending">Teléfono {PENDING}</span>}
-          </li>
+          {[contact.phone, contact.customerService].map((p) => (
+            <li>
+              <Icon name="phone" size={18} />
+              <span><span class="sub">{p.label}</span><a href={telHref(p.number)}>{p.number}</a></span>
+            </li>
+          ))}
           <li>
             <Icon name="mail" size={18} />
             {contact.email ? <a href={`mailto:${contact.email}`}>{contact.email}</a> : <span class="pending">Email {PENDING}</span>}
           </li>
-          <li>
-            <Icon name="pin" size={18} />
-            {contact.address ? <span>{contact.address.street}, {contact.address.city}</span> : <span class="pending">Dirección {PENDING}</span>}
-          </li>
+          {site.locations.map((l) => (
+            <li>
+              <Icon name="pin" size={18} />
+              <span>
+                <span class="sub">{l.label}</span>
+                {formatAddress(l.address)}
+                {l.phone && <><br /><a href={telHref(l.phone.number)}>{l.phone.number}</a></>}
+              </span>
+            </li>
+          ))}
         </ul>
       </aside>
     </div>
@@ -78,6 +86,7 @@ const steps = [
   .direct li { display: grid; grid-template-columns: 18px 1fr; gap: var(--space-3); align-items: start; }
   .direct :global(svg) { color: var(--brand); margin-top: 2px; }
   .direct a:hover { color: var(--brand); }
+  .sub { display: block; font-size: var(--fs-xs); color: var(--text-on-dark-muted); text-transform: uppercase; letter-spacing: 0.08em; }
   .form-wrap { padding: var(--space-7) var(--gutter); }
   .form-wrap h2 { margin-bottom: var(--space-6); }
   @media (min-width: 1024px) {

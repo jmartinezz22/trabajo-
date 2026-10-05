@@ -20,9 +20,11 @@ export const mainNav: { label: string; href: string; children?: NavLink[] }[] = 
   { label: 'Sectores', href: '/sectores/' },
   { label: 'Tecnología', href: '/tecnologia/' },
   { label: 'Proyectos', href: '/proyectos/' },
+  { label: 'Empresa', href: '/empresa/' },
 ];
 
 export const companyLinks: NavLink[] = [
+  { label: 'Empresa', href: '/empresa/' },
   { label: 'Soluciones a medida', href: '/soluciones-a-medida/' },
   { label: 'Tecnología', href: '/tecnologia/' },
   { label: 'Proyectos', href: '/proyectos/' },
@@ -45,13 +47,12 @@ export const methodSteps = [
   { num: '05', title: 'Optimizamos', text: 'Revisamos y ajustamos para mejorar de forma continua.' },
 ];
 
-/** Cadena de valor: fases en las que puede intervenir PALEX MEDICAL. */
+/** Propuesta de valor: lo que PALEX MEDICAL combina en una misma operación. */
 export const valueChain = [
-  { label: 'Transporte', href: '/servicios/transporte/' },
-  { label: 'Almacenaje', href: '/servicios/logistica/' },
-  { label: 'Preparación', href: '/servicios/logistica/' },
-  { label: 'Distribución', href: '/servicios/transporte/' },
-  { label: 'Servicios especiales', href: '/servicios/servicios-especiales/' },
-  { label: 'Consultoría', href: '/servicios/consultoria-logistica/' },
-  { label: 'Soluciones a medida', href: '/soluciones-a-medida/' },
+  { label: 'Logística', text: 'Almacenaje, preparación y gestión de almacenes.', href: '/servicios/logistica/' },
+  { label: 'Transporte', text: 'Paquetería, grupaje, camión completo, frío y express.', href: '/servicios/transporte/' },
+  { label: 'Tecnología', text: 'Automatización, RFID y SAP HANA / EWM.', href: '/tecnologia/' },
+  { label: 'Trazabilidad', text: 'Control de cada movimiento y de cada incidencia.', href: '/tecnologia/#trazabilidad' },
+  { label: 'Consultoría', text: 'Optimización de flujos, layouts y transporte.', href: '/servicios/consultoria-logistica/' },
+  { label: 'Soluciones a medida', text: 'Operaciones diseñadas para cada cliente.', href: '/soluciones-a-medida/' },
 ];

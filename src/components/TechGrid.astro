@@ -10,7 +10,7 @@ const { tone = 'dark', showDetail = false } = Astro.props;
 ---
 <ul role="list" class:list={['tech', `tech--${tone}`]}>
   {technology.map((t, i) => (
-    <li data-reveal style={`--reveal-i:${i % 4}`}>
+    <li id={showDetail ? t.id : undefined} data-reveal style={`--reveal-i:${i % 4}`}>
       <Icon name={t.icon} size={26} class="ico" />
       <h3>{t.title}</h3>
       <p>{t.text}</p>

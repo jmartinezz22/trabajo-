@@ -8,6 +8,14 @@
 
 ## 0. Advertencia previa sobre la marca (leer primero)
 
+> **Actualización (investigación adicional del cliente):** se confirman los datos corporativos,
+> la experiencia en logística hospitalaria desde 1998, el caso Hospital Sant Joan de Déu y las
+> capacidades tecnológicas. Los puntos 2–5 siguientes quedan superados en lo que se ha verificado.
+> Estado actual de cada dato: [`03-registro-de-datos.md`](03-registro-de-datos.md).
+> Posicionamiento resultante: **partner logístico** que combina logística + transporte +
+> tecnología + trazabilidad + consultoría + soluciones a medida, con la experiencia hospitalaria
+> como principal prueba de capacidad.
+
 La investigación pública sobre "Palex Medical" devuelve principalmente a **Palex Medical, S.A.**,
 distribuidor de tecnología sanitaria (MedTech) con sede en Sant Cugat del Vallès (Barcelona),
 almacén central en Cornellà de Llobregat y una división de **logística hospitalaria**

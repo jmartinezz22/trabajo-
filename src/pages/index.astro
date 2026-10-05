@@ -6,11 +6,13 @@ import ServiceCard from '@/components/ServiceCard.astro';
 import FlowSteps from '@/components/FlowSteps.astro';
 import SectorGrid from '@/components/SectorGrid.astro';
 import TechGrid from '@/components/TechGrid.astro';
-import CaseCard from '@/components/CaseCard.astro';
+import FeaturedCase from '@/components/FeaturedCase.astro';
+import ProofBand from '@/components/ProofBand.astro';
+import CertList from '@/components/CertList.astro';
 import CtaBand from '@/components/CtaBand.astro';
 import { services, serviceHref } from '@/data/services';
 import { methodSteps, valueChain } from '@/data/navigation';
-import { cases } from '@/data/cases';
+import { featuredCase } from '@/data/cases';
 import { site } from '@/data/site';
 
 const schema = [
@@ -37,17 +39,17 @@ const schema = [
 <BaseLayout
   title="Operador logístico B2B"
   fullTitle="Operador logístico B2B · Soluciones logísticas integrales a medida | PALEX MEDICAL"
-  description="Transporte, almacenaje, distribución, servicios especiales, eventos, excedentes industriales y consultoría logística. Soluciones logísticas integrales adaptadas a cada empresa."
+  description="Logística, transporte, tecnología y trazabilidad para operaciones complejas. Experiencia en logística hospitalaria desde 1998, automatización y soluciones a medida."
   schema={schema}
 >
   <!-- 01 — HERO -->
   <section class="hero on-dark">
     <div class="container hero-grid">
       <div class="hero-copy">
-        <p class="eyebrow" data-reveal>Operador logístico B2B</p>
+        <p class="eyebrow" data-reveal>Partner logístico B2B</p>
         <h1 data-reveal style="--reveal-i:1">Soluciones logísticas para operaciones que no pueden fallar.</h1>
         <p class="lead" data-reveal style="--reveal-i:2">
-          Transporte, almacenaje, distribución y proyectos logísticos a medida para empresas que necesitan algo más que un proveedor.
+          Logística, transporte, tecnología y trazabilidad para empresas que necesitan algo más que un proveedor. Con experiencia en soluciones logísticas hospitalarias desde 1998.
         </p>
         <div class="btn-row" data-reveal style="--reveal-i:3">
           <a href="/contacto/" class="btn">Solicitar solución logística <Icon name="arrow" /></a>
@@ -72,25 +74,36 @@ const schema = [
     </nav>
   </section>
 
-  <!-- 02 — CAPACIDAD -->
-  <section class="section capacity">
+  <!-- 02 — EXPERIENCIA (solo datos verificados) -->
+  <section class="section tight experience" aria-labelledby="exp-title">
+    <div class="container">
+      <div class="exp-head">
+        <p class="eyebrow" data-reveal>Experiencia demostrable</p>
+        <h2 id="exp-title" class="h3" data-reveal style="--reveal-i:1">Experiencia en entornos donde la logística no puede fallar: el hospital.</h2>
+      </div>
+      <ProofBand />
+    </div>
+  </section>
+
+  <!-- 03 — CAPACIDAD / PROPUESTA DE VALOR -->
+  <section class="section capacity bg-surface">
     <div class="container">
       <div class="section-head split">
         <div>
-          <p class="eyebrow" data-reveal>Capacidad</p>
-          <h2 data-reveal style="--reveal-i:1">Una solución. Todas las fases de la operación.</h2>
+          <p class="eyebrow" data-reveal>Propuesta de valor</p>
+          <h2 data-reveal style="--reveal-i:1">No solo transportamos. Combinamos todo lo que necesita una operación.</h2>
         </div>
         <p class="lead" data-reveal style="--reveal-i:2">
-          PALEX MEDICAL no se limita a transportar mercancías. Intervenimos en la fase que necesitas o en toda la cadena,
-          con un único interlocutor y una operación diseñada para tu negocio.
+          Logística, transporte, tecnología, trazabilidad y consultoría, integradas en una solución diseñada para tu operación y gestionada por un único interlocutor.
         </p>
       </div>
       <ol role="list" class="chain" data-draw>
         {valueChain.map((c, i) => (
           <li style={`--i:${i}`}>
             <a href={c.href}>
-              <span class="mono">{String(i + 1).padStart(2, '0')}</span>
+              <span class="mono">{i === 0 ? '' : '+ '}{String(i + 1).padStart(2, '0')}</span>
               <span class="chain-label">{c.label}</span>
+              <span class="chain-text">{c.text}</span>
             </a>
           </li>
         ))}
@@ -98,8 +111,8 @@ const schema = [
     </div>
   </section>
 
-  <!-- 03 — SERVICIOS -->
-  <section class="section bg-surface" id="servicios">
+  <!-- 04 — SERVICIOS -->
+  <section class="section" id="servicios">
     <div class="container">
       <div class="section-head split">
         <div>
@@ -117,7 +130,7 @@ const schema = [
     </div>
   </section>
 
-  <!-- 04 — SOLUCIONES A MEDIDA -->
+  <!-- 05 — SOLUCIONES A MEDIDA -->
   <section class="section custom on-dark">
     <div class="container custom-grid">
       <div class="custom-copy">
@@ -138,7 +151,7 @@ const schema = [
     </div>
   </section>
 
-  <!-- 05 — SECTORES -->
+  <!-- 06 — SECTORES -->
   <section class="section">
     <div class="container">
       <div class="section-head split">
@@ -155,7 +168,7 @@ const schema = [
     </div>
   </section>
 
-  <!-- 06 — PROCESO -->
+  <!-- 07 — PROCESO -->
   <section class="section bg-surface">
     <div class="container">
       <div class="section-head split">
@@ -171,16 +184,16 @@ const schema = [
     </div>
   </section>
 
-  <!-- 07 — TECNOLOGÍA -->
+  <!-- 08 — TECNOLOGÍA -->
   <section class="section on-dark">
     <div class="container">
       <div class="section-head split">
         <div>
           <p class="eyebrow" data-reveal>Tecnología</p>
-          <h2 data-reveal style="--reveal-i:1">Control, trazabilidad e integración.</h2>
+          <h2 data-reveal style="--reveal-i:1">Automatización, trazabilidad y sistemas.</h2>
         </div>
         <div class="head-aside" data-reveal style="--reveal-i:2">
-          <p class="lead">La operación física se apoya en sistemas y datos. Con experiencia en SAP HANA aplicada a la logística.</p>
+          <p class="lead">RFID, soluciones propias de trazabilidad, control de impactos y experiencia en SAP HANA y EWM: la operación física respaldada por tecnología.</p>
           <a href="/tecnologia/" class="link-arrow">Ver tecnología <Icon name="arrow" /></a>
         </div>
       </div>
@@ -188,26 +201,41 @@ const schema = [
     </div>
   </section>
 
-  <!-- 08 — PROYECTOS -->
+  <!-- 09 — PROYECTOS: caso real -->
   <section class="section">
     <div class="container">
       <div class="section-head split">
         <div>
-          <p class="eyebrow" data-reveal>Proyectos</p>
-          <h2 data-reveal style="--reveal-i:1">Cada proyecto, un reto concreto.</h2>
+          <p class="eyebrow" data-reveal>Caso de éxito</p>
+          <h2 data-reveal style="--reveal-i:1">176 almacenes. Un hospital. Trazabilidad de extremo a extremo.</h2>
         </div>
         <div class="head-aside" data-reveal style="--reveal-i:2">
-          <p class="lead">Reto, solución y resultado. Así documentamos nuestro trabajo.</p>
+          <p class="lead">Así aplicamos automatización y trazabilidad a una operación logística real y exigente.</p>
           <a href="/proyectos/" class="link-arrow">Ver proyectos <Icon name="arrow" /></a>
         </div>
       </div>
-      <div class="grid grid-3">
-        {cases.map((c, i) => <CaseCard {...c} index={i} />)}
-      </div>
+      <FeaturedCase c={featuredCase} />
     </div>
   </section>
 
-  <!-- 09 — CTA -->
+  <!-- 10 — CONFIANZA -->
+  <section class="section tight bg-surface trust">
+    <div class="container">
+      <div class="section-head split">
+        <div>
+          <p class="eyebrow" data-reveal>Calidad y cumplimiento</p>
+          <h2 class="h3" data-reveal style="--reveal-i:1">Sistemas de gestión</h2>
+        </div>
+        <div class="head-aside" data-reveal style="--reveal-i:2">
+          <p class="muted">Certificaciones en proceso de validación de alcance, vigencia y sociedad antes de su publicación definitiva.</p>
+          <a href="/empresa/#calidad" class="link-arrow">Más sobre la empresa <Icon name="arrow" /></a>
+        </div>
+      </div>
+      <CertList />
+    </div>
+  </section>
+
+  <!-- 11 — CTA -->
   <CtaBand
     title="Cuéntanos qué necesitas."
     text="Describe tu operación y te propondremos una solución logística adaptada: un servicio concreto o la cadena completa."
@@ -283,11 +311,12 @@ const schema = [
     letter-spacing: -0.02em;
     color: var(--ink);
   }
+  .chain-text { display: none; font-size: var(--fs-sm); color: var(--text-muted); line-height: 1.45; }
   .chain a:hover { padding-left: var(--space-3); }
   .chain a:hover .chain-label { color: var(--brand-ink); }
   @media (min-width: 1024px) {
     .chain {
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       border-top: 0;
       padding-top: var(--space-6);
     }
@@ -309,11 +338,16 @@ const schema = [
     }
     .chain.is-drawn::after { transform: scaleX(1); }
     .chain li { border-bottom: 0; border-left: 1px solid var(--line); }
-    .chain a { flex-direction: column; gap: var(--space-6); padding: 0 var(--space-4) var(--space-4); min-height: 9rem; justify-content: space-between; }
-    .chain a:hover { padding-left: var(--space-4); background: var(--surface); }
+    .chain a { flex-direction: column; gap: var(--space-3); padding: 0 var(--space-4) var(--space-4); min-height: 11rem; }
+    .chain .mono { margin-bottom: var(--space-4); }
+    .chain-text { display: block; }
+    .chain a:hover { padding-left: var(--space-4); background: var(--paper); }
     .chain-label { font-size: var(--fs-md); line-height: 1.2; }
   }
 
+  .experience { border-bottom: 1px solid var(--line); }
+  .exp-head { display: grid; gap: var(--space-4); margin-bottom: var(--space-6); }
+  .exp-head h2 { max-width: 30ch; }
   .head-aside { display: grid; gap: var(--space-4); justify-items: start; }
   .service-index { border-top: 1px solid var(--line); }
 

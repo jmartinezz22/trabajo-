@@ -61,6 +61,7 @@ export const icons = {
   data: '<path d="M4 20V10M9.5 20V4M15 20v-7M20.5 20V8"/>',
   monitor: '<rect x="3" y="4" width="18" height="13" rx="1"/><path d="M3 13h4l2-4 3 6 2-3h7M9 21h6"/>',
   leaf: '<path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15z"/><path d="M5 19c3-4 6-7 10-10"/>',
+  impact: '<path d="M7 9h10v10H7z"/><path d="M12 2v3M5 4l2 2.5M19 4l-2 2.5M3 9.5h2M19 9.5h2"/><path d="M10 13l2 2 2-2"/>',
   target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
 } as const;
 

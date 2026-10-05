@@ -29,8 +29,8 @@ export const sectors: Sector[] = [
     slug: 'pharma-healthcare',
     name: 'Pharma & Healthcare',
     icon: 'thermo',
-    challenge: 'Producto sensible a la temperatura, trazabilidad exigente y entregas que no admiten error.',
-    answer: 'Transporte refrigerado, congelado y a temperatura controlada, almacenaje y manipulación especial de equipos sanitarios.',
+    challenge: 'Material sanitario y producto sensible, trazabilidad exigente y entregas que no admiten error.',
+    answer: 'Experiencia en logística hospitalaria desde 1998: gestión de almacenes, trazabilidad RFID, temperatura controlada y manipulación de equipos sanitarios.',
     services: ['transporte', 'logistica', 'servicios-especiales'],
   },
   {
@@ -46,7 +46,7 @@ export const sectors: Sector[] = [
     name: 'Tecnología',
     icon: 'diamond',
     challenge: 'Equipos de alto valor y frágiles, despliegues en múltiples ubicaciones.',
-    answer: 'Embalaje a medida, manipulación especial y distribución coordinada a varios destinos.',
+    answer: 'Embalaje a medida, control de impactos en equipos sensibles y distribución coordinada a varios destinos.',
     services: ['servicios-especiales', 'transporte', 'logistica'],
   },
   {

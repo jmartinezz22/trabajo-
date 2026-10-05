@@ -27,7 +27,7 @@ const {
     <div class="actions" data-reveal style="--reveal-i:1">
       <a href={href} class="btn">{label} <Icon name="arrow" /></a>
       {site.contact.phone && (
-        <a href={telHref(site.contact.phone)} class="btn btn-ghost"><Icon name="phone" /> {site.contact.phone}</a>
+        <a href={telHref(site.contact.phone.number)} class="btn btn-ghost"><Icon name="phone" /> {site.contact.phone.number}</a>
       )}
     </div>
   </div>

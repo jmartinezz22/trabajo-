@@ -48,7 +48,26 @@ const organization: Record<string, unknown> = {
   description: site.description,
   ...(site.legalName && { legalName: site.legalName }),
   ...(contact.email && { email: contact.email }),
-  ...(contact.phone && { telephone: contact.phone }),
+  ...(contact.phone && { telephone: contact.phone.number }),
+  contactPoint: [contact.phone, contact.customerService].map((p) => ({
+    '@type': 'ContactPoint',
+    telephone: p.number.startsWith('+') ? p.number : `+34 ${p.number}`,
+    contactType: p.label,
+    areaServed: 'ES',
+    availableLanguage: ['es'],
+  })),
+  location: site.locations.map((l) => ({
+    '@type': 'Place',
+    name: `${site.name} — ${l.label}`,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: l.address.street,
+      postalCode: l.address.postalCode,
+      addressLocality: l.address.city,
+      addressRegion: l.address.region,
+      addressCountry: l.address.country,
+    },
+  })),
   ...(social.linkedin && { sameAs: [social.linkedin] }),
   ...(contact.address && {
     address: {
@@ -151,7 +170,7 @@ const jsonLd = [organization, ...(breadcrumbSchema ? [breadcrumbSchema] : []), .
     transition: transform var(--dur) var(--ease);
   }
   .sticky-cta.is-shown { transform: none; }
-  @media (min-width: 1100px) {
+  @media (min-width: 1200px) {
     .sticky-cta { display: none; }
   }
 </style>

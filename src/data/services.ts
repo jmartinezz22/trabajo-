@@ -37,6 +37,8 @@ export interface ServiceLine {
   groups: ServiceGroup[];
   flow?: { eyebrow: string; title: string; intro?: string; steps: FlowStep[] };
   adapt: { title: string; points: string[] };
+  /** Bloque de pilares (p. ej. control de equipos de alto valor). */
+  pillars?: { eyebrow: string; title: string; intro?: string; items: ServiceItem[] };
   sectors: SectorSlug[];
   faq: { q: string; a: string }[];
   cta: { title: string; text: string };
@@ -103,8 +105,9 @@ export const services: ServiceLine[] = [
       points: [
         'Combinable con almacenaje, preparación de pedidos y distribución.',
         'Modalidades mixtas en una misma operación según cada destino.',
+        'Experiencia en optimización del transporte, consolidación de envíos y planificación de la distribución.',
         'Cobertura geográfica: [DATOS PENDIENTES DE CONFIRMAR].',
-        'Certificaciones de transporte sanitario (p. ej. GDP): [DATOS PENDIENTES DE CONFIRMAR].',
+        'Certificación de distribución farmacéutica: [CONFIRMAR CERTIFICACIÓN GDP].',
       ],
     },
     sectors: ['pharma-healthcare', 'industria', 'distribucion', 'ecommerce'],
@@ -139,7 +142,7 @@ export const services: ServiceLine[] = [
     hero: {
       title: 'Logística integral, configurada a la medida de tu operación.',
       intro:
-        'Almacenamos, preparamos y expedimos tus pedidos con procesos adaptados a tu producto, tus canales de venta y tu volumen.',
+        'Almacenamos, preparamos y expedimos tus pedidos con procesos adaptados a tu producto, tus canales y tu volumen. Con experiencia en gestión de almacenes, automatización y trazabilidad.',
     },
     itemsTitle: 'Servicios logísticos',
     groups: [
@@ -173,8 +176,8 @@ export const services: ServiceLine[] = [
       points: [
         'Procesos definidos según tu producto, tus canales y tus picos de demanda.',
         'Integración del almacén con el transporte en una única operación.',
-        'Superficie, ubicaciones y capacidad de almacenaje: [DATOS PENDIENTES DE CONFIRMAR].',
-        'Sistema de gestión de almacén: [CONFIRMAR TECNOLOGÍA].',
+        'Experiencia en gestión e integración de almacenes, automatización y trazabilidad.',
+        'Superficie y capacidad de almacenaje disponibles: [DATOS PENDIENTES DE CONFIRMAR].',
       ],
     },
     sectors: ['ecommerce', 'distribucion', 'pharma-healthcare', 'tecnologia'],
@@ -281,7 +284,7 @@ export const services: ServiceLine[] = [
       {
         items: [
           { title: 'Embalaje', text: 'Embalaje diseñado según la fragilidad, el valor y el modo de transporte.', icon: 'box' },
-          { title: 'Equipos de alto valor', text: 'Transporte de equipos sensibles con planificación y manipulación específicas.', icon: 'diamond' },
+          { title: 'Equipos de alto valor', text: 'Equipos sensibles y envíos de alto valor con control de impactos en cada manipulación.', icon: 'diamond' },
           { title: 'Manipulación especial', text: 'Carga, descarga y posicionamiento de mercancía que requiere cuidados particulares.', icon: 'hand' },
           { title: 'Servicios especiales', text: 'Operaciones puntuales con requisitos fuera de lo estándar.', icon: 'shield' },
           { title: 'Soluciones personalizadas', text: 'Combinación de servicios definida para un caso concreto.', icon: 'compass' },
@@ -308,6 +311,18 @@ export const services: ServiceLine[] = [
         'Coberturas de seguro para mercancía de alto valor: [DATOS PENDIENTES DE CONFIRMAR].',
       ],
     },
+    pillars: {
+      eyebrow: 'Transporte de equipos de alto valor',
+      title: 'Protección, trazabilidad y control en cada manipulación.',
+      intro:
+        'Para equipos sensibles y envíos con requisitos específicos utilizamos indicadores de impacto ShockWatch 50G: cualquier golpe fuera de rango queda registrado y es visible.',
+      items: [
+        { title: 'Protección', text: 'Embalaje y manipulación definidos según la fragilidad y el valor del equipo.', icon: 'box' },
+        { title: 'Trazabilidad', text: 'Registro del estado del envío durante el almacenamiento y el transporte.', icon: 'trace' },
+        { title: 'Control', text: 'Indicadores de impacto que detectan posibles golpes durante la manipulación.', icon: 'impact' },
+        { title: 'Gestión de incidencias', text: 'Cada incidencia detectada se registra para actuar y documentarla.', icon: 'manage' },
+      ],
+    },
     sectors: ['pharma-healthcare', 'tecnologia', 'equipamiento', 'industria'],
     faq: [
       {
@@ -317,6 +332,10 @@ export const services: ServiceLine[] = [
       {
         q: '¿Diseñáis el embalaje?',
         a: 'Sí. El embalaje es parte del servicio y se define según la fragilidad, el valor y el trayecto de la mercancía.',
+      },
+      {
+        q: '¿Cómo se controla que un equipo no ha sufrido golpes?',
+        a: 'Utilizamos indicadores de impacto ShockWatch 50G, que cambian de estado si el equipo recibe un golpe fuera de rango durante el almacenamiento o el transporte. La incidencia queda registrada.',
       },
     ],
     cta: { title: '¿Tu operación no encaja en un estándar?', text: 'Explícanos qué hay que mover y en qué condiciones. Diseñamos el plan.' },
@@ -371,6 +390,7 @@ export const services: ServiceLine[] = [
     adapt: {
       title: 'Pensado para operaciones con fecha límite',
       points: [
+        'Experiencia en la planificación y ejecución de operaciones logísticas para congresos.',
         'Múltiples puntos de entrega coordinados en una única planificación.',
         'Material preparado por destino para reducir trabajo en sede.',
         'Almacenaje entre eventos para material reutilizable.',
@@ -394,18 +414,18 @@ export const services: ServiceLine[] = [
     slug: 'consultoria-logistica',
     num: '06',
     name: 'Consultoría',
-    short: 'Optimización de transporte, layouts y procesos. Expertos en SAP HANA. Mejora de embalajes.',
+    short: 'Optimización de transporte, layouts y procesos. Experiencia en SAP HANA y EWM. Mejora de embalajes.',
     icon: 'chart',
     image: 'consultoria',
     seo: {
       title: 'Consultoría logística · Optimización de procesos, layout y SAP HANA',
       description:
-        'Proyectos de mejora del transporte y la logística, optimización de layouts y procesos, expertos en SAP HANA, mejora de embalajes y proyectos personalizados.',
+        'Proyectos de mejora del transporte y la logística, optimización de layouts y procesos, experiencia en SAP HANA y SAP EWM, mejora de embalajes y proyectos personalizados.',
     },
     hero: {
       title: 'No solo ejecutamos la logística. La analizamos y la mejoramos.',
       intro:
-        'Aplicamos la experiencia operativa al diagnóstico de tu cadena: transporte, almacén, procesos, sistemas y embalaje.',
+        'Aplicamos nuestra experiencia en logística hospitalaria, automatización y trazabilidad al diagnóstico de tu cadena: transporte, almacén, procesos, sistemas y embalaje.',
     },
     itemsTitle: 'Ámbitos de consultoría',
     groups: [
@@ -415,7 +435,7 @@ export const services: ServiceLine[] = [
           { title: 'Optimización de layouts', text: 'Rediseño de la distribución del almacén y sus flujos internos.', icon: 'layout' },
           { title: 'Proyectos de mejora logística', text: 'Diagnóstico y plan de mejora de la operación completa.', icon: 'chart' },
           { title: 'Optimización de procesos', text: 'Simplificación de tareas, tiempos y puntos de control.', icon: 'process' },
-          { title: 'Expertos en SAP HANA', text: 'Configuración y mejora de procesos logísticos en entorno SAP HANA.', icon: 'database' },
+          { title: 'SAP HANA y SAP EWM', text: 'Experiencia en la implantación de SAP HANA y del módulo EWM, aplicada a procesos logísticos.', icon: 'database' },
           { title: 'Mejora de embalajes', text: 'Embalajes más adecuados, protectores y eficientes en volumen.', icon: 'package' },
           { title: 'Consultoría logística', text: 'Acompañamiento en decisiones de organización logística.', icon: 'compass' },
           { title: 'Proyectos personalizados', text: 'Alcance definido según el reto concreto de cada empresa.', icon: 'blueprint' },
@@ -439,8 +459,9 @@ export const services: ServiceLine[] = [
       points: [
         'Propuestas que tienen en cuenta cómo funciona un almacén y un transporte reales.',
         'Posibilidad de implantar la mejora y, si se desea, operarla.',
-        'Integración de procesos logísticos con SAP HANA.',
-        'Alcance de la experiencia SAP (módulos, certificaciones): [CONFIRMAR TECNOLOGÍA].',
+        'Experiencia en optimización de flujos, integración de almacenes y optimización del transporte.',
+        'Experiencia propia en la implantación de SAP HANA y SAP EWM.',
+        'Alcance del servicio SAP para terceros: [PENDIENTE DE VALIDACIÓN COMERCIAL].',
       ],
     },
     sectors: ['industria', 'distribucion', 'pharma-healthcare', 'tecnologia'],
@@ -450,8 +471,8 @@ export const services: ServiceLine[] = [
         a: 'Sí. La consultoría es un servicio independiente. Si lo deseas, también podemos implantar y gestionar la solución.',
       },
       {
-        q: '¿Trabajáis con SAP HANA?',
-        a: 'Sí. Contamos con perfiles expertos en SAP HANA aplicado a procesos logísticos.',
+        q: '¿Tenéis experiencia en SAP HANA?',
+        a: 'Sí. Contamos con experiencia en la implantación de SAP HANA y del módulo de gestión de almacenes EWM en centros propios. El alcance para cada proyecto se define caso a caso.',
       },
     ],
     cta: { title: '¿Tu operación puede funcionar mejor?', text: 'Cuéntanos dónde ves el problema. Lo analizamos contigo.' },

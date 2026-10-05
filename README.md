@@ -5,6 +5,7 @@ Web B2B estática construida con **Astro 5 + TypeScript + CSS propio**. Cero dep
 
 - Estrategia, investigación y arquitectura: [`docs/01-investigacion-y-estrategia.md`](docs/01-investigacion-y-estrategia.md)
 - Test, auditoría y **lista de datos pendientes**: [`docs/02-auditoria-y-pendientes.md`](docs/02-auditoria-y-pendientes.md)
+- **Registro de datos** (verificado / en validación / no encontrado): [`docs/03-registro-de-datos.md`](docs/03-registro-de-datos.md)
 
 ## Puesta en marcha
 
@@ -31,6 +32,7 @@ Variables de entorno (copiar `.env.example` a `.env`):
 | Sectores | `src/data/sectors.ts` |
 | Tecnología | `src/data/technology.ts` |
 | Proyectos / casos | `src/data/cases.ts` |
+| Certificaciones y evidencias (estado de cada dato) | `src/data/trust.ts` |
 | Menús, proceso y cadena de valor | `src/data/navigation.ts` |
 | Imágenes | `src/data/images.ts` + `public/images/` |
 | Colores, tipografía, espaciado | `src/styles/tokens.css` |

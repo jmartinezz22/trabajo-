@@ -61,7 +61,7 @@ document.addEventListener('keydown', (e) => {
     toggle?.focus();
   }
 });
-window.matchMedia('(min-width: 1100px)').addEventListener('change', (e) => e.matches && setMenu(false));
+window.matchMedia('(min-width: 1200px)').addEventListener('change', (e) => e.matches && setMenu(false));
 
 /* — Aparición al hacer scroll — */
 const revealEls = document.querySelectorAll<HTMLElement>('[data-reveal]');
@@ -96,6 +96,29 @@ document.querySelectorAll<HTMLElement>('[data-draw]').forEach((el) => {
       }
     },
     { threshold: 0.3 },
+  );
+  io.observe(el);
+});
+
+/* — Contadores (solo cifras verificadas; sin JS se ve el valor final) — */
+document.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
+  const target = Number(el.dataset.count);
+  if (reduceMotion || !('IntersectionObserver' in window) || !Number.isFinite(target)) return;
+  el.textContent = '0';
+  const io = new IntersectionObserver(
+    ([entry]) => {
+      if (!entry?.isIntersecting) return;
+      io.disconnect();
+      const start = performance.now();
+      const dur = 1400;
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - start) / dur);
+        el.textContent = String(Math.round(target * (1 - Math.pow(1 - t, 3))));
+        if (t < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    },
+    { threshold: 0.6 },
   );
   io.observe(el);
 });

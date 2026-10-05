@@ -40,7 +40,7 @@ producto refrigerado y externalizar parte de su almacén.*
 | ¿Pueden resolver mi problema? | Sí | Transporte (refrigerado/temperatura controlada), Logística, Sectores › Pharma |
 | ¿Hacen algo más que transportar? | Sí, es el mensaje central | Bloque "Una solución. Todas las fases", consultoría, soluciones a medida |
 | ¿Cómo contacto? | Sí, en 1 clic desde cualquier punto | Botón fijo en header, CTA móvil fijo, CTA al final de cada página |
-| ¿Puedo confiar? | **Parcialmente** | Faltan pruebas: casos reales, certificaciones, datos de contacto, cobertura |
+| ¿Puedo confiar? | **Sí, con pruebas** | +25 años en logística hospitalaria, caso real de 176 almacenes, soluciones propias RFID, teléfonos y sedes reales. Pendiente: certificaciones validadas y fotos reales |
 
 **Fortalezas**
 - Posicionamiento claro de *partner* logístico, no de transportista.
@@ -60,27 +60,27 @@ producto refrigerado y externalizar parte de su almacén.*
 
 ## 3. Lista de pendientes para PALEX MEDICAL
 
-Todos los marcadores aparecen en la web con estilo naranja discontinuo para localizarlos.
+> Actualizado con la investigación adicional. Detalle por estado (verificado / en validación /
+> no encontrado) en [`03-registro-de-datos.md`](03-registro-de-datos.md).
 
 | Dato | Archivo | Estado |
 |---|---|---|
-| Razón social, CIF | `src/data/site.ts` | [CONFIRMAR] |
-| Teléfono, email, dirección, horario | `src/data/site.ts` | [CONFIRMAR] |
-| LinkedIn | `src/data/site.ts` | [CONFIRMAR] |
-| Dominio definitivo | `.env` → `SITE_URL` | [CONFIRMAR] |
-| Endpoint del formulario | `.env` → `PUBLIC_FORM_ENDPOINT` | [CONFIRMAR] |
-| Logo oficial (SVG) | `src/components/Logo.astro` | [SUSTITUIR] |
-| Colores corporativos exactos | `src/styles/tokens.css` | [CONFIRMAR] |
-| Tipografía corporativa | `src/layouts/BaseLayout.astro` + `tokens.css` | [CONFIRMAR] |
-| Fotografías | `public/images/` + `src/data/images.ts` | Pendiente |
-| Cobertura geográfica, certificaciones, seguros | `src/data/services.ts` | [DATOS PENDIENTES DE CONFIRMAR] |
-| Capacidad de almacén, SGA/WMS | `src/data/services.ts` | [DATOS PENDIENTES DE CONFIRMAR] |
-| Tipologías de excedentes aceptadas | `src/data/services.ts` | [DATOS PENDIENTES DE CONFIRMAR] |
-| Sistemas: trazabilidad, pedidos, integración, seguimiento, datos | `src/data/technology.ts` | [CONFIRMAR TECNOLOGÍA] |
-| Alcance de la experiencia SAP HANA | `src/data/services.ts` | [CONFIRMAR TECNOLOGÍA] |
-| Casos reales | `src/data/cases.ts` | Placeholders |
-| Compromisos/indicadores de sostenibilidad | `src/pages/sostenibilidad.astro` | [DATOS PENDIENTES DE CONFIRMAR] |
-| Textos legales (aviso legal, privacidad, cookies) | `src/pages/*.astro` | Plantilla — revisión jurídica |
+| Razón social, sede, teléfonos, almacén central | `src/data/site.ts` | ✅ Verificado y publicado |
+| CIF | `src/data/site.ts` | [CONFIRMAR] |
+| Email, LinkedIn, horario | `src/data/site.ts` | No encontrado |
+| Dominio definitivo / endpoint del formulario | `.env` | [CONFIRMAR] |
+| Logo oficial (SVG), colores y tipografía exactos | `Logo.astro`, `tokens.css` | [SUSTITUIR] / [CONFIRMAR] |
+| Fotografías reales | `public/images/` + `src/data/images.ts` | Pendiente |
+| ISO 9001, ISO 14001, ISO 37001, UNE 19601 | `src/data/trust.ts` | En validación (alcance, entidad, vigencia, sociedad, n.º) |
+| Certificación GDP | `src/data/trust.ts` | [CONFIRMAR CERTIFICACIÓN GDP] |
+| URL de las fuentes del caso Sant Joan de Déu y de ShockWatch | `FeaturedCase.astro`, doc. 03 | [AÑADIR ENLACE] |
+| Cifras de proyectos (8 centros SAP, 1,5 M€, 12.000 palets) | doc. 03 | En validación — no publicadas |
+| Fichas de proyectos de optimización | `src/data/cases.ts` | En validación |
+| Alcance del servicio SAP para terceros | `technology.ts`, `services.ts` | [PENDIENTE DE VALIDACIÓN COMERCIAL] |
+| Integración con terceros y portal de seguimiento | `src/data/technology.ts` | [CONFIRMAR TECNOLOGÍA] |
+| Cobertura, flota, superficie, seguros, tipologías de excedentes | `src/data/services.ts` | [DATOS PENDIENTES DE CONFIRMAR] |
+| Indicadores ambientales | `src/pages/sostenibilidad.astro` | [DATOS PENDIENTES DE CONFIRMAR] |
+| Textos legales | `src/pages/*.astro` | Plantilla con datos verificados; revisión jurídica |
 
 ## 4. Siguientes pasos recomendados
 

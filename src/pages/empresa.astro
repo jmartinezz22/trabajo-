@@ -1,0 +1,121 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import ProofBand from '@/components/ProofBand.astro';
+import CertList from '@/components/CertList.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import Icon from '@/components/Icon.astro';
+import { provenExperience } from '@/data/trust';
+import { site, telHref, yearsSince } from '@/data/site';
+
+const crumbs = [{ name: 'Empresa', href: '/empresa/' }];
+const years = yearsSince(site.hospitalLogisticsSince);
+---
+<BaseLayout
+  title="Empresa · Experiencia en logística hospitalaria desde 1998"
+  description="PALEX MEDICAL: experiencia en soluciones logísticas hospitalarias desde 1998, automatización, trazabilidad y soluciones adaptadas a cada operación. Sede en Sant Cugat del Vallès (Barcelona)."
+  breadcrumbs={crumbs}
+  schema={[{ '@context': 'https://schema.org', '@type': 'AboutPage', name: 'Empresa', url: new URL('/empresa/', Astro.site).href }]}
+>
+  <PageHero
+    eyebrow="Empresa"
+    title="Experiencia logística formada en el entorno más exigente: el hospital."
+    intro={`Desde ${site.hospitalLogisticsSince}, la división de Logística Hospitalaria e Ingeniería de Palex desarrolla soluciones de gestión de material sanitario, medicación y procesos logísticos. Ese conocimiento es la base de las soluciones que diseñamos para cada operación.`}
+    breadcrumbs={crumbs}
+    image="capacity"
+  >
+    <a href="/contacto/" class="btn">Solicitar propuesta <Icon name="arrow" /></a>
+    <a href="/proyectos/" class="btn btn-ghost">Ver caso de éxito</a>
+  </PageHero>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head split">
+        <div>
+          <p class="eyebrow" data-reveal>Trayectoria</p>
+          <h2 data-reveal style="--reveal-i:1">Más de 25 años en soluciones de logística hospitalaria.</h2>
+        </div>
+        <p class="lead" data-reveal style="--reveal-i:2">
+          {years} años después del inicio de la división, la experiencia se extiende a la gestión de almacenes, el transporte, la automatización y la trazabilidad.
+        </p>
+      </div>
+      <ProofBand />
+    </div>
+  </section>
+
+  <section class="section on-dark">
+    <div class="container exp">
+      <div>
+        <p class="eyebrow" data-reveal>Experiencia</p>
+        <h2 data-reveal style="--reveal-i:1">Capacidad para gestionar operaciones logísticas complejas.</h2>
+        <p class="lead" data-reveal style="--reveal-i:2">
+          No somos solamente un transportista. Combinamos logística, transporte, tecnología, trazabilidad y consultoría para diseñar soluciones adaptadas a cada operación.
+        </p>
+      </div>
+      <ul role="list" class="exp-list">
+        {provenExperience.map((e, i) => (
+          <li data-reveal style={`--reveal-i:${i % 3}`}><Icon name="check" size={18} />{e}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="calidad">
+    <div class="container">
+      <div class="section-head split">
+        <div>
+          <p class="eyebrow" data-reveal>Calidad y cumplimiento</p>
+          <h2 data-reveal style="--reveal-i:1">Sistemas de gestión</h2>
+        </div>
+        <p class="lead" data-reveal style="--reveal-i:2">
+          Antes de publicar cualquier certificación confirmamos su alcance, la entidad certificadora, su vigencia y la sociedad a la que corresponde.
+        </p>
+      </div>
+      <CertList detailed />
+    </div>
+  </section>
+
+  <section class="section bg-surface">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Dónde estamos</p>
+        <h2 data-reveal style="--reveal-i:1">Ubicaciones</h2>
+      </div>
+      <ul role="list" class="grid grid-2 locs">
+        {site.locations.map((l, i) => (
+          <li data-reveal style={`--reveal-i:${i}`}>
+            <p class="mono">{l.label}</p>
+            <address>
+              {l.address.street}<br />
+              {l.address.postalCode} {l.address.city}<br />
+              {l.address.region}, España
+            </address>
+            {l.phone && <a href={telHref(l.phone.number)} class="link-arrow"><Icon name="phone" /> {l.phone.number}</a>}
+          </li>
+        ))}
+      </ul>
+      <p class="cs">
+        {site.contact.customerService.label}: <a href={telHref(site.contact.customerService.number)}>{site.contact.customerService.number}</a>
+      </p>
+    </div>
+  </section>
+
+  <CtaBand title="¿Hablamos de tu operación?" text="Cuéntanos qué necesitas y diseñamos una solución adaptada." />
+</BaseLayout>
+
+<style>
+  .exp { display: grid; gap: var(--space-7); }
+  .exp > div { display: grid; gap: var(--space-5); align-content: start; }
+  .exp h2 { max-width: 20ch; }
+  .exp-list { display: grid; gap: 0; border-top: 1px solid var(--ink-3); }
+  .exp-list li { display: grid; grid-template-columns: 18px 1fr; gap: var(--space-3); padding: var(--space-4) 0; border-bottom: 1px solid var(--ink-3); color: #dbe3e3; }
+  .exp-list :global(svg) { color: var(--brand); margin-top: 3px; }
+  @media (min-width: 1024px) {
+    .exp { grid-template-columns: 1fr 1fr; gap: var(--space-9); }
+  }
+  .locs li { display: grid; gap: var(--space-3); justify-items: start; padding-top: var(--space-5); border-top: 2px solid var(--ink); }
+  .locs .mono { color: var(--brand-ink); text-transform: uppercase; letter-spacing: 0.1em; font-size: var(--fs-xs); }
+  .locs address { font-style: normal; font-family: var(--font-display); font-size: var(--fs-lg); font-weight: 500; line-height: 1.3; color: var(--ink); }
+  .cs { margin-top: var(--space-6); font-size: var(--fs-sm); color: var(--text-muted); }
+  .cs a { color: var(--ink); font-weight: 600; }
+</style>

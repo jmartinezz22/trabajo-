@@ -1,0 +1,40 @@
+---
+/**
+ * Calidad y cumplimiento. Ninguna certificación se presenta como definitiva
+ * (ni con logotipo) mientras su estado no sea 'verified' en src/data/trust.ts.
+ */
+import { certifications, CERT_PENDING } from '@/data/trust';
+
+interface Props {
+  tone?: 'light' | 'dark';
+  detailed?: boolean;
+}
+const { tone = 'light', detailed = false } = Astro.props;
+---
+<ul role="list" class:list={['certs', `certs--${tone}`]}>
+  {certifications.map((c) => (
+    <li class:list={[`is-${c.status}`]}>
+      <p class="code">{c.code}</p>
+      <p class="name">{c.name}</p>
+      {c.status === 'validation' && (
+        <p class="pending">{detailed ? `En validación · ${CERT_PENDING}` : 'En validación'}</p>
+      )}
+      {c.status === 'not-found' && <p class="pending">{c.note}</p>}
+      {detailed && c.status === 'validation' && <p class="note">{c.note}</p>}
+    </li>
+  ))}
+</ul>
+
+<style>
+  .certs { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  li { display: grid; gap: var(--space-2); align-content: start; justify-items: start; padding: var(--space-5); background: var(--paper); }
+  .code { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-md); color: var(--ink); letter-spacing: -0.01em; }
+  .name { font-size: var(--fs-sm); color: var(--text-muted); }
+  .note { font-size: var(--fs-xs); color: var(--text-muted); }
+  .certs--dark { background: var(--ink-3); border-color: var(--ink-3); }
+  .certs--dark li { background: var(--ink); }
+  .certs--dark .code { color: #fff; }
+  .certs--dark .name, .certs--dark .note { color: var(--text-on-dark-muted); }
+  @media (min-width: 640px) { .certs { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .certs { grid-template-columns: repeat(5, 1fr); } }
+</style>
