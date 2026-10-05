@@ -3,7 +3,7 @@
  * Cada línea genera automáticamente su página en /servicios/<slug>/.
  */
 import type { IconName } from './icons';
-import type { ImageKey } from './images';
+import type { PhotoKey } from './images';
 import type { SectorSlug } from './sectors';
 
 export interface ServiceItem {
@@ -28,7 +28,7 @@ export interface ServiceLine {
   name: string;
   short: string;
   icon: IconName;
-  image: ImageKey;
+  image: PhotoKey;
   seo: { title: string; description: string };
   hero: { title: string; intro: string };
   statement?: string;
@@ -44,7 +44,7 @@ export interface ServiceLine {
   cta: { title: string; text: string };
 }
 
-export const services: ServiceLine[] = [
+const serviceData: ServiceLine[] = [
   {
     slug: 'transporte',
     num: '01',
@@ -478,6 +478,14 @@ export const services: ServiceLine[] = [
     cta: { title: '¿Tu operación puede funcionar mejor?', text: 'Cuéntanos dónde ves el problema. Lo analizamos contigo.' },
   },
 ];
+
+/** Orden de presentación (la numeración se asigna aquí). */
+const ORDER = ['transporte', 'logistica', 'servicios-especiales', 'eventos-y-congresos', 'excedentes-industriales', 'consultoria-logistica'];
+
+export const services: ServiceLine[] = ORDER.map((slug, i) => ({
+  ...serviceData.find((s) => s.slug === slug)!,
+  num: String(i + 1).padStart(2, '0'),
+}));
 
 export const getService = (slug: string) => services.find((s) => s.slug === slug);
 export const serviceHref = (slug: string) => `/servicios/${slug}/`;

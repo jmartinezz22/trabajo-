@@ -20,6 +20,8 @@ interface Props {
   schema?: Record<string, unknown>[];
   noindex?: boolean;
   hideStickyCta?: boolean;
+  /** Hero fotográfico oscuro bajo una cabecera transparente. */
+  overlay?: boolean;
 }
 
 const {
@@ -31,6 +33,7 @@ const {
   schema = [],
   noindex = false,
   hideStickyCta = false,
+  overlay = false,
 } = Astro.props;
 
 const pageTitle = fullTitle ?? `${title} · ${site.name}`;
@@ -130,14 +133,14 @@ const jsonLd = [organization, ...(breadcrumbSchema ? [breadcrumbSchema] : []), .
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@400;500;600&display=swap"
     />
 
     {jsonLd.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}
   </head>
   <body>
     <a href="#contenido" class="skip-link">Saltar al contenido</a>
-    <Header />
+    <Header overlay={overlay} />
     <main id="contenido">
       <slot />
     </main>
@@ -145,7 +148,7 @@ const jsonLd = [organization, ...(breadcrumbSchema ? [breadcrumbSchema] : []), .
 
     {!hideStickyCta && (
       <div class="sticky-cta" data-sticky-cta aria-hidden="true">
-        <a href="/contacto/" class="btn btn-block" tabindex="-1">Solicitar propuesta <Icon name="arrow" /></a>
+        <a href="/contacto/" class="btn btn-block" tabindex="-1">Solicitar una solución <Icon name="arrow" /></a>
       </div>
     )}
 
@@ -162,15 +165,14 @@ const jsonLd = [organization, ...(breadcrumbSchema ? [breadcrumbSchema] : []), .
     right: 0;
     bottom: 0;
     z-index: 90;
-    padding: 0.625rem var(--gutter) calc(0.625rem + env(safe-area-inset-bottom));
-    background: rgba(247, 247, 244, 0.94);
-    backdrop-filter: blur(12px);
+    padding: 0.75rem var(--gutter) calc(0.75rem + env(safe-area-inset-bottom));
+    background: var(--paper);
     border-top: 1px solid var(--line);
     transform: translateY(110%);
     transition: transform var(--dur) var(--ease);
   }
   .sticky-cta.is-shown { transform: none; }
-  @media (min-width: 1200px) {
+  @media (min-width: 1100px) {
     .sticky-cta { display: none; }
   }
 </style>

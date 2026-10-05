@@ -1,157 +1,149 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Icon from '@/components/Icon.astro';
-import Visual from '@/components/Visual.astro';
-import ServiceCard from '@/components/ServiceCard.astro';
-import FlowSteps from '@/components/FlowSteps.astro';
-import SectorGrid from '@/components/SectorGrid.astro';
-import TechGrid from '@/components/TechGrid.astro';
+import Photo from '@/components/Photo.astro';
+import Stats from '@/components/Stats.astro';
+import ServiceIndex from '@/components/ServiceIndex.astro';
 import FeaturedCase from '@/components/FeaturedCase.astro';
-import ProofBand from '@/components/ProofBand.astro';
+import TechList from '@/components/TechList.astro';
+import SectorList from '@/components/SectorList.astro';
+import FlowSteps from '@/components/FlowSteps.astro';
 import CertList from '@/components/CertList.astro';
 import CtaBand from '@/components/CtaBand.astro';
 import { services, serviceHref } from '@/data/services';
-import { methodSteps, valueChain } from '@/data/navigation';
+import { methodSteps } from '@/data/navigation';
 import { featuredCase } from '@/data/cases';
 import { site } from '@/data/site';
 
 const schema = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: site.name,
-    url: new URL('/', Astro.site).href,
-    inLanguage: 'es-ES',
-  },
+  { '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: new URL('/', Astro.site).href, inLanguage: 'es-ES' },
   {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: 'Servicios logísticos de PALEX MEDICAL',
-    itemListElement: services.map((s, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      name: s.name,
-      url: new URL(serviceHref(s.slug), Astro.site).href,
-    })),
+    itemListElement: services.map((s, i) => ({ '@type': 'ListItem', position: i + 1, name: s.name, url: new URL(serviceHref(s.slug), Astro.site).href })),
   },
 ];
+
+const pillars = ['Transporte', 'Logística', 'Tecnología', 'Consultoría'];
+const specials = ['Embalaje', 'Equipos de alto valor', 'Manipulación especial', 'Transporte', 'Soluciones a medida'];
 ---
 <BaseLayout
   title="Operador logístico B2B"
-  fullTitle="Operador logístico B2B · Soluciones logísticas integrales a medida | PALEX MEDICAL"
-  description="Logística, transporte, tecnología y trazabilidad para operaciones complejas. Experiencia en logística hospitalaria desde 1998, automatización y soluciones a medida."
+  fullTitle="Soluciones logísticas integrales para operaciones complejas | PALEX MEDICAL"
+  description="Transporte, logística, tecnología y soluciones a medida para operaciones que requieren precisión, trazabilidad y control. Experiencia en logística hospitalaria desde 1998."
   schema={schema}
+  overlay
 >
-  <!-- 01 — HERO -->
+  <!-- 01 · HERO -->
   <section class="hero on-dark">
-    <div class="container hero-grid">
+    <Photo image="hero" eager overlay="left" class="hero-bg" parallax />
+    <div class="container hero-inner">
       <div class="hero-copy">
-        <p class="eyebrow" data-reveal>Partner logístico B2B</p>
+        <p class="eyebrow" data-reveal>PALEX MEDICAL · Soluciones logísticas</p>
         <h1 data-reveal style="--reveal-i:1">Soluciones logísticas para operaciones que no pueden fallar.</h1>
         <p class="lead" data-reveal style="--reveal-i:2">
-          Logística, transporte, tecnología y trazabilidad para empresas que necesitan algo más que un proveedor. Con experiencia en soluciones logísticas hospitalarias desde 1998.
+          Transporte, logística, tecnología y soluciones a medida para operaciones que requieren precisión, trazabilidad y control.
         </p>
         <div class="btn-row" data-reveal style="--reveal-i:3">
-          <a href="/contacto/" class="btn">Solicitar solución logística <Icon name="arrow" /></a>
+          <a href="/contacto/" class="btn">Solicitar una solución <Icon name="arrow" /></a>
           <a href="#servicios" class="btn btn-ghost">Conocer nuestros servicios</a>
         </div>
       </div>
-      <div class="hero-media" data-reveal style="--reveal-i:2">
-        <Visual image="hero" ratio="fill" caption="Fig. 01 — Red de operación" eager parallax />
-      </div>
     </div>
-    <nav class="container hero-index" aria-label="Líneas de servicio">
-      <ul role="list">
-        {services.map((s) => (
-          <li>
-            <a href={serviceHref(s.slug)}>
-              <span class="mono">{s.num}</span>
-              <span>{s.name}</span>
-            </a>
-          </li>
-        ))}
+  </section>
+
+  <!-- 02 · DECLARACIÓN -->
+  <section class="section statement">
+    <div class="container">
+      <p class="eyebrow" data-reveal>Más que transporte</p>
+      <h2 class="statement-title" data-reveal style="--reveal-i:1">Más que transporte. Diseñamos y gestionamos soluciones logísticas completas.</h2>
+      <ul role="list" class="pillars">
+        {pillars.map((p, i) => <li data-reveal style={`--reveal-i:${i + 2}`}>{p}</li>)}
       </ul>
-    </nav>
-  </section>
-
-  <!-- 02 — EXPERIENCIA (solo datos verificados) -->
-  <section class="section tight experience" aria-labelledby="exp-title">
-    <div class="container">
-      <div class="exp-head">
-        <p class="eyebrow" data-reveal>Experiencia demostrable</p>
-        <h2 id="exp-title" class="h3" data-reveal style="--reveal-i:1">Experiencia en entornos donde la logística no puede fallar: el hospital.</h2>
-      </div>
-      <ProofBand />
     </div>
   </section>
 
-  <!-- 03 — CAPACIDAD / PROPUESTA DE VALOR -->
-  <section class="section capacity bg-surface">
+  <!-- 03 · CIFRAS VERIFICADAS -->
+  <section class="section tight numbers" aria-label="Experiencia en cifras">
     <div class="container">
-      <div class="section-head split">
-        <div>
-          <p class="eyebrow" data-reveal>Propuesta de valor</p>
-          <h2 data-reveal style="--reveal-i:1">No solo transportamos. Combinamos todo lo que necesita una operación.</h2>
-        </div>
-        <p class="lead" data-reveal style="--reveal-i:2">
-          Logística, transporte, tecnología, trazabilidad y consultoría, integradas en una solución diseñada para tu operación y gestionada por un único interlocutor.
-        </p>
-      </div>
-      <ol role="list" class="chain" data-draw>
-        {valueChain.map((c, i) => (
-          <li style={`--i:${i}`}>
-            <a href={c.href}>
-              <span class="mono">{i === 0 ? '' : '+ '}{String(i + 1).padStart(2, '0')}</span>
-              <span class="chain-label">{c.label}</span>
-              <span class="chain-text">{c.text}</span>
-            </a>
-          </li>
-        ))}
-      </ol>
+      <Stats />
     </div>
   </section>
 
-  <!-- 04 — SERVICIOS -->
+  <!-- 04 · CAPACIDAD -->
+  <section class="capacity">
+    <div class="cap-media" data-reveal>
+      <Photo image="capacity" sizes="(max-width: 1024px) 100vw, 58vw" parallax />
+    </div>
+    <div class="cap-copy">
+      <p class="eyebrow" data-reveal>Capacidad</p>
+      <h2 data-reveal style="--reveal-i:1">Una solución. Todas las fases de la operación.</h2>
+      <p class="lead" data-reveal style="--reveal-i:2">
+        Combinamos logística, transporte, tecnología, trazabilidad y consultoría para diseñar operaciones adaptadas a cada cliente, y las gestionamos con un único interlocutor.
+      </p>
+      <p class="muted" data-reveal style="--reveal-i:3">
+        Una experiencia formada en el entorno hospitalario, donde cada referencia, cada plazo y cada registro cuentan.
+      </p>
+      <a href="/empresa/" class="link-arrow" data-reveal style="--reveal-i:4">Conocer la empresa <Icon name="arrow" /></a>
+    </div>
+  </section>
+
+  <!-- 05 · SERVICIOS -->
   <section class="section" id="servicios">
     <div class="container">
       <div class="section-head split">
         <div>
           <p class="eyebrow" data-reveal>Servicios</p>
-          <h2 data-reveal style="--reveal-i:1">Seis líneas de servicio. Un único interlocutor.</h2>
+          <h2 data-reveal style="--reveal-i:1">Seis líneas de servicio. Una operación coordinada.</h2>
         </div>
-        <div class="head-aside" data-reveal style="--reveal-i:2">
-          <p class="lead">Combinables entre sí para cubrir desde una necesidad puntual hasta la externalización completa de tu logística.</p>
-          <a href="/servicios/" class="link-arrow">Ver todos los servicios <Icon name="arrow" /></a>
-        </div>
+        <p class="lead" data-reveal style="--reveal-i:2">Desde una necesidad puntual hasta la externalización completa de la logística.</p>
       </div>
-      <ul role="list" class="service-index">
-        {services.map((s, i) => <ServiceCard service={s} index={i} />)}
-      </ul>
+      <ServiceIndex />
     </div>
   </section>
 
-  <!-- 05 — SOLUCIONES A MEDIDA -->
-  <section class="section custom on-dark">
-    <div class="container custom-grid">
-      <div class="custom-copy">
-        <p class="eyebrow" data-reveal>Soluciones a medida</p>
-        <h2 data-reveal style="--reveal-i:1">Tu operación. Nuestra solución.</h2>
-        <p class="question" data-reveal style="--reveal-i:2">¿Tienes una necesidad logística que no encaja en una solución estándar?</p>
-        <p class="lead" data-reveal style="--reveal-i:3">
-          Analizamos tu operación, identificamos las necesidades y diseñamos una solución adaptada. Después la implantamos, la gestionamos y la mejoramos.
+  <!-- 06 · CASO REAL -->
+  <section class="section bg-surface">
+    <div class="container">
+      <FeaturedCase c={featuredCase} />
+    </div>
+  </section>
+
+  <!-- 07 · TECNOLOGÍA -->
+  <section class="section on-dark tech">
+    <div class="container">
+      <div class="section-head split">
+        <div>
+          <p class="eyebrow" data-reveal>Tecnología</p>
+          <h2 data-reveal style="--reveal-i:1">Tecnología aplicada a la logística.</h2>
+        </div>
+        <p class="lead" data-reveal style="--reveal-i:2">
+          Digitalizamos procesos para mejorar la trazabilidad, el control y la eficiencia de las operaciones.
         </p>
-        <div class="btn-row" data-reveal style="--reveal-i:4">
-          <a href="/contacto/?servicio=solucion-a-medida" class="btn">Cuéntanos tu proyecto <Icon name="arrow" /></a>
-          <a href="/soluciones-a-medida/" class="btn btn-ghost">Cómo trabajamos</a>
-        </div>
       </div>
-      <div data-reveal style="--reveal-i:2">
-        <Visual image="medida" ratio="portrait" caption="Fig. 02 — Diseño de operación" parallax />
-      </div>
+      <TechList />
+      <a href="/tecnologia/" class="link-arrow more" data-reveal>Ver tecnología <Icon name="arrow" /></a>
     </div>
   </section>
 
-  <!-- 06 — SECTORES -->
+  <!-- 08 · SERVICIOS ESPECIALES -->
+  <section class="specials on-dark">
+    <Photo image="especiales" overlay="full" class="specials-bg" parallax />
+    <div class="container specials-inner">
+      <p class="eyebrow" data-reveal>Servicios especiales</p>
+      <h2 data-reveal style="--reveal-i:1">Cuando una operación requiere algo diferente.</h2>
+      <p class="lead" data-reveal style="--reveal-i:2">
+        Analizamos las necesidades específicas de cada operación y diseñamos una solución adaptada.
+      </p>
+      <ul role="list" class="specials-list" data-reveal style="--reveal-i:3">
+        {specials.map((s) => <li>{s}</li>)}
+      </ul>
+      <a href="/servicios/servicios-especiales/" class="link-arrow" data-reveal style="--reveal-i:4">Ver servicios especiales <Icon name="arrow" /></a>
+    </div>
+  </section>
+
+  <!-- 09 · SECTORES -->
   <section class="section">
     <div class="container">
       <div class="section-head split">
@@ -159,211 +151,92 @@ const schema = [
           <p class="eyebrow" data-reveal>Sectores</p>
           <h2 data-reveal style="--reveal-i:1">Necesidades distintas. La misma exigencia.</h2>
         </div>
-        <div class="head-aside" data-reveal style="--reveal-i:2">
-          <p class="lead">Cada sector plantea un problema logístico diferente. Así lo resolvemos.</p>
-          <a href="/sectores/" class="link-arrow">Ver sectores <Icon name="arrow" /></a>
-        </div>
+        <a href="/sectores/" class="link-arrow head-link" data-reveal style="--reveal-i:2">Ver sectores <Icon name="arrow" /></a>
       </div>
-      <SectorGrid />
+      <SectorList />
     </div>
   </section>
 
-  <!-- 07 — PROCESO -->
-  <section class="section bg-surface">
+  <!-- 10 · PROCESO -->
+  <section class="section bg-stone">
     <div class="container">
-      <div class="section-head split">
-        <div>
-          <p class="eyebrow" data-reveal>Método</p>
-          <h2 data-reveal style="--reveal-i:1">Diseñamos la logística. La ejecutamos. La mejoramos.</h2>
-        </div>
-        <p class="lead" data-reveal style="--reveal-i:2">
-          Un proceso de cinco fases que convierte una necesidad en una operación estable y medible.
-        </p>
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Cómo trabajamos</p>
+        <h2 data-reveal style="--reveal-i:1">Un método para cada operación.</h2>
       </div>
       <FlowSteps steps={methodSteps} />
     </div>
   </section>
 
-  <!-- 08 — TECNOLOGÍA -->
-  <section class="section on-dark">
+  <!-- 11 · CALIDAD Y CUMPLIMIENTO -->
+  <section class="section quality">
     <div class="container">
       <div class="section-head split">
         <div>
-          <p class="eyebrow" data-reveal>Tecnología</p>
-          <h2 data-reveal style="--reveal-i:1">Automatización, trazabilidad y sistemas.</h2>
+          <p class="eyebrow" data-reveal>Confianza</p>
+          <h2 data-reveal style="--reveal-i:1">Calidad y cumplimiento.</h2>
         </div>
-        <div class="head-aside" data-reveal style="--reveal-i:2">
-          <p class="lead">RFID, soluciones propias de trazabilidad, control de impactos y experiencia en SAP HANA y EWM: la operación física respaldada por tecnología.</p>
-          <a href="/tecnologia/" class="link-arrow">Ver tecnología <Icon name="arrow" /></a>
-        </div>
-      </div>
-      <TechGrid />
-    </div>
-  </section>
-
-  <!-- 09 — PROYECTOS: caso real -->
-  <section class="section">
-    <div class="container">
-      <div class="section-head split">
-        <div>
-          <p class="eyebrow" data-reveal>Caso de éxito</p>
-          <h2 data-reveal style="--reveal-i:1">176 almacenes. Un hospital. Trazabilidad de extremo a extremo.</h2>
-        </div>
-        <div class="head-aside" data-reveal style="--reveal-i:2">
-          <p class="lead">Así aplicamos automatización y trazabilidad a una operación logística real y exigente.</p>
-          <a href="/proyectos/" class="link-arrow">Ver proyectos <Icon name="arrow" /></a>
-        </div>
-      </div>
-      <FeaturedCase c={featuredCase} />
-    </div>
-  </section>
-
-  <!-- 10 — CONFIANZA -->
-  <section class="section tight bg-surface trust">
-    <div class="container">
-      <div class="section-head split">
-        <div>
-          <p class="eyebrow" data-reveal>Calidad y cumplimiento</p>
-          <h2 class="h3" data-reveal style="--reveal-i:1">Sistemas de gestión</h2>
-        </div>
-        <div class="head-aside" data-reveal style="--reveal-i:2">
-          <p class="muted">Certificaciones en proceso de validación de alcance, vigencia y sociedad antes de su publicación definitiva.</p>
-          <a href="/empresa/#calidad" class="link-arrow">Más sobre la empresa <Icon name="arrow" /></a>
-        </div>
+        <p class="lead" data-reveal style="--reveal-i:2">
+          Nuestro compromiso con la calidad, la seguridad y la mejora continua forma parte de nuestra forma de trabajar.
+        </p>
       </div>
       <CertList />
     </div>
   </section>
 
-  <!-- 11 — CTA -->
-  <CtaBand
-    title="Cuéntanos qué necesitas."
-    text="Describe tu operación y te propondremos una solución logística adaptada: un servicio concreto o la cadena completa."
-    label="Solicitar propuesta"
-  />
+  <!-- 12 · CTA -->
+  <CtaBand />
 </BaseLayout>
 
 <style>
   /* HERO */
-  .hero { position: relative; padding-top: clamp(2.5rem, 1.5rem + 4vw, 5rem); overflow: hidden; }
-  .hero-grid { display: grid; gap: var(--space-7); align-items: stretch; }
-  .hero-copy { display: grid; gap: var(--space-5); align-content: center; justify-items: start; padding-bottom: var(--space-4); }
-  .hero h1 { font-size: clamp(2.375rem, 1.4rem + 3.6vw, 4.75rem); max-width: 17ch; }
-  @media (max-width: 520px) {
-    .hero-copy .btn-row, .custom-copy .btn-row { width: 100%; }
-    .hero-copy .btn-row .btn, .custom-copy .btn-row .btn { flex: 1 1 100%; }
-  }
-  .hero .lead { color: #c3cfd1; max-width: 46ch; }
-  .hero-copy .btn-row { margin-top: var(--space-3); }
-  .hero-media { min-height: 300px; }
-  .hero-media :global(.visual) { height: 100%; }
-  .hero-index { margin-top: var(--space-8); }
-  .hero-index ul {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    border-top: 1px solid var(--ink-3);
-  }
-  .hero-index a {
-    display: flex;
-    gap: 0.75rem;
-    align-items: baseline;
-    padding: 1.1rem 0.25rem 1.25rem 0;
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 0.9375rem;
-    color: #dbe3e3;
-    border-bottom: 1px solid var(--ink-3);
-    transition: color var(--dur) var(--ease);
-  }
-  .hero-index .mono { color: var(--brand); font-size: 0.6875rem; }
-  .hero-index a:hover { color: #fff; }
-  @media (min-width: 768px) {
-    .hero-index ul { grid-template-columns: repeat(3, 1fr); }
-  }
-  @media (min-width: 1100px) {
-    .hero-grid { grid-template-columns: 1.15fr 1fr; gap: var(--space-8); min-height: min(68vh, 640px); }
-    .hero-media { min-height: 0; }
-    .hero-index ul { grid-template-columns: repeat(6, 1fr); }
-    .hero-index a { border-bottom: 0; padding-bottom: 2rem; }
-    .hero-index li + li a { padding-left: 1rem; border-left: 1px solid var(--ink-3); }
+  .hero { position: relative; display: flex; min-height: 100svh; overflow: hidden; }
+  .hero :global(.hero-bg) { position: absolute; inset: 0; }
+  .hero-inner { position: relative; z-index: 1; display: flex; align-items: flex-end; padding-top: calc(var(--header-h) + var(--space-8)); padding-bottom: clamp(4rem, 3rem + 6vw, 9rem); }
+  .hero-copy { display: grid; gap: var(--space-6); justify-items: start; max-width: 70rem; }
+  .hero h1 { font-size: clamp(2.75rem, 1.2rem + 6vw, 7.25rem); max-width: 15ch; }
+  .hero .lead { max-width: 44ch; color: rgba(255, 255, 255, 0.82); }
+  .hero .btn-row { margin-top: var(--space-4); }
+  @media (max-width: 560px) {
+    .hero .btn-row { width: 100%; }
+    .hero .btn-row .btn { flex: 1 1 100%; }
   }
 
-  /* CAPACIDAD — cadena de valor */
-  .chain {
-    position: relative;
-    display: grid;
-    gap: 0;
-    border-top: 1px solid var(--line);
-  }
-  .chain li { border-bottom: 1px solid var(--line); }
-  .chain a {
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-4);
-    padding: var(--space-4) 0;
-    transition: color var(--dur) var(--ease), padding var(--dur) var(--ease);
-  }
-  .chain .mono { color: var(--brand-ink); }
-  .chain-label {
-    font-family: var(--font-display);
-    font-size: var(--fs-lg);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    color: var(--ink);
-  }
-  .chain-text { display: none; font-size: var(--fs-sm); color: var(--text-muted); line-height: 1.45; }
-  .chain a:hover { padding-left: var(--space-3); }
-  .chain a:hover .chain-label { color: var(--brand-ink); }
+  /* DECLARACIÓN */
+  .statement .container { display: grid; gap: var(--space-6); }
+  .statement-title { font-size: clamp(2.25rem, 1.3rem + 4vw, 5.5rem); font-weight: 400; max-width: 20ch; }
+  .pillars { display: flex; flex-wrap: wrap; gap: var(--space-3) clamp(1.5rem, 1rem + 3vw, 4rem); margin-top: var(--space-6); padding-top: var(--space-6); border-top: 1px solid var(--line); }
+  .pillars li { font-size: var(--fs-sm); font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink); }
+  .pillars li::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 0.9rem; border-radius: 50%; background: var(--brand); vertical-align: middle; }
+  .numbers { padding-top: 0; }
+
+  /* CAPACIDAD */
+  .capacity { display: grid; background: var(--surface); }
+  .cap-media { position: relative; min-height: 62vw; }
+  .cap-media :global(.photo) { position: absolute; inset: 0; }
+  .cap-copy { display: grid; gap: var(--space-5); align-content: center; justify-items: start; padding: var(--space-9) var(--gutter); }
+  .cap-copy h2 { max-width: 13ch; }
+  .cap-copy .muted { max-width: 46ch; }
+  .cap-copy .link-arrow { margin-top: var(--space-4); }
   @media (min-width: 1024px) {
-    .chain {
-      grid-template-columns: repeat(6, 1fr);
-      border-top: 0;
-      padding-top: var(--space-6);
-    }
-    .chain::before,
-    .chain::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--line);
-    }
-    .chain::after {
-      background: var(--brand);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 1.8s var(--ease);
-    }
-    .chain.is-drawn::after { transform: scaleX(1); }
-    .chain li { border-bottom: 0; border-left: 1px solid var(--line); }
-    .chain a { flex-direction: column; gap: var(--space-3); padding: 0 var(--space-4) var(--space-4); min-height: 11rem; }
-    .chain .mono { margin-bottom: var(--space-4); }
-    .chain-text { display: block; }
-    .chain a:hover { padding-left: var(--space-4); background: var(--paper); }
-    .chain-label { font-size: var(--fs-md); line-height: 1.2; }
+    .capacity { grid-template-columns: 7fr 5fr; min-height: 90vh; }
+    .cap-media { min-height: 0; }
+    .cap-copy { padding: var(--space-9) var(--gutter) var(--space-9) var(--space-9); }
   }
 
-  .experience { border-bottom: 1px solid var(--line); }
-  .exp-head { display: grid; gap: var(--space-4); margin-bottom: var(--space-6); }
-  .exp-head h2 { max-width: 30ch; }
-  .head-aside { display: grid; gap: var(--space-4); justify-items: start; }
-  .service-index { border-top: 1px solid var(--line); }
+  /* TECNOLOGÍA */
+  .tech .more { margin-top: var(--space-7); }
 
-  /* SOLUCIONES A MEDIDA */
-  .custom-grid { display: grid; gap: var(--space-7); align-items: center; }
-  .custom-copy { display: grid; gap: var(--space-5); justify-items: start; }
-  .question {
-    font-family: var(--font-display);
-    font-size: var(--fs-lg);
-    font-weight: 500;
-    line-height: 1.3;
-    color: var(--brand);
-    max-width: 30ch;
-    letter-spacing: -0.015em;
-  }
-  @media (min-width: 1024px) {
-    .custom-grid { grid-template-columns: 1.2fr 1fr; gap: var(--space-9); }
-  }
+  /* ESPECIALES */
+  .specials { position: relative; overflow: hidden; }
+  .specials :global(.specials-bg) { position: absolute; inset: 0; }
+  .specials-inner { position: relative; z-index: 1; display: grid; gap: var(--space-6); justify-items: start; padding-block: clamp(8rem, 5rem + 12vw, 18rem); }
+  .specials h2 { max-width: 14ch; font-size: clamp(2.5rem, 1.4rem + 4.6vw, 6rem); }
+  .specials .lead { color: rgba(255, 255, 255, 0.82); }
+  .specials-list { display: flex; flex-wrap: wrap; gap: var(--space-3) 0; margin-top: var(--space-4); }
+  .specials-list li { font-size: var(--fs-sm); letter-spacing: 0.14em; text-transform: uppercase; color: #fff; }
+  .specials-list li + li::before { content: '—'; margin: 0 1rem; opacity: 0.45; }
+
+  .head-link { justify-self: start; }
+  @media (min-width: 1024px) { .head-link { justify-self: end; } }
 </style>

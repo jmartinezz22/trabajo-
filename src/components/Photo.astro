@@ -1,0 +1,116 @@
+---
+/**
+ * Fotografía a sangre. Rellena su contenedor (object-fit: cover).
+ * Usa las versiones locales optimizadas si existen (npm run images);
+ * si no, carga desde Unsplash. Fondo oscuro neutro mientras carga.
+ */
+import { photos, getLocal, remoteUrl, REMOTE_WIDTHS, type PhotoKey } from '@/data/images';
+
+interface Props {
+  image: PhotoKey;
+  sizes?: string;
+  eager?: boolean;
+  class?: string;
+  /** Muestra la etiqueta "Imagen ilustrativa" (p. ej. junto a un caso real). */
+  label?: boolean;
+  /** Zoom sutil al pasar el ratón sobre el elemento padre `.photo-hover`. */
+  zoom?: boolean;
+  parallax?: boolean;
+  overlay?: 'none' | 'bottom' | 'left' | 'full';
+}
+const {
+  image,
+  sizes = '100vw',
+  eager = false,
+  class: className,
+  label = false,
+  zoom = false,
+  parallax = false,
+  overlay = 'none',
+} = Astro.props;
+
+const slot = photos[image];
+const local = getLocal(image);
+const pos = slot.position ?? '50% 50%';
+const loading = eager ? 'eager' : 'lazy';
+const remoteSrcset = REMOTE_WIDTHS.map((w) => `${remoteUrl(slot.unsplash, w)} ${w}w`).join(', ');
+---
+<div
+  class:list={['photo', `ov-${overlay}`, { zoom }, className]}
+  data-parallax={parallax ? '' : undefined}
+>
+  {local ? (
+    <picture>
+      <source type="image/avif" srcset={local.widths.map((w) => `${local.avif}-${w}.avif ${w}w`).join(', ')} sizes={sizes} />
+      <source type="image/webp" srcset={local.widths.map((w) => `${local.webp}-${w}.webp ${w}w`).join(', ')} sizes={sizes} />
+      <img
+        src={`${local.webp}-${local.widths.at(-1)}.webp`}
+        alt={slot.alt}
+        width={local.width}
+        height={local.height}
+        loading={loading}
+        decoding="async"
+        fetchpriority={eager ? 'high' : 'auto'}
+        style={`object-position:${pos}`}
+      />
+    </picture>
+  ) : (
+    <img
+      src={remoteUrl(slot.unsplash, 1400)}
+      srcset={remoteSrcset}
+      sizes={sizes}
+      alt={slot.alt}
+      width="1600"
+      height="1067"
+      loading={loading}
+      decoding="async"
+      fetchpriority={eager ? 'high' : 'auto'}
+      referrerpolicy="no-referrer"
+      style={`object-position:${pos}`}
+    />
+  )}
+  {label && slot.contextual && <span class="ctx">Imagen ilustrativa</span>}
+</div>
+
+<style>
+  .photo {
+    position: relative;
+    overflow: hidden;
+    /* Fondo de respaldo: tono neutro oscuro con leve degradado */
+    background: linear-gradient(160deg, #2a3740 0%, #141e25 60%, #0d161c 100%);
+    isolation: isolate;
+  }
+  .photo :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    color: transparent; /* oculta el texto alternativo si la imagen falla */
+    filter: saturate(0.85) contrast(1.04);
+    transition: transform 1.2s var(--ease-out);
+  }
+  .photo :global(picture) { position: absolute; inset: 0; }
+  [data-parallax] :global(img) {
+    inset: -5% 0;
+    height: 110%;
+    transform: translate3d(0, var(--py, 0px), 0) scale(1.001);
+  }
+  :global(.photo-hover:hover) .zoom :global(img) { transform: scale(1.04); }
+
+  .photo::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+  .ov-bottom::after { background: linear-gradient(180deg, rgba(10, 20, 28, 0) 35%, rgba(10, 20, 28, 0.85) 100%); }
+  .ov-left::after { background: linear-gradient(90deg, rgba(10, 20, 28, 0.88) 0%, rgba(10, 20, 28, 0.55) 45%, rgba(10, 20, 28, 0.1) 100%); }
+  .ov-full::after { background: rgba(10, 20, 28, 0.62); }
+
+  .ctx {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 2;
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+  }
+</style>

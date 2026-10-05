@@ -1,47 +1,49 @@
 /**
- * Registro central de imágenes.
+ * Registro central de fotografía.
  *
- * Cada "slot" representa un hueco visual de la web. Mientras `src` sea null,
- * se muestra una composición gráfica técnica (ver components/Visual.astro)
- * en lugar de fotografía de stock, para no sugerir instalaciones, flota o
- * personal que no estén confirmados.
+ * Fotos de Unsplash (licencia libre de uso comercial) usadas como IMÁGENES DE CONTEXTO:
+ * ninguna representa instalaciones, flota ni personal propios de PALEX MEDICAL.
  *
- * Para usar fotografía real de PALEX MEDICAL:
- *   1. Copiar el archivo optimizado a /public/images/ (WebP/AVIF, ≤ 2400 px de ancho).
- *   2. Rellenar `src`, `width`, `height` y `alt` del slot.
- *   3. Si la foto es conceptual (no propia), marcar `contextual: true`
- *      y se mostrará la etiqueta "Imagen de contexto".
+ * Funcionamiento:
+ *  - Desarrollo: si no existe la versión local, la imagen se carga desde Unsplash.
+ *  - Producción: `npm run images` descarga cada foto y genera AVIF/WebP en /public/images
+ *    (manifiesto: images.local.json). La web pasa a servirlas en local automáticamente.
+ *  - Fotografía real de PALEX: dejar `public/images/source/<slot>.jpg`, ejecutar
+ *    `npm run images` y marcar `contextual: false`.
  */
+import local from './images.local.json';
 
-export type ArtVariant = 'network' | 'racks' | 'cold' | 'flow' | 'stack' | 'grid' | 'event' | 'precision';
-
-export interface ImageSlot {
-  src: string | null;
-  width?: number;
-  height?: number;
+export interface PhotoSlot {
+  /** Id de la foto en Unsplash (unsplash.com/photos/<id>). */
+  unsplash: string;
   alt: string;
-  contextual?: boolean;
-  /** Composición gráfica que se usa mientras no haya fotografía. */
-  art: ArtVariant;
+  credit: string | null;
+  /** Encuadre CSS object-position. */
+  position?: string;
+  /** true = imagen ilustrativa, no instalación propia. */
+  contextual: boolean;
 }
 
-export const images = {
-  hero: {
-    src: null,
-    alt: 'Red de distribución: rutas que conectan almacén, transporte y destino',
-    art: 'network',
-  },
-  capacity: { src: null, alt: 'Fases de una operación logística integrada', art: 'flow' },
-  transporte: { src: null, alt: 'Transporte de mercancías por carretera', art: 'network' },
-  logistica: { src: null, alt: 'Almacén con estanterías y zonas de preparación de pedidos', art: 'racks' },
-  excedentes: { src: null, alt: 'Lotes de material clasificados para su gestión y venta', art: 'stack' },
-  especiales: { src: null, alt: 'Embalaje a medida de un equipo de alto valor', art: 'precision' },
-  eventos: { src: null, alt: 'Preparación logística de material para un congreso', art: 'event' },
-  consultoria: { src: null, alt: 'Análisis de layout y flujos de un almacén', art: 'grid' },
-  frio: { src: null, alt: 'Control de temperatura durante el transporte', art: 'cold' },
-  medida: { src: null, alt: 'Diseño de una solución logística a medida', art: 'grid' },
-  tecnologia: { src: null, alt: 'Seguimiento de operaciones y datos logísticos', art: 'flow' },
-  sostenibilidad: { src: null, alt: 'Consolidación de cargas y optimización de rutas', art: 'network' },
-} satisfies Record<string, ImageSlot>;
+export const photos = {
+  hero: { unsplash: 'scKZFa9oW_Q', alt: 'Pasillo de almacén con estanterías en penumbra', credit: 'Alex Durynin', position: '50% 50%', contextual: true },
+  capacity: { unsplash: 'WKMOPVvlLvo', alt: 'Almacén de gran superficie con mercancía paletizada', credit: 'Junseong Lee', position: '50% 50%', contextual: true },
+  transporte: { unsplash: 'J2FWLr43GIk', alt: 'Camión circulando por autopista de noche', credit: 'Jason Leung', position: '50% 55%', contextual: true },
+  logistica: { unsplash: 'If5vloAJSBQ', alt: 'Estanterías de almacén con cajas preparadas', credit: 'Brayden Prato', position: '50% 50%', contextual: true },
+  especiales: { unsplash: 'UTT39aMPxwg', alt: 'Cajas de madera para transporte de mercancía', credit: null, position: '50% 50%', contextual: true },
+  eventos: { unsplash: 'l0SiVK5WBH0', alt: 'Auditorio vacío preparado para un congreso', credit: 'Evan Jeung', position: '50% 50%', contextual: true },
+  excedentes: { unsplash: 'OnbSOhz0oig', alt: 'Almacén con palés de material', credit: null, position: '50% 50%', contextual: true },
+  consultoria: { unsplash: '7imAsr-cUa8', alt: 'Detalle arquitectónico de un edificio moderno', credit: 'Sebastian Schuster', position: '50% 50%', contextual: true },
+  hospital: { unsplash: 'jhSkpyCwJI0', alt: 'Pasillo de hospital iluminado', credit: 'Fabio Sasso', position: '50% 50%', contextual: true },
+  tecnologia: { unsplash: 'KdS8ZwvCq0k', alt: 'Almacén con maquinaria automatizada', credit: null, position: '50% 50%', contextual: true },
+  pharma: { unsplash: 'mLaIFEtUZFs', alt: 'Estantería con medicamentos', credit: 'David Trinks', position: '50% 50%', contextual: true },
+  empresa: { unsplash: 'CjV322K-pdA', alt: 'Fachada de edificio corporativo de noche', credit: 'Mike Hindle', position: '50% 50%', contextual: true },
+} satisfies Record<string, PhotoSlot>;
 
-export type ImageKey = keyof typeof images;
+export type PhotoKey = keyof typeof photos;
+
+export interface LocalVariant { avif: string; webp: string; width: number; height: number; widths: number[] }
+const manifest = local as Record<string, LocalVariant>;
+
+export const getLocal = (key: PhotoKey): LocalVariant | undefined => manifest[key];
+export const remoteUrl = (id: string, w: number) => `https://unsplash.com/photos/${id}/download?w=${w}`;
+export const REMOTE_WIDTHS = [800, 1400, 2200];

@@ -61,7 +61,7 @@ document.addEventListener('keydown', (e) => {
     toggle?.focus();
   }
 });
-window.matchMedia('(min-width: 1200px)').addEventListener('change', (e) => e.matches && setMenu(false));
+window.matchMedia('(min-width: 1100px)').addEventListener('change', (e) => e.matches && setMenu(false));
 
 /* — Aparición al hacer scroll — */
 const revealEls = document.querySelectorAll<HTMLElement>('[data-reveal]');

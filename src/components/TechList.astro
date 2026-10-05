@@ -1,0 +1,56 @@
+---
+/**
+ * Tecnología en tipografía grande (sin rejilla de iconos).
+ * Solo capacidades con evidencia verificada.
+ */
+const items = [
+  { name: 'SAP HANA', text: 'Experiencia en implantación en centros propios.' },
+  { name: 'SAP EWM', text: 'Gestión avanzada de almacenes integrada en SAP.' },
+  { name: 'RFID', text: 'Soluciones propias Dyane: SmartKanban, SmartCabinet y Captis.' },
+  { name: 'Automatización', text: 'De almacenes y procesos logísticos.' },
+  { name: 'Trazabilidad', text: 'Control de cada movimiento y de cada incidencia.' },
+];
+interface Props {
+  tone?: 'light' | 'dark';
+}
+const { tone = 'dark' } = Astro.props;
+---
+<ul role="list" class:list={['tech', `tech--${tone}`]}>
+  {items.map((t, i) => (
+    <li data-reveal style={`--reveal-i:${i}`}>
+      <span class="name">{t.name}</span>
+      <span class="text">{t.text}</span>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .tech { border-top: 1px solid var(--line); }
+  li {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-5) 0;
+    border-bottom: 1px solid var(--line);
+    transition: padding var(--dur) var(--ease);
+  }
+  .name {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.2rem + 3.4vw, 4.5rem);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .text { font-size: var(--fs-sm); color: var(--text-muted); }
+  .tech--dark, .tech--dark li { border-color: var(--ink-3); }
+  .tech--dark .name { color: #fff; }
+  .tech--dark .text { color: var(--text-on-dark-muted); }
+  @media (min-width: 900px) {
+    li { grid-template-columns: 1fr 22rem; align-items: baseline; }
+    .text { text-align: right; transition: color var(--dur) var(--ease); }
+    li:hover { padding-left: var(--space-4); }
+    li:hover .text { color: var(--text); }
+    .tech--dark li:hover .text { color: #fff; }
+    .tech--dark li:hover .name { color: #fff; }
+  }
+</style>

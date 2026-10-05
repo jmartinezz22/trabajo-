@@ -1,51 +1,45 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHero from '@/components/PageHero.astro';
+import EditorialList from '@/components/EditorialList.astro';
 import CtaBand from '@/components/CtaBand.astro';
-import Icon from '@/components/Icon.astro';
 
 const crumbs = [{ name: 'Logística más eficiente', href: '/sostenibilidad/' }];
-
-// Prácticas editables. No se publican certificados, emisiones ni porcentajes sin confirmar.
+// Prácticas editables. Sin certificados, emisiones ni porcentajes no confirmados.
 const practices = [
-  { icon: 'route', title: 'Optimización de rutas', text: 'Planificar recorridos para reducir kilómetros en vacío.' },
-  { icon: 'groupage', title: 'Consolidación de cargas', text: 'Agrupar envíos para aprovechar mejor cada vehículo.' },
-  { icon: 'layout', title: 'Optimización de espacios', text: 'Diseñar el almacén para usar mejor la superficie disponible.' },
-  { icon: 'cycle', title: 'Reducción de desplazamientos', text: 'Coordinar operaciones para evitar viajes innecesarios.' },
-  { icon: 'package', title: 'Optimización de embalajes', text: 'Embalajes ajustados al producto: menos material y menos volumen.' },
-] as const;
+  { title: 'Optimización de rutas', text: 'Planificar recorridos para reducir kilómetros en vacío.' },
+  { title: 'Consolidación de cargas', text: 'Agrupar envíos para aprovechar mejor cada vehículo.' },
+  { title: 'Optimización de espacios', text: 'Diseñar el almacén para usar mejor la superficie disponible.' },
+  { title: 'Reducción de desplazamientos', text: 'Coordinar operaciones para evitar viajes innecesarios.' },
+  { title: 'Optimización de embalajes', text: 'Embalajes ajustados al producto: menos material y menos volumen.' },
+];
 ---
 <BaseLayout
   title="Logística más eficiente"
-  description="Optimización de rutas, consolidación de cargas, optimización de espacios y embalajes: prácticas para una logística más eficiente."
+  description="Optimización de rutas, consolidación de cargas y optimización de espacios y embalajes: prácticas para una logística más eficiente."
   breadcrumbs={crumbs}
+  overlay
 >
   <PageHero
     eyebrow="Sostenibilidad"
     title="Logística más eficiente."
     intro="La forma más directa de reducir el impacto de una operación es diseñarla mejor: menos kilómetros, menos espacio vacío, menos embalaje innecesario."
     breadcrumbs={crumbs}
-    image="sostenibilidad"
+    image="transporte"
   />
 
   <section class="section">
     <div class="container">
-      <ul role="list" class="practices">
-        {practices.map((p, i) => (
-          <li data-reveal style={`--reveal-i:${i % 3}`}>
-            <span class="mono">{String(i + 1).padStart(2, '0')}</span>
-            <Icon name={p.icon} size={28} />
-            <h2 class="h3">{p.title}</h2>
-            <p>{p.text}</p>
-          </li>
-        ))}
-      </ul>
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Prácticas</p>
+        <h2 data-reveal style="--reveal-i:1">Eficiencia desde el diseño de la operación.</h2>
+      </div>
+      <EditorialList items={practices} />
       <div class="commit">
-        <h2 class="h3">Gestión ambiental</h2>
-        <p class="muted">UNE-EN ISO 14001:2015 — Sistema de gestión ambiental.</p>
-        <p class="pending">En validación: alcance, entidad certificadora, vigencia y sociedad a la que corresponde.</p>
-        <h2 class="h3">Indicadores</h2>
-        <p class="pending">[DATOS PENDIENTES DE CONFIRMAR] — Añadir únicamente datos medidos y verificables.</p>
+        <p class="eyebrow">Gestión ambiental</p>
+        <p class="code">UNE-EN ISO 14001:2015</p>
+        <p><span class="pending">[CERTIFICACIÓN PENDIENTE DE VALIDACIÓN]</span></p>
+        <p class="muted">Indicadores ambientales: <span class="pending">[DATOS PENDIENTES DE CONFIRMAR]</span></p>
       </div>
     </div>
   </section>
@@ -54,12 +48,6 @@ const practices = [
 </BaseLayout>
 
 <style>
-  .practices { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
-  .practices li { display: grid; gap: var(--space-3); align-content: start; padding: var(--space-6) var(--space-5); background: var(--paper); }
-  .practices .mono { color: var(--text-muted); }
-  .practices :global(svg) { color: var(--brand-ink); }
-  .practices p { font-size: var(--fs-sm); color: var(--text-muted); }
-  @media (min-width: 640px) { .practices { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1100px) { .practices { grid-template-columns: repeat(5, 1fr); } }
-  .commit { display: grid; gap: var(--space-4); justify-items: start; margin-top: var(--space-8); padding-top: var(--space-6); border-top: 1px solid var(--line); }
+  .commit { display: grid; gap: var(--space-3); margin-top: var(--space-9); padding-top: var(--space-6); border-top: 1px solid var(--ink); }
+  .code { font-family: var(--font-display); font-size: var(--fs-xl); letter-spacing: -0.03em; color: var(--ink); }
 </style>

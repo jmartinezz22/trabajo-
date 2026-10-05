@@ -16,7 +16,7 @@ export const serviceLinks: NavLink[] = services.map((s) => ({
 
 export const mainNav: { label: string; href: string; children?: NavLink[] }[] = [
   { label: 'Servicios', href: '/servicios/', children: serviceLinks },
-  { label: 'Soluciones a medida', href: '/soluciones-a-medida/' },
+  { label: 'Soluciones', href: '/soluciones-a-medida/' },
   { label: 'Sectores', href: '/sectores/' },
   { label: 'Tecnología', href: '/tecnologia/' },
   { label: 'Proyectos', href: '/proyectos/' },

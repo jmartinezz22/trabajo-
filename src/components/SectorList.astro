@@ -1,0 +1,45 @@
+---
+/** Sectores en lista editorial a dos columnas. */
+import Icon from './Icon.astro';
+import { sectors } from '@/data/sectors';
+import { getService, serviceHref } from '@/data/services';
+
+interface Props {
+  detailed?: boolean;
+}
+const { detailed = false } = Astro.props;
+---
+<ol role="list" class:list={['sectors', { detailed }]}>
+  {sectors.map((s, i) => (
+    <li id={detailed ? s.slug : undefined} data-reveal style={`--reveal-i:${i % 2}`}>
+      <span class="num">{String(i + 1).padStart(2, '0')}</span>
+      <div>
+        <h3>{s.name}</h3>
+        <p>{detailed ? s.challenge : s.answer}</p>
+        {detailed && <p class="answer">{s.answer}</p>}
+        {detailed && (
+          <p class="links">
+            {s.services.map((slug) => {
+              const svc = getService(slug);
+              return svc && <a href={serviceHref(slug)} class="link-arrow">{svc.name}<Icon name="arrow" /></a>;
+            })}
+          </p>
+        )}
+      </div>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .sectors { border-top: 1px solid var(--line); }
+  li { display: grid; grid-template-columns: 3rem 1fr; gap: var(--space-3); padding: var(--space-6) 0; border-bottom: 1px solid var(--line); }
+  .num { padding-top: 0.6rem; font-size: var(--fs-sm); color: var(--text-soft); }
+  h3 { font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem); font-weight: 400; letter-spacing: -0.03em; }
+  p { margin-top: var(--space-3); max-width: 44ch; color: var(--text-muted); }
+  .answer { color: var(--text); }
+  .links { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-5); margin-top: var(--space-5); }
+  @media (min-width: 900px) {
+    .sectors { display: grid; grid-template-columns: repeat(2, 1fr); column-gap: var(--space-9); border-top: 0; }
+    li:nth-child(-n + 2) { border-top: 1px solid var(--line); }
+  }
+</style>

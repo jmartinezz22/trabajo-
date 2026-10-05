@@ -1,0 +1,104 @@
+---
+/** Caso real verificado. Solo información y resultados publicados por Palex. */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import Photo from '@/components/Photo.astro';
+import EditorialList from '@/components/EditorialList.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import Icon from '@/components/Icon.astro';
+import { featuredCase as c } from '@/data/cases';
+import { ownSolutions } from '@/data/technology';
+
+const crumbs = [
+  { name: 'Proyectos', href: '/proyectos/' },
+  { name: 'Hospital Sant Joan de Déu', href: `/proyectos/${c.id}/` },
+];
+---
+<BaseLayout
+  title="Caso de éxito: Hospital Sant Joan de Déu · 176 almacenes"
+  description="Automatización y digitalización de los procesos logísticos del Hospital Sant Joan de Déu (Barcelona): 176 almacenes, RFID, Dyane SmartKanban, SmartCabinet y Captis."
+  breadcrumbs={crumbs}
+  overlay
+  schema={[{ '@context': 'https://schema.org', '@type': 'Article', headline: `${c.client}: ${c.title}`, about: 'Logística hospitalaria', author: { '@id': new URL('/#organization', Astro.site).href } }]}
+>
+  <PageHero eyebrow={`Caso de éxito · ${c.client}`} title="176 almacenes. Un hospital. Trazabilidad de extremo a extremo." intro={c.title + '.'} breadcrumbs={crumbs} image="hospital" size="full" />
+
+  <section class="section">
+    <div class="container facts-wrap">
+      <dl class="facts">
+        <div data-reveal><dt>Cliente</dt><dd>Hospital Sant Joan de Déu</dd></div>
+        <div data-reveal style="--reveal-i:1"><dt>Ubicación</dt><dd>Barcelona</dd></div>
+        <div data-reveal style="--reveal-i:2"><dt>Alcance</dt><dd>176 almacenes</dd></div>
+        <div data-reveal style="--reveal-i:3"><dt>Tecnología</dt><dd>RFID · Dyane</dd></div>
+      </dl>
+      <p class="note">La fotografía de esta página es ilustrativa y no corresponde al hospital.</p>
+    </div>
+  </section>
+
+  <section class="section tight">
+    <div class="container story">
+      <div>
+        <p class="eyebrow" data-reveal>El reto</p>
+        <p class="big" data-reveal style="--reveal-i:1">{c.problem}</p>
+      </div>
+      <div>
+        <p class="eyebrow" data-reveal>La solución</p>
+        <p class="lead" data-reveal style="--reveal-i:1">{c.solution}</p>
+        <p class="lead" data-reveal style="--reveal-i:2">El proyecto abarcó la gestión de almacenes, la automatización de procesos y la trazabilidad del material.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section on-dark">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Resultados publicados</p>
+        <h2 data-reveal style="--reveal-i:1">Menos urgencias. Menos caducidades. Más control.</h2>
+      </div>
+      <ol role="list" class="results">
+        {c.results.map((r, i) => (
+          <li data-reveal style={`--reveal-i:${i}`}><span class="n">{String(i + 1).padStart(2, '0')}</span>{r}</li>
+        ))}
+      </ol>
+      <p class="src">Fuente: caso publicado por Palex. <span class="pending">[AÑADIR ENLACE A LA PUBLICACIÓN ORIGINAL]</span></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container two">
+      <div>
+        <p class="eyebrow" data-reveal>Tecnología implantada</p>
+        <h2 data-reveal style="--reveal-i:1">Soluciones propias de la división de Logística Hospitalaria.</h2>
+        <a href="/tecnologia/" class="link-arrow" data-reveal>Ver tecnología <Icon name="arrow" /></a>
+      </div>
+      <EditorialList items={ownSolutions.map((o) => ({ title: o.name, text: o.text }))} columns={1} />
+    </div>
+  </section>
+
+  <section class="wide-photo" aria-hidden="true"><Photo image="logistica" parallax /></section>
+
+  <CtaBand title="¿Tu operación necesita este nivel de control?" />
+</BaseLayout>
+
+<style>
+  .facts { display: grid; gap: var(--space-6); }
+  .facts div { padding-top: var(--space-4); border-top: 1px solid var(--line); }
+  .facts dt { font-size: var(--fs-xs); letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); }
+  .facts dd { margin: var(--space-2) 0 0; font-family: var(--font-display); font-size: var(--fs-lg); letter-spacing: -0.02em; color: var(--ink); }
+  .note { margin-top: var(--space-6); font-size: var(--fs-xs); color: var(--text-soft); }
+  @media (min-width: 900px) { .facts { grid-template-columns: repeat(4, 1fr); } }
+  .story { display: grid; gap: var(--space-8); }
+  .story > div { display: grid; gap: var(--space-5); align-content: start; }
+  .big { font-family: var(--font-display); font-size: clamp(1.75rem, 1.2rem + 2vw, 3rem); letter-spacing: -0.03em; line-height: 1.12; color: var(--ink); }
+  @media (min-width: 1024px) { .story { grid-template-columns: 1fr 1fr; gap: var(--space-9); } }
+  .results { border-top: 1px solid var(--ink-3); }
+  .results li { display: grid; grid-template-columns: 4rem 1fr; padding: var(--space-5) 0; border-bottom: 1px solid var(--ink-3); font-family: var(--font-display); font-size: clamp(1.5rem, 1.1rem + 1.5vw, 2.5rem); letter-spacing: -0.03em; line-height: 1.1; color: #fff; }
+  .results .n { font-family: var(--font-body); font-size: var(--fs-sm); color: var(--text-on-dark-muted); padding-top: 0.6rem; }
+  .src { margin-top: var(--space-6); font-size: var(--fs-xs); color: var(--text-on-dark-muted); }
+  .two { display: grid; gap: var(--space-8); }
+  .two > div { display: grid; gap: var(--space-5); align-content: start; justify-items: start; }
+  .two h2 { font-size: var(--fs-xl); max-width: 18ch; }
+  @media (min-width: 1024px) { .two { grid-template-columns: 1fr 1fr; gap: var(--space-9); } }
+  .wide-photo { position: relative; height: 70vh; }
+  .wide-photo :global(.photo) { position: absolute; inset: 0; }
+</style>

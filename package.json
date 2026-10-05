@@ -8,7 +8,8 @@
     "dev": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "images": "node scripts/fetch-images.mjs"
   },
   "engines": {
     "node": ">=20.3.0"

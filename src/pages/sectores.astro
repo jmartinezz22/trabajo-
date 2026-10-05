@@ -1,30 +1,32 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHero from '@/components/PageHero.astro';
-import SectorGrid from '@/components/SectorGrid.astro';
+import SectorList from '@/components/SectorList.astro';
 import CtaBand from '@/components/CtaBand.astro';
 import Icon from '@/components/Icon.astro';
 
 const crumbs = [{ name: 'Sectores', href: '/sectores/' }];
 ---
 <BaseLayout
-  title="Sectores · Logística farmacéutica, industrial, e-commerce y eventos"
+  title="Sectores · Logística farmacéutica, hospitalaria, industrial, e-commerce y eventos"
   description="Logística para pharma y healthcare, industria, tecnología, e-commerce, distribución, eventos y congresos y equipamiento profesional. Qué problema logístico resolvemos en cada sector."
   breadcrumbs={crumbs}
+  overlay
 >
   <PageHero
     eyebrow="Sectores"
-    title="Cada sector tiene su problema logístico. Lo conocemos."
-    intro="Seleccionamos los sectores en los que nuestras capacidades —temperatura controlada, almacenaje, fulfillment, equipos de alto valor, eventos y consultoría— resuelven necesidades concretas."
+    title="Cada sector tiene su problema logístico."
+    intro="Temperatura controlada, trazabilidad, equipos de alto valor, picos de demanda o fechas inamovibles. Así lo resolvemos en cada caso."
     breadcrumbs={crumbs}
+    image="pharma"
   >
-    <a href="/contacto/" class="btn">Solicitar propuesta <Icon name="arrow" /></a>
+    <a href="/contacto/" class="btn">Solicitar una solución <Icon name="arrow" /></a>
   </PageHero>
 
   <section class="section">
     <div class="container">
       <h2 class="visually-hidden">Sectores que atendemos</h2>
-      <SectorGrid detailed />
+      <SectorList detailed />
     </div>
   </section>
 

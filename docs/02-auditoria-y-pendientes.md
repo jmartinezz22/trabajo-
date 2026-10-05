@@ -3,7 +3,25 @@
 
 ---
 
-## 1. Resultados de test (fase 7)
+## 0. Resultados de test del rediseño v3
+
+| Prueba | Resultado |
+|---|---|
+| `astro check` + build | 0 errores · 0 avisos · 20 páginas |
+| 20 páginas × 3 viewports (1440 / 820 / 390 px) | Sin errores JS · sin scroll horizontal |
+| axe-core WCAG 2 A/AA + buenas prácticas, 14 páginas × escritorio y móvil | Sin incidencias |
+| Menú móvil, mega‑menú, CTA fijo, formulario (validación y preselección) | OK |
+| Peso de la Home (gzip) | HTML ≈ 12 KB · CSS ≈ 5 KB · JS ≈ 1 KB (+ fotografía) |
+
+Corregido durante el test: desbordamiento del proceso de 7 fases (Eventos), contraste de grises
+secundarios y del color de pendientes, texto alternativo visible si una foto no carga, salto de
+encabezados en Sostenibilidad.
+
+**Pendiente de verificación visual:** las fotografías no se pudieron cargar en el entorno de
+desarrollo (acceso a Unsplash bloqueado). Revisar la selección en el navegador y ejecutar
+`npm run images` antes de publicar.
+
+## 1. Resultados de test de la versión inicial (fase 7)
 
 | Prueba | Resultado |
 |---|---|
