@@ -1,0 +1,59 @@
+---
+import Visual from './Visual.astro';
+import type { ImageKey } from '@/data/images';
+import type { Crumb } from '@/layouts/BaseLayout.astro';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  intro: string;
+  breadcrumbs?: Crumb[];
+  image?: ImageKey;
+  caption?: string;
+}
+const { eyebrow, title, intro, breadcrumbs = [], image, caption } = Astro.props;
+---
+<section class:list={['page-hero', { 'has-visual': !!image }]}>
+  <div class="container">
+    {breadcrumbs.length > 0 && (
+      <nav aria-label="Ruta de navegación" class="crumbs">
+        <ol role="list">
+          <li><a href="/">Inicio</a></li>
+          {breadcrumbs.map((c, i) => (
+            <li>
+              {i === breadcrumbs.length - 1 ? <span aria-current="page">{c.name}</span> : <a href={c.href}>{c.name}</a>}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )}
+    <div class="grid-hero">
+      <div class="copy">
+        <p class="eyebrow" data-reveal>{eyebrow}</p>
+        <h1 data-reveal style="--reveal-i:1">{title}</h1>
+        <p class="lead" data-reveal style="--reveal-i:2">{intro}</p>
+        {Astro.slots.has('default') && <div class="btn-row" data-reveal style="--reveal-i:3"><slot /></div>}
+      </div>
+      {image && (
+        <div class="media" data-reveal style="--reveal-i:2">
+          <Visual image={image} ratio="landscape" caption={caption} eager parallax />
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .page-hero { padding-block: clamp(2rem, 1rem + 3vw, 3.5rem) var(--section-y); border-bottom: 1px solid var(--line); }
+  .crumbs ol { display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: var(--fs-sm); color: var(--text-muted); margin-bottom: clamp(2.5rem, 2rem + 3vw, 5rem); }
+  .crumbs li + li::before { content: '/'; margin-right: 0.5rem; color: var(--line-strong); }
+  .crumbs a:hover { color: var(--ink); }
+  .crumbs [aria-current] { color: var(--ink); }
+  .grid-hero { display: grid; gap: var(--space-7); align-items: end; }
+  .copy { display: grid; gap: var(--space-5); justify-items: start; }
+  .copy h1 { max-width: 20ch; font-size: clamp(2.25rem, 1.5rem + 3.2vw, 4.25rem); }
+  .copy .btn-row { margin-top: var(--space-3); }
+  @media (min-width: 1024px) {
+    .has-visual .grid-hero { grid-template-columns: 7fr 5fr; gap: var(--space-8); }
+  }
+</style>

@@ -1,0 +1,22 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Icon from '@/components/Icon.astro';
+---
+<BaseLayout title="Página no encontrada" description="La página que buscas no existe o ha cambiado de dirección." noindex>
+  <section class="section nf">
+    <div class="container narrow">
+      <p class="eyebrow">Error 404</p>
+      <h1>Esta ruta no lleva a ningún destino.</h1>
+      <p class="lead">La página que buscas no existe o ha cambiado de dirección.</p>
+      <div class="btn-row">
+        <a href="/" class="btn">Volver al inicio <Icon name="arrow" /></a>
+        <a href="/servicios/" class="btn btn-ghost">Ver servicios</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf .container { display: grid; gap: var(--space-5); justify-items: start; }
+  .nf h1 { font-size: var(--fs-2xl); max-width: 18ch; }
+</style>

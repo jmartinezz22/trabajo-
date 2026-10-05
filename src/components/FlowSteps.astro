@@ -1,0 +1,91 @@
+---
+/**
+ * Proceso secuencial con línea que se dibuja al entrar en pantalla.
+ * Horizontal en escritorio, vertical en móvil.
+ */
+interface Step {
+  title: string;
+  text?: string;
+  num?: string;
+}
+interface Props {
+  steps: Step[];
+  tone?: 'light' | 'dark';
+}
+const { steps, tone = 'light' } = Astro.props;
+---
+<ol role="list" class:list={['flow', `flow--${tone}`]} style={`--n:${steps.length}`} data-draw>
+  {steps.map((s, i) => (
+    <li class="step" style={`--i:${i}`}>
+      <span class="dot" aria-hidden="true"></span>
+      <span class="mono num">{s.num ?? String(i + 1).padStart(2, '0')}</span>
+      <h3 class="title">{s.title}</h3>
+      {s.text && <p class="text">{s.text}</p>}
+    </li>
+  ))}
+</ol>
+
+<style>
+  .flow { position: relative; display: grid; gap: var(--space-6); padding-left: 2rem; }
+  .flow::before,
+  .flow::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 6px;
+    bottom: 6px;
+    width: 1px;
+    background: var(--line-strong);
+  }
+  .flow::after {
+    background: var(--brand);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 1.6s var(--ease);
+  }
+  .flow.is-drawn::after { transform: scaleY(1); }
+  .step { position: relative; display: grid; gap: 0.35rem; }
+  .dot {
+    position: absolute;
+    left: calc(-2rem + 0px);
+    top: 4px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1.5px solid var(--line-strong);
+    transition: background 400ms var(--ease), border-color 400ms var(--ease);
+    transition-delay: calc(var(--i) * 180ms + 200ms);
+  }
+  .flow.is-drawn .dot { background: var(--brand); border-color: var(--brand); }
+  .num { color: var(--brand-ink); }
+  .title { font-size: var(--fs-md); }
+  .text { font-size: var(--fs-sm); color: var(--text-muted); max-width: 32ch; }
+
+  .flow--dark::before { background: var(--ink-3); }
+  .flow--dark .dot { background: var(--ink); border-color: var(--ink-3); }
+  .flow--dark .num { color: var(--brand); }
+  .flow--dark .title { color: #fff; }
+  .flow--dark .text { color: var(--text-on-dark-muted); }
+
+  @media (min-width: 900px) {
+    .flow {
+      grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+      gap: var(--space-5);
+      padding-left: 0;
+      padding-top: 2.25rem;
+    }
+    .flow::before,
+    .flow::after {
+      left: 0;
+      right: 0;
+      top: 5px;
+      bottom: auto;
+      width: auto;
+      height: 1px;
+    }
+    .flow::after { transform: scaleX(0); transform-origin: left; }
+    .flow.is-drawn::after { transform: scaleX(1); }
+    .dot { left: 0; top: -2.25rem; }
+  }
+</style>

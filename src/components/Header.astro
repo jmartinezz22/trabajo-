@@ -1,0 +1,247 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { mainNav, serviceLinks } from '@/data/navigation';
+import { site, telHref } from '@/data/site';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+<header class="site-header" data-header>
+  <div class="container bar">
+    <a href="/" class="brand" aria-label="PALEX MEDICAL — Inicio">
+      <Logo />
+    </a>
+
+    <nav class="desk-nav" aria-label="Principal">
+      <ul role="list">
+        {mainNav.map((item) => (
+          <li class:list={{ 'has-panel': !!item.children }}>
+            <a href={item.href} class:list={{ active: isActive(item.href) }} aria-current={isActive(item.href) ? 'page' : undefined}>
+              {item.label}
+              {item.children && <span class="caret" aria-hidden="true"></span>}
+            </a>
+            {item.children && (
+              <div class="panel">
+                <div class="container panel-inner">
+                  <div class="panel-intro">
+                    <p class="eyebrow">Servicios</p>
+                    <p class="panel-title">Seis líneas de servicio. Un único interlocutor.</p>
+                    <a href="/servicios/" class="link-arrow">Ver todos los servicios <Icon name="arrow" /></a>
+                  </div>
+                  <ul role="list" class="panel-grid">
+                    {item.children.map((c) => (
+                      <li>
+                        <a href={c.href} class="panel-link">
+                          <span class="mono num">{c.num}</span>
+                          <span>
+                            <span class="panel-link-title">{c.label}</span>
+                            <span class="panel-link-desc">{c.description}</span>
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="actions">
+      <a href="/contacto/" class="btn btn-sm cta-desk">Solicitar propuesta <Icon name="arrow" /></a>
+      <a href="/contacto/" class="btn btn-sm cta-mob">Propuesta</a>
+      <a href="#menu-movil" class="menu-btn" data-menu-toggle aria-controls="menu-movil" aria-expanded="false">
+        <span class="visually-hidden" data-menu-label>Abrir menú</span>
+        <Icon name="menu" class="i-open" />
+        <Icon name="close" class="i-close" />
+      </a>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="menu-movil" data-menu hidden>
+    <nav class="container" aria-label="Menú móvil">
+      <p class="eyebrow">Servicios</p>
+      <ul role="list" class="m-services">
+        {serviceLinks.map((s) => (
+          <li><a href={s.href}><span class="mono">{s.num}</span>{s.label}</a></li>
+        ))}
+      </ul>
+      <ul role="list" class="m-main">
+        {mainNav.filter((i) => !i.children).map((i) => (
+          <li><a href={i.href}>{i.label}<Icon name="arrow" size={18} /></a></li>
+        ))}
+        <li><a href="/sostenibilidad/">Logística más eficiente<Icon name="arrow" size={18} /></a></li>
+      </ul>
+      <div class="m-cta">
+        <a href="/contacto/" class="btn btn-block">Solicitar propuesta <Icon name="arrow" /></a>
+        {site.contact.phone && (
+          <a href={telHref(site.contact.phone)} class="btn btn-ghost btn-block"><Icon name="phone" /> {site.contact.phone}</a>
+        )}
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(247, 247, 244, 0.86);
+    backdrop-filter: saturate(1.4) blur(14px);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+  .site-header.is-scrolled { border-color: var(--line); background: rgba(247, 247, 244, 0.94); }
+  /* backdrop-filter crea un bloque contenedor para hijos `fixed`: se desactiva con el menú abierto */
+  :global(.menu-open) .site-header { backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--paper); border-color: var(--line); }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+    height: var(--header-h);
+  }
+  .brand { flex: none; }
+
+  .desk-nav { display: none; height: 100%; }
+  .desk-nav > ul { display: flex; height: 100%; gap: 0.25rem; }
+  .desk-nav > ul > li { display: flex; align-items: center; }
+  .desk-nav > ul > li > a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text);
+    transition: color var(--dur) var(--ease);
+  }
+  .desk-nav > ul > li > a::after {
+    content: '';
+    position: absolute;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.15rem;
+    height: 1px;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur) var(--ease);
+  }
+  .desk-nav > ul > li > a:hover::after,
+  .desk-nav > ul > li > a.active::after { transform: scaleX(1); }
+  .desk-nav > ul > li > a.active::after { background: var(--brand); }
+  .caret {
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
+  }
+
+  .panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 24px 48px -24px rgba(14, 26, 36, 0.25);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease), visibility 0s linear var(--dur);
+  }
+  .has-panel:hover .panel,
+  .has-panel:focus-within .panel {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
+  }
+  .panel-inner {
+    display: grid;
+    grid-template-columns: 1fr 2.4fr;
+    gap: var(--space-8);
+    padding-block: var(--space-7);
+  }
+  .panel-intro { display: grid; align-content: start; gap: var(--space-4); }
+  .panel-title { font-family: var(--font-display); font-size: var(--fs-lg); font-weight: 600; line-height: 1.2; color: var(--ink); letter-spacing: -0.015em; }
+  .panel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 var(--space-6); }
+  .panel-link {
+    display: grid;
+    grid-template-columns: 2.25rem 1fr;
+    gap: var(--space-3);
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--line);
+  }
+  .panel-link .num { color: var(--brand-ink); padding-top: 0.15rem; }
+  .panel-link-title { display: block; font-family: var(--font-display); font-weight: 600; color: var(--ink); transition: color var(--dur) var(--ease); }
+  .panel-link-desc { display: block; font-size: var(--fs-sm); color: var(--text-muted); line-height: 1.45; margin-top: 0.15rem; }
+  .panel-link:hover .panel-link-title { color: var(--brand-ink); }
+
+  .actions { display: flex; align-items: center; gap: var(--space-3); }
+  .cta-desk { display: none; }
+  .menu-btn {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    color: var(--ink);
+  }
+  .menu-btn :global(.i-close) { display: none; }
+  .menu-open .menu-btn :global(.i-close) { display: block; }
+  .menu-open .menu-btn :global(.i-open) { display: none; }
+
+  .mobile-menu {
+    position: fixed;
+    inset: var(--header-h) 0 0 0;
+    background: var(--paper);
+    overflow-y: auto;
+    padding-block: var(--space-6) var(--space-8);
+    border-top: 1px solid var(--line);
+  }
+  .mobile-menu[hidden] { display: none; }
+  .m-services { margin: var(--space-4) 0 var(--space-6); }
+  .m-services a {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+    padding: 0.875rem 0;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .m-services .mono { color: var(--brand-ink); font-size: 0.75rem; }
+  .m-main a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.875rem 0;
+    border-bottom: 1px solid var(--line);
+    font-weight: 500;
+  }
+  .m-cta { display: grid; gap: var(--space-3); margin-top: var(--space-6); }
+
+  @media (min-width: 1100px) {
+    .desk-nav { display: block; }
+    .cta-desk { display: inline-flex; }
+    .cta-mob, .menu-btn { display: none; }
+    .mobile-menu { display: none !important; }
+  }
+  @media (max-width: 380px) {
+    .cta-mob { display: none; }
+  }
+</style>

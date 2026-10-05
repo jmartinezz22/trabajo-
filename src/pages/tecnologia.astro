@@ -1,0 +1,62 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import TechGrid from '@/components/TechGrid.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import Icon from '@/components/Icon.astro';
+import Visual from '@/components/Visual.astro';
+
+const crumbs = [{ name: 'Tecnología', href: '/tecnologia/' }];
+---
+<BaseLayout
+  title="Tecnología logística · Trazabilidad, integración y SAP HANA"
+  description="Trazabilidad, gestión de pedidos, control logístico, integración de sistemas y experiencia en SAP HANA aplicada a la logística."
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Tecnología"
+    title="La operación física, respaldada por sistemas y datos."
+    intro="Trazabilidad, control y capacidad de integración con los sistemas de cada cliente. Con experiencia en SAP HANA aplicada a procesos logísticos."
+    breadcrumbs={crumbs}
+    image="tecnologia"
+  >
+    <a href="/contacto/?servicio=consultoria-logistica" class="btn">Hablar con un especialista <Icon name="arrow" /></a>
+  </PageHero>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head split">
+        <div>
+          <p class="eyebrow" data-reveal>Capacidades</p>
+          <h2 data-reveal style="--reveal-i:1">Qué controlamos y cómo</h2>
+        </div>
+        <p class="lead" data-reveal style="--reveal-i:2">
+          Las herramientas concretas se confirmarán con el detalle técnico de cada operación.
+        </p>
+      </div>
+      <TechGrid tone="light" showDetail />
+    </div>
+  </section>
+
+  <section class="section on-dark">
+    <div class="container sap">
+      <div data-reveal><Visual image="consultoria" ratio="landscape" /></div>
+      <div class="sap-copy">
+        <p class="eyebrow" data-reveal>SAP HANA</p>
+        <h2 data-reveal style="--reveal-i:1">Logística y sistemas, en la misma conversación.</h2>
+        <p class="lead" data-reveal style="--reveal-i:2">
+          Cuando el ERP no refleja cómo funciona el almacén, la operación pierde eficiencia. Nuestros especialistas en SAP HANA trabajan junto al equipo logístico para alinear procesos y sistema.
+        </p>
+        <a href="/servicios/consultoria-logistica/" class="link-arrow" data-reveal>Ver consultoría logística <Icon name="arrow" /></a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="¿Necesitas integrar tu logística con tus sistemas?" text="Cuéntanos qué sistemas utilizas y qué información necesitas intercambiar." />
+</BaseLayout>
+
+<style>
+  .sap { display: grid; gap: var(--space-7); align-items: center; }
+  .sap-copy { display: grid; gap: var(--space-5); justify-items: start; }
+  @media (min-width: 1024px) { .sap { grid-template-columns: 1fr 1fr; gap: var(--space-9); } }
+</style>

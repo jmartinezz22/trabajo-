@@ -1,0 +1,249 @@
+---
+/**
+ * Hueco visual reutilizable.
+ * - Si el slot tiene `src` → fotografía optimizada (lazy, dimensiones fijas, sin CLS).
+ * - Si no → composición gráfica técnica (SVG inline, ~2 KB) que evita usar
+ *   fotografía de stock que sugiera instalaciones no confirmadas.
+ */
+import { images, type ImageKey, type ImageSlot } from '@/data/images';
+
+interface Props {
+  image: ImageKey;
+  ratio?: 'wide' | 'landscape' | 'square' | 'portrait' | 'fill';
+  caption?: string;
+  eager?: boolean;
+  class?: string;
+  parallax?: boolean;
+}
+const { image, ratio = 'landscape', caption, eager = false, class: className, parallax = false } = Astro.props;
+const slot: ImageSlot = images[image];
+
+// Rejilla de cajas para composiciones de almacén/stock
+const cols = 9;
+const rows = 5;
+const cells = Array.from({ length: cols * rows }, (_, i) => ({
+  x: 90 + (i % cols) * 70,
+  y: 120 + Math.floor(i / cols) * 76,
+  on: [3, 11, 13, 22, 24, 30, 38].includes(i),
+  half: [5, 16, 27, 33, 41].includes(i),
+}));
+const ticks = Array.from({ length: 11 }, (_, i) => 80 + i * 64);
+---
+<figure
+  class:list={['visual', `visual--${ratio}`, className]}
+  data-parallax={parallax ? '' : undefined}
+>
+  {slot.src ? (
+    <img
+      src={slot.src}
+      alt={slot.alt}
+      width={slot.width}
+      height={slot.height}
+      loading={eager ? 'eager' : 'lazy'}
+      decoding={eager ? 'sync' : 'async'}
+      fetchpriority={eager ? 'high' : 'auto'}
+    />
+  ) : (
+    <svg class="art" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" role="img" aria-label={slot.alt}>
+      <defs>
+        <pattern id={`g-${image}`} width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M40 0H0V40" fill="none" class="art-grid" />
+        </pattern>
+        <radialGradient id={`r-${image}`} cx="70%" cy="30%" r="80%">
+          <stop offset="0" stop-color="#1b3a3c" />
+          <stop offset="1" stop-color="#0e1a24" />
+        </radialGradient>
+      </defs>
+      <rect width="800" height="600" fill={`url(#r-${image})`} />
+      <rect width="800" height="600" fill={`url(#g-${image})`} />
+
+      {slot.art === 'network' && (
+        <g>
+          <path class="art-line" d="M80 470 C 220 470, 240 300, 380 300 S 560 140, 720 130" />
+          <path class="art-line art-line--dim" d="M80 220 C 200 220, 260 300, 380 300" />
+          <path class="art-line art-line--dim" d="M380 300 C 500 300, 560 450, 720 460" />
+          <path class="art-flow" d="M80 470 C 220 470, 240 300, 380 300 S 560 140, 720 130" />
+          <circle class="art-node art-node--hub" cx="380" cy="300" r="14" />
+          <circle class="art-ring" cx="380" cy="300" r="34" />
+          {[[80, 470], [80, 220], [720, 130], [720, 460]].map(([x, y]) => (
+            <circle class="art-node" cx={x} cy={y} r="6" />
+          ))}
+          <text class="art-label" x="190" y="498">ORIGEN</text>
+          <text class="art-label" x="404" y="290">HUB</text>
+          <text class="art-label" x="520" y="168">DESTINO</text>
+          <text class="art-label" x="520" y="470">DESTINO</text>
+        </g>
+      )}
+
+      {(slot.art === 'racks' || slot.art === 'stack') && (
+        <g>
+          {slot.art === 'racks' && [0, 1, 2, 3, 4, 5].map((r) => (
+            <line class="art-line art-line--dim" x1="80" x2="720" y1={112 + r * 76} y2={112 + r * 76} />
+          ))}
+          {cells.map((c) => (
+            <rect
+              class:list={['art-box', { 'art-box--on': c.on, 'art-box--half': c.half }]}
+              x={c.x}
+              y={c.y - (slot.art === 'stack' ? (c.on ? 8 : 0) : 0)}
+              width="56"
+              height="56"
+            />
+          ))}
+          <path class="art-flow" d="M40 560 H 760" />
+          <text class="art-label" x="90" y="560">{slot.art === 'racks' ? 'A-01' : 'LOTE 01'}</text>
+          <text class="art-label" x="640" y="560">{slot.art === 'racks' ? 'A-09' : 'CLASIFICADO'}</text>
+        </g>
+      )}
+
+      {slot.art === 'cold' && (
+        <g>
+          <rect class="art-band" x="80" y="250" width="640" height="110" />
+          {ticks.map((x) => <line class="art-line art-line--dim" x1={x} x2={x} y1="140" y2="470" />)}
+          <path class="art-line art-line--strong" d="M80 320 C 140 300, 170 330, 230 310 S 330 290, 380 315 S 480 340, 540 300 S 650 320, 720 305" />
+          <text class="art-label" x="160" y="242">RANGO OBJETIVO</text>
+          <text class="art-label" x="160" y="500">REGISTRO CONTINUO · t</text>
+          <circle class="art-node art-node--hub" cx="540" cy="300" r="8" />
+        </g>
+      )}
+
+      {(slot.art === 'flow' || slot.art === 'event') && (
+        <g>
+          <line class="art-line" x1="80" x2="720" y1="300" y2="300" />
+          <path class="art-flow" d="M80 300 H 720" />
+          {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+            <g>
+              <circle class:list={['art-node', { 'art-node--hub': i === (slot.art === 'event' ? 5 : 3) }]} cx={80 + i * 106.6} cy="300" r={i === (slot.art === 'event' ? 5 : 3) ? 12 : 7} />
+              <text class="art-label" x={68 + i * 106.6} y="350">{`0${i + 1}`}</text>
+            </g>
+          ))}
+          {slot.art === 'event' && (
+            <g>
+              {Array.from({ length: 21 }, (_, i) => (
+                <rect class:list={['art-box art-box--sm', { 'art-box--on': i === 17 }]} x={500 + (i % 7) * 30} y={120 + Math.floor(i / 7) * 30} width="22" height="22" />
+              ))}
+              <text class="art-label" x="500" y="104">CALENDARIO</text>
+            </g>
+          )}
+        </g>
+      )}
+
+      {(slot.art === 'grid' || slot.art === 'precision') && (
+        <g>
+          {slot.art === 'grid' ? (
+            <g>
+              <rect class="art-zone" x="100" y="110" width="260" height="380" />
+              <rect class="art-zone" x="380" y="110" width="320" height="170" />
+              <rect class="art-zone art-zone--on" x="380" y="300" width="320" height="190" />
+              <path class="art-flow" d="M150 460 V 160 H 320 V 390 H 540 V 200 H 660" />
+              <text class="art-label" x="116" y="138">ZONA A</text>
+              <text class="art-label" x="396" y="138">ZONA B</text>
+              <text class="art-label" x="396" y="328">EXPEDICIÓN</text>
+            </g>
+          ) : (
+            <g>
+              <path class="art-box art-box--on" d="M260 220 L 400 160 L 560 220 L 560 400 L 400 460 L 260 400 Z" />
+              <path class="art-line" d="M260 220 L 400 280 L 560 220 M400 280 V 460" />
+              <path class="art-line art-line--dim" d="M220 220 V 400 M210 220 H 230 M210 400 H 230 M400 500 H 560 M400 490 V 510 M560 490 V 510" />
+              <text class="art-label" x="150" y="316">H</text>
+              <text class="art-label" x="470" y="535">L</text>
+              <circle class="art-ring" cx="400" cy="310" r="210" />
+            </g>
+          )}
+        </g>
+      )}
+    </svg>
+  )}
+  {(caption || slot.contextual) && (
+    <figcaption>
+      {caption && <span class="mono">{caption}</span>}
+      {slot.contextual && <span class="mono ctx">Imagen de contexto</span>}
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .visual {
+    position: relative;
+    overflow: hidden;
+    background: var(--ink);
+    border-radius: var(--radius);
+    isolation: isolate;
+  }
+  .visual--wide { aspect-ratio: 21 / 9; }
+  .visual--landscape { aspect-ratio: 4 / 3; }
+  .visual--square { aspect-ratio: 1; }
+  .visual--portrait { aspect-ratio: 4 / 5; }
+  .visual--fill { height: 100%; min-height: 320px; }
+  @media (max-width: 640px) {
+    .visual--wide { aspect-ratio: 4 / 3; }
+  }
+  .visual > img,
+  .visual > .art {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  [data-parallax] > img,
+  [data-parallax] > .art {
+    inset: -4% 0;
+    height: 108%;
+    transform: translate3d(0, var(--py, 0px), 0);
+    will-change: transform;
+  }
+  figcaption {
+    position: absolute;
+    left: 1rem;
+    bottom: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 1;
+  }
+  figcaption .mono {
+    padding: 0.25rem 0.5rem;
+    background: rgba(14, 26, 36, 0.72);
+    color: #dfe7e6;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: var(--radius-sm);
+    backdrop-filter: blur(6px);
+  }
+  figcaption .ctx { color: #ffcfa9; }
+
+  /* — Composición SVG — */
+  .art :global(.art-grid) { stroke: rgba(255, 255, 255, 0.045); stroke-width: 1; }
+  .art :global(.art-line) { fill: none; stroke: rgba(255, 255, 255, 0.35); stroke-width: 1.5; }
+  .art :global(.art-line--dim) { stroke: rgba(255, 255, 255, 0.12); stroke-width: 1; }
+  .art :global(.art-line--strong) { stroke: var(--brand); stroke-width: 2.5; }
+  .art :global(.art-flow) {
+    fill: none;
+    stroke: var(--brand);
+    stroke-width: 2.5;
+    stroke-dasharray: 6 14;
+    stroke-linecap: round;
+  }
+  .art :global(.art-node) { fill: var(--ink); stroke: rgba(255, 255, 255, 0.7); stroke-width: 1.5; }
+  .art :global(.art-node--hub) { fill: var(--brand); stroke: var(--brand); }
+  .art :global(.art-ring) { fill: none; stroke: rgba(0, 168, 134, 0.35); stroke-width: 1; stroke-dasharray: 2 6; }
+  .art :global(.art-box) { fill: rgba(255, 255, 255, 0.04); stroke: rgba(255, 255, 255, 0.22); stroke-width: 1; }
+  .art :global(.art-box--half) { fill: rgba(255, 255, 255, 0.12); }
+  .art :global(.art-box--on) { fill: rgba(0, 168, 134, 0.22); stroke: var(--brand); }
+  .art :global(.art-zone) { fill: rgba(255, 255, 255, 0.03); stroke: rgba(255, 255, 255, 0.25); stroke-dasharray: 4 6; }
+  .art :global(.art-zone--on) { fill: rgba(0, 168, 134, 0.12); stroke: var(--brand); }
+  .art :global(.art-band) { fill: rgba(0, 168, 134, 0.12); stroke: rgba(0, 168, 134, 0.5); stroke-dasharray: 4 6; }
+  .art :global(.art-label) {
+    fill: rgba(255, 255, 255, 0.55);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.14em;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .art :global(.art-flow) { animation: flow 2.4s linear infinite; }
+    .art :global(.art-ring) { animation: spin 40s linear infinite; transform-origin: center; transform-box: fill-box; }
+  }
+  @keyframes flow { to { stroke-dashoffset: -40; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>

@@ -1,0 +1,71 @@
+/* ==========================================================================
+   PALEX MEDICAL · Design tokens
+   Único archivo a editar para ajustar la marca (colores, tipografías, ritmo).
+   [CONFIRMAR] Valores de color y tipografía con el manual de marca oficial.
+   ========================================================================== */
+
+:root {
+  /* — Marca — */
+  --brand: #00a886;          /* Verde Palex (acento principal, CTA, rutas) */
+  --brand-strong: #008a6e;   /* Hover / texto sobre claro (contraste AA) */
+  --brand-ink: #006b56;      /* Texto de acento sobre fondos claros */
+  --brand-soft: #e3f4ef;     /* Fondos de estado suaves */
+  --signal: #f4823a;         /* Naranja secundario: uso puntual (máx. 1 por pantalla) */
+
+  /* — Neutros — */
+  --ink: #0e1a24;            /* Tinta principal / fondos oscuros */
+  --ink-2: #16252f;          /* Superficie oscura elevada */
+  --ink-3: #22333e;          /* Bordes sobre oscuro */
+  --text: #1c2830;
+  --text-muted: #56636b;
+  --text-on-dark: #eef2f1;
+  --text-on-dark-muted: #9fb0b5;
+  --paper: #f7f7f4;          /* Fondo cálido principal */
+  --surface: #ffffff;
+  --surface-2: #eeeeea;
+  --line: #d9dbd6;
+  --line-strong: #b9bdb7;
+
+  /* — Tipografía — */
+  --font-display: 'Inter Tight', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* Escala fluida (móvil → escritorio) */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-md: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --fs-lg: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --fs-xl: clamp(1.5rem, 1.25rem + 1.1vw, 2.125rem);
+  --fs-2xl: clamp(2rem, 1.5rem + 2.2vw, 3.25rem);
+  --fs-3xl: clamp(2.5rem, 1.6rem + 3.9vw, 5rem);
+
+  /* — Espaciado — */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --section-y: clamp(4.5rem, 3rem + 6vw, 9rem);
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
+  --container: 1280px;
+  --container-narrow: 840px;
+
+  /* — Forma y movimiento — */
+  --radius: 3px;
+  --radius-sm: 2px;
+  --header-h: 72px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 240ms;
+  --dur-slow: 700ms;
+  --shadow-1: 0 1px 2px rgba(14, 26, 36, 0.06), 0 8px 24px -12px rgba(14, 26, 36, 0.18);
+}
+
+@media (max-width: 768px) {
+  :root { --header-h: 60px; }
+}

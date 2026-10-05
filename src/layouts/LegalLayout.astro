@@ -1,0 +1,27 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  href: string;
+}
+const { title, description, href } = Astro.props;
+---
+<BaseLayout title={title} description={description} breadcrumbs={[{ name: title, href }]} noindex>
+  <section class="section">
+    <div class="container narrow">
+      <p class="eyebrow">Información legal</p>
+      <h1 class="legal-title">{title}</h1>
+      <p class="pending warn">
+        Plantilla pendiente de revisión jurídica. Completar todos los campos marcados con los datos de la entidad titular antes de publicar.
+      </p>
+      <div class="prose"><slot /></div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .legal-title { font-size: var(--fs-2xl); margin: var(--space-4) 0 var(--space-5); }
+  .warn { display: block; margin-bottom: var(--space-6); padding: var(--space-3) var(--space-4); }
+</style>

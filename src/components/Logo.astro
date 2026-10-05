@@ -1,0 +1,48 @@
+---
+/**
+ * [SUSTITUIR] Wordmark tipográfico provisional.
+ * Reemplazar el contenido por el SVG oficial del logotipo de PALEX MEDICAL
+ * (manteniendo `aria-label`). No se ha recreado el logo para no inventar marca.
+ */
+interface Props {
+  tone?: 'dark' | 'light';
+  class?: string;
+}
+const { tone = 'dark', class: className } = Astro.props;
+---
+<span class:list={['logo', `logo--${tone}`, className]} role="img" aria-label="PALEX MEDICAL">
+  <span class="logo__mark" aria-hidden="true"></span>
+  <span class="logo__word" aria-hidden="true">PALEX<span class="logo__sub">MEDICAL</span></span>
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-family: var(--font-display);
+    line-height: 1;
+    color: var(--ink);
+  }
+  .logo--light { color: #fff; }
+  .logo__mark {
+    width: 12px;
+    height: 22px;
+    background: var(--brand);
+    border-radius: 1px;
+  }
+  .logo__word {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    font-size: 1.1875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+  .logo__sub {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    opacity: 0.72;
+  }
+</style>

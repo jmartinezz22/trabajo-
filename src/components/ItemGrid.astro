@@ -1,0 +1,60 @@
+---
+import Icon from './Icon.astro';
+import type { ServiceItem } from '@/data/services';
+
+interface Props {
+  items: ServiceItem[];
+  label?: string;
+  columns?: 3 | 4;
+}
+const { items, label, columns = 3 } = Astro.props;
+---
+<div class="item-group">
+  {label && <p class="group-label mono">{label}</p>}
+  <ul role="list" class:list={['items', `cols-${columns}`, { single: items.length === 1 }]}>
+    {items.map((item, i) => (
+      <li class="item" data-reveal style={`--reveal-i:${i % 4}`}>
+        <Icon name={item.icon} size={28} class="ico" />
+        <h3>{item.title}</h3>
+        <p>{item.text}</p>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  .item-group + .item-group { margin-top: var(--space-7); }
+  .group-label { color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.12em; font-size: var(--fs-xs); margin-bottom: var(--space-4); }
+  .items {
+    display: grid;
+    grid-template-columns: 1fr;
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+  .item {
+    display: grid;
+    align-content: start;
+    gap: var(--space-3);
+    padding: var(--space-6) var(--space-5);
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+    transition: background var(--dur) var(--ease);
+  }
+  .item:hover { background: #fbfbf9; }
+  .item :global(.ico) { color: var(--brand-ink); margin-bottom: var(--space-3); transition: transform var(--dur) var(--ease); }
+  .item:hover :global(.ico) { transform: translateY(-2px); }
+  .item h3 { font-size: var(--fs-md); }
+  .item p { font-size: var(--fs-sm); color: var(--text-muted); }
+  @media (min-width: 640px) {
+    .items { grid-template-columns: repeat(2, 1fr); }
+    .items.single { grid-template-columns: 1fr; }
+    .single .item { grid-template-columns: 28px 1fr 2fr; align-items: center; gap: var(--space-5); }
+    .single .item :global(.ico) { margin-bottom: 0; }
+  }
+  @media (min-width: 1024px) {
+    .cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .cols-4 { grid-template-columns: repeat(4, 1fr); }
+    .items.single { grid-template-columns: 1fr; }
+  }
+</style>

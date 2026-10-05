@@ -1,0 +1,117 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { serviceLinks, companyLinks, legalLinks } from '@/data/navigation';
+import { sectors } from '@/data/sectors';
+import { site, telHref, PENDING } from '@/data/site';
+
+const { contact, social } = site;
+const year = new Date().getFullYear();
+---
+<footer class="site-footer on-dark" id="site-footer">
+  <div class="container">
+    <div class="top">
+      <div class="intro">
+        <Logo tone="light" />
+        <p class="desc">
+          Transporte, almacenaje, distribución, servicios especiales, eventos, excedentes industriales y consultoría.
+          Soluciones logísticas diseñadas para cada operación.
+        </p>
+        <a href="/contacto/" class="btn">Solicitar propuesta <Icon name="arrow" /></a>
+      </div>
+
+      <nav class="cols" aria-label="Pie de página">
+        <div>
+          <p class="col-title">Servicios</p>
+          <ul role="list">
+            {serviceLinks.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+          </ul>
+        </div>
+        <div>
+          <p class="col-title">Sectores</p>
+          <ul role="list">
+            {sectors.map((s) => <li><a href={`/sectores/#${s.slug}`}>{s.name}</a></li>)}
+          </ul>
+        </div>
+        <div>
+          <p class="col-title">Empresa</p>
+          <ul role="list">
+            {companyLinks.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+          </ul>
+        </div>
+        <div>
+          <p class="col-title">Contacto</p>
+          <ul role="list" class="contact">
+            <li>
+              <Icon name="pin" size={18} />
+              {contact.address ? (
+                <address>
+                  {contact.address.street}<br />
+                  {contact.address.postalCode} {contact.address.city} ({contact.address.region})
+                </address>
+              ) : <span class="pending">Dirección {PENDING}</span>}
+            </li>
+            <li>
+              <Icon name="phone" size={18} />
+              {contact.phone ? <a href={telHref(contact.phone)}>{contact.phone}</a> : <span class="pending">Teléfono {PENDING}</span>}
+            </li>
+            <li>
+              <Icon name="mail" size={18} />
+              {contact.email ? <a href={`mailto:${contact.email}`}>{contact.email}</a> : <span class="pending">Email {PENDING}</span>}
+            </li>
+            <li>
+              <Icon name="linkedin" size={18} />
+              {social.linkedin ? <a href={social.linkedin} rel="noopener" target="_blank">LinkedIn</a> : <span class="pending">LinkedIn {PENDING}</span>}
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="bottom">
+      <p class="mono">© {year} {site.legalName ?? site.name}</p>
+      <ul role="list" class="legal">
+        {legalLinks.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer { padding-block: var(--space-9) var(--space-6); }
+  .top { display: grid; gap: var(--space-8); }
+  .intro { display: grid; gap: var(--space-5); align-content: start; justify-items: start; max-width: 36ch; }
+  .desc { color: var(--text-on-dark-muted); font-size: var(--fs-sm); }
+  .cols { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-7) var(--space-5); }
+  .col-title {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin-bottom: var(--space-4);
+  }
+  .cols li { margin-bottom: 0.55rem; font-size: var(--fs-sm); }
+  .cols a { color: var(--text-on-dark); opacity: 0.85; transition: opacity var(--dur) var(--ease), color var(--dur) var(--ease); }
+  .cols a:hover { opacity: 1; color: var(--brand); }
+  .contact li { display: grid; grid-template-columns: 18px 1fr; gap: 0.625rem; align-items: start; }
+  .contact :global(svg) { margin-top: 2px; color: var(--text-on-dark-muted); }
+  address { font-style: normal; }
+  .bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-top: var(--space-9);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--ink-3);
+    color: var(--text-on-dark-muted);
+    font-size: var(--fs-sm);
+  }
+  .legal { display: flex; flex-wrap: wrap; gap: var(--space-5); }
+  .legal a:hover { color: #fff; }
+  @media (min-width: 1024px) {
+    .top { grid-template-columns: 1fr 2.6fr; gap: var(--space-9); }
+    .cols { grid-template-columns: repeat(4, 1fr); }
+  }
+</style>

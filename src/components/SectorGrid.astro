@@ -1,0 +1,50 @@
+---
+import Icon from './Icon.astro';
+import { sectors } from '@/data/sectors';
+import { getService, serviceHref } from '@/data/services';
+
+interface Props {
+  detailed?: boolean;
+}
+const { detailed = false } = Astro.props;
+---
+<ul role="list" class:list={['sectors', { detailed }]}>
+  {sectors.map((s, i) => (
+    <li class="sector" id={detailed ? s.slug : undefined} data-reveal style={`--reveal-i:${i % 4}`}>
+      <div class="head">
+        <Icon name={s.icon} size={26} class="ico" />
+        <span class="mono">{String(i + 1).padStart(2, '0')}</span>
+      </div>
+      <h3>{s.name}</h3>
+      <p class="challenge"><span class="mono k">Necesidad</span>{s.challenge}</p>
+      <p class="answer"><span class="mono k">Respuesta</span>{s.answer}</p>
+      {detailed && (
+        <ul role="list" class="links">
+          {s.services.map((slug) => {
+            const svc = getService(slug);
+            return svc && <li><a href={serviceHref(slug)}>{svc.name} <Icon name="arrow" size={14} /></a></li>;
+          })}
+        </ul>
+      )}
+    </li>
+  ))}
+</ul>
+
+<style>
+  .sectors { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .sector { display: grid; align-content: start; gap: var(--space-3); padding: var(--space-6) var(--space-5); background: var(--paper); transition: background var(--dur) var(--ease); }
+  .sector:hover { background: var(--surface); }
+  .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); }
+  .head :global(.ico) { color: var(--brand-ink); }
+  .head .mono { color: var(--text-muted); }
+  h3 { font-size: var(--fs-md); }
+  p { font-size: var(--fs-sm); color: var(--text-muted); }
+  .k { display: block; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text); margin-bottom: 0.15rem; }
+  .answer { color: var(--text); }
+  .links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: var(--space-3); }
+  .links a { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.3rem 0.7rem; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); font-size: var(--fs-xs); font-weight: 500; transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  .links a:hover { background: var(--brand-soft); border-color: var(--brand); }
+  @media (min-width: 640px) { .sectors { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .sectors { grid-template-columns: repeat(4, 1fr); } }
+  @media (min-width: 1100px) { .sectors.detailed { grid-template-columns: repeat(2, 1fr); } }
+</style>

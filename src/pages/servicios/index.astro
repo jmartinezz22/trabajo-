@@ -1,0 +1,51 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import ServiceCard from '@/components/ServiceCard.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import Icon from '@/components/Icon.astro';
+import { services } from '@/data/services';
+
+const crumbs = [{ name: 'Servicios', href: '/servicios/' }];
+---
+<BaseLayout
+  title="Servicios logísticos para empresas"
+  description="Transporte, logística y fulfillment, excedentes industriales, servicios especiales, eventos y congresos y consultoría logística. Seis líneas de servicio combinables."
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Servicios"
+    title="Seis líneas de servicio. Una operación coordinada."
+    intro="Contrata un servicio concreto o combina varios para cubrir toda la cadena. Cada línea se adapta a tu producto, tus volúmenes y tus plazos."
+    breadcrumbs={crumbs}
+  >
+    <a href="/contacto/" class="btn">Solicitar propuesta <Icon name="arrow" /></a>
+    <a href="/soluciones-a-medida/" class="btn btn-ghost">Soluciones a medida</a>
+  </PageHero>
+
+  <section class="section">
+    <div class="container">
+      <ul role="list" class="grid grid-3">
+        {services.map((s, i) => <ServiceCard service={s} variant="card" index={i} />)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section bg-surface combine">
+    <div class="container narrow">
+      <p class="eyebrow" data-reveal>Combinables</p>
+      <h2 data-reveal style="--reveal-i:1">Lo habitual no es necesitar un servicio. Es necesitar varios que funcionen juntos.</h2>
+      <p class="lead" data-reveal style="--reveal-i:2">
+        Almacenaje con transporte refrigerado. Preparación de material con montaje en un congreso. Consultoría de layout con montaje de estanterías.
+        Diseñamos la combinación y la coordinamos como una sola operación.
+      </p>
+    </div>
+  </section>
+
+  <CtaBand title="¿Qué combinación necesita tu operación?" text="Cuéntanos tu caso y te proponemos el alcance adecuado." />
+</BaseLayout>
+
+<style>
+  .combine .container { display: grid; gap: var(--space-5); }
+  .combine h2 { max-width: 26ch; }
+</style>

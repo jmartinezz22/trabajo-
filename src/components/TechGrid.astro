@@ -1,0 +1,41 @@
+---
+import Icon from './Icon.astro';
+import { technology } from '@/data/technology';
+
+interface Props {
+  tone?: 'light' | 'dark';
+  showDetail?: boolean;
+}
+const { tone = 'dark', showDetail = false } = Astro.props;
+---
+<ul role="list" class:list={['tech', `tech--${tone}`]}>
+  {technology.map((t, i) => (
+    <li data-reveal style={`--reveal-i:${i % 4}`}>
+      <Icon name={t.icon} size={26} class="ico" />
+      <h3>{t.title}</h3>
+      <p>{t.text}</p>
+      {!t.confirmed && (
+        <p class="pending">{showDetail && t.detail ? `${t.detail}: ` : ''}[CONFIRMAR TECNOLOGÍA]</p>
+      )}
+    </li>
+  ))}
+</ul>
+
+<style>
+  .tech { display: grid; gap: 0; border-top: 1px solid var(--line); }
+  li { display: grid; align-content: start; justify-items: start; gap: var(--space-3); padding: var(--space-6) var(--space-5) var(--space-6) 0; border-bottom: 1px solid var(--line); }
+  li :global(.ico) { color: var(--brand-ink); }
+  h3 { font-size: var(--fs-md); }
+  p { font-size: var(--fs-sm); color: var(--text-muted); }
+  .tech--dark { border-color: var(--ink-3); }
+  .tech--dark li { border-color: var(--ink-3); }
+  .tech--dark li :global(.ico) { color: var(--brand); }
+  .tech--dark h3 { color: #fff; }
+  .tech--dark p:not(.pending) { color: var(--text-on-dark-muted); }
+  @media (min-width: 640px) {
+    .tech { grid-template-columns: repeat(2, 1fr); column-gap: var(--space-6); }
+  }
+  @media (min-width: 1100px) {
+    .tech { grid-template-columns: repeat(4, 1fr); }
+  }
+</style>

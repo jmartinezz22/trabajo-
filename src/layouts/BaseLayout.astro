@@ -1,0 +1,157 @@
+---
+import '@/styles/global.css';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Icon from '@/components/Icon.astro';
+import { site } from '@/data/site';
+
+export interface Crumb {
+  name: string;
+  href: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  /** Título exacto para <title> (si no, se compone "title · PALEX MEDICAL"). */
+  fullTitle?: string;
+  ogImage?: string;
+  breadcrumbs?: Crumb[];
+  schema?: Record<string, unknown>[];
+  noindex?: boolean;
+  hideStickyCta?: boolean;
+}
+
+const {
+  title,
+  description,
+  fullTitle,
+  ogImage = '/og-default.png',
+  breadcrumbs = [],
+  schema = [],
+  noindex = false,
+  hideStickyCta = false,
+} = Astro.props;
+
+const pageTitle = fullTitle ?? `${title} · ${site.name}`;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogUrl = new URL(ogImage, Astro.site).href;
+
+// Schema.org: solo se incluyen datos confirmados en src/data/site.ts
+const { contact, social } = site;
+const organization: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': new URL('/#organization', Astro.site).href,
+  name: site.name,
+  url: new URL('/', Astro.site).href,
+  description: site.description,
+  ...(site.legalName && { legalName: site.legalName }),
+  ...(contact.email && { email: contact.email }),
+  ...(contact.phone && { telephone: contact.phone }),
+  ...(social.linkedin && { sameAs: [social.linkedin] }),
+  ...(contact.address && {
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: contact.address.street,
+      postalCode: contact.address.postalCode,
+      addressLocality: contact.address.city,
+      addressRegion: contact.address.region,
+      addressCountry: contact.address.country,
+    },
+  }),
+};
+
+const breadcrumbSchema = breadcrumbs.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [{ name: 'Inicio', href: '/' }, ...breadcrumbs].map((c, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: c.name,
+        item: new URL(c.href, Astro.site).href,
+      })),
+    }
+  : null;
+
+const jsonLd = [organization, ...(breadcrumbSchema ? [breadcrumbSchema] : []), ...schema];
+---
+<!doctype html>
+<html lang={site.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <meta name="theme-color" content="#0e1a24" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Open Graph / redes -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={site.locale} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogUrl} />
+
+    <!-- Tipografía [CONFIRMAR con la tipografía corporativa] -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+
+    {jsonLd.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}
+  </head>
+  <body>
+    <a href="#contenido" class="skip-link">Saltar al contenido</a>
+    <Header />
+    <main id="contenido">
+      <slot />
+    </main>
+    <Footer />
+
+    {!hideStickyCta && (
+      <div class="sticky-cta" data-sticky-cta aria-hidden="true">
+        <a href="/contacto/" class="btn btn-block" tabindex="-1">Solicitar propuesta <Icon name="arrow" /></a>
+      </div>
+    )}
+
+    <script>
+      import '@/scripts/main';
+    </script>
+  </body>
+</html>
+
+<style>
+  .sticky-cta {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    padding: 0.625rem var(--gutter) calc(0.625rem + env(safe-area-inset-bottom));
+    background: rgba(247, 247, 244, 0.94);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--line);
+    transform: translateY(110%);
+    transition: transform var(--dur) var(--ease);
+  }
+  .sticky-cta.is-shown { transform: none; }
+  @media (min-width: 1100px) {
+    .sticky-cta { display: none; }
+  }
+</style>
