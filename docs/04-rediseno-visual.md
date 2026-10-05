@@ -73,3 +73,24 @@ almacén, transporte, embalaje, hospital, automatización y arquitectura, sin po
 
 > Limitación del entorno de desarrollo: el acceso a bancos de imágenes está bloqueado, por lo que
 > las fotos no se han podido revisar visualmente aquí. Validar la selección en el navegador antes de publicar.
+
+---
+
+# v4 · Dirección oscura: negro, grafito y dorado‑cobre
+
+Por petición expresa se cambia la dirección visual (se mantiene toda la estructura, el contenido
+y las reglas de datos verificados):
+
+| Elemento | Decisión |
+|---|---|
+| Paleta | Negro `#070708` / `#0d0d0f`, grafitos `#141417` y `#1a1b1e`, marfil `#f2ede4` para titulares; acento **dorado‑cobre** `#c9a066` (hover `#dcb984`, cobre profundo `#9a6b3c`) solo en CTA, enlaces, indicadores y cursivas |
+| Tipografía | **Fraunces** (serif variable con ejes de óptica y suavidad) en titulares, con *cursiva dorada* como acento; **Manrope** (sans) en texto e interfaz |
+| Textura | Grano muy sutil sobre el negro para evitar un fondo plano "digital" |
+| Animación | Aparición con subida, entrada lateral, titulares que se descubren (máscara), imágenes que se asientan, parallax, barrido de luz en botones y barra dorada de progreso de lectura. Todo desactivado con `prefers-reduced-motion` |
+| Fotografía | Tratamiento cálido y desaturado para integrarse con el negro |
+| **Horario visual** | Línea de tiempo semanal 06–22 h por sede, día actual resaltado, línea de "ahora" en hora de Madrid y estado *Abierto ahora / Cerrado · abre…* en vivo. Sin datos confirmados muestra `[HORARIO PENDIENTE DE CONFIRMAR]` (no se inventa). Se rellena en `src/data/site.ts → locations[].hours` |
+| **Ubicación** | Pestañas Sede central / Almacén central, dirección destacada, teléfono, "Cómo llegar" (Google Maps) y mapa: vista ligera con chincheta animada; Google Maps se carga **solo al pulsar** (privacidad y rendimiento), con estilo oscuro |
+| Identidad | El dorado sustituye al verde Palex por decisión de diseño. Para volver a la identidad corporativa basta con cambiar `--accent` en `src/styles/tokens.css` |
+
+Archivos principales: `src/styles/tokens.css`, `src/styles/global.css`, `src/scripts/main.ts`,
+`src/components/VisitSection.astro` (HTML + CSS + JS del horario y el mapa).

@@ -217,14 +217,14 @@ const endpoint = site.formEndpoint ?? '';
 <style>
   .lead-form { display: grid; gap: var(--space-7); }
   fieldset { border: 0; padding: 0; display: grid; gap: var(--space-5); }
-  legend { padding: 0 0 var(--space-3); margin-bottom: var(--space-5); width: 100%; border-bottom: 1px solid var(--ink); color: var(--ink); text-transform: uppercase; letter-spacing: 0.16em; font-size: var(--fs-xs); font-weight: 500; }
+  legend { padding: 0 0 var(--space-3); margin-bottom: var(--space-5); width: 100%; border-bottom: 1px solid var(--rule); color: var(--fg); text-transform: uppercase; letter-spacing: 0.16em; font-size: var(--fs-xs); font-weight: 500; }
   .fields { display: grid; gap: var(--space-5); }
   @media (min-width: 640px) {
     .fields.two { grid-template-columns: repeat(2, 1fr); }
     .full { grid-column: 1 / -1; }
   }
   .field { display: grid; gap: 0.4rem; }
-  label, .label { font-size: var(--fs-sm); font-weight: 500; color: var(--ink); }
+  label, .label { font-size: var(--fs-sm); font-weight: 500; color: var(--fg); }
   input[type='text'], input[type='email'], input[type='tel'], select, textarea {
     width: 100%;
     min-height: 48px;
@@ -238,15 +238,15 @@ const endpoint = site.formEndpoint ?? '';
   }
   select {
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%230e1a24' stroke-width='1.5'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23c9a066' stroke-width='1.5'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 1rem center;
     padding-right: 2.5rem;
   }
   textarea { resize: vertical; min-height: 140px; }
-  input:hover, select:hover, textarea:hover { border-color: var(--ink); }
-  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--ink); box-shadow: 0 1px 0 0 var(--ink); }
-  ::placeholder { color: #8a959b; }
+  input:hover, select:hover, textarea:hover { border-color: var(--fg); }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--fg); box-shadow: 0 1px 0 0 var(--accent); }
+  ::placeholder { color: #7c766d; }
   .checks { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .checks .check {
     display: inline-flex;
@@ -260,22 +260,22 @@ const endpoint = site.formEndpoint ?? '';
     cursor: pointer;
     transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
   }
-  .checks .check:has(input:checked) { border-color: var(--ink); background: var(--ink); color: #fff; }
+  .checks .check:has(input:checked) { border-color: var(--accent); background: var(--accent-wash); color: var(--fg); }
   .check input { width: 16px; height: 16px; accent-color: var(--brand-strong); flex: none; }
   .consent { display: flex; align-items: flex-start; gap: 0.625rem; font-weight: 400; color: var(--text-muted); }
   .consent input { margin-top: 0.2rem; }
-  .consent a { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
+  .consent a { color: var(--fg); text-decoration: underline; text-underline-offset: 2px; }
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
   .submit-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-5); }
   .note { color: var(--text-muted); }
   .lead-form :global(.has-error) input,
   .lead-form :global(.has-error) select,
-  .lead-form :global(.has-error) textarea { border-color: #c0392b; }
-  .lead-form :global(.err) { color: #b0281a; font-size: var(--fs-sm); }
+  .lead-form :global(.has-error) textarea { border-color: #d0705f; }
+  .lead-form :global(.err) { color: #f0a597; font-size: var(--fs-sm); }
   .status:empty { display: none; }
   .status { padding: var(--space-4); border-radius: var(--radius); border: 1px solid var(--line); font-size: var(--fs-sm); }
-  .status.is-ok { border-color: var(--brand); background: #e6f4ef; color: var(--brand-ink); }
-  .status.is-error { border-color: #e2a59e; background: #fdf1ef; color: #8c2215; }
-  .status.is-warn { border-color: var(--signal); background: #fff4ec; color: #8a4310; }
+  .status.is-ok { border-color: var(--accent); background: var(--accent-wash); color: var(--fg); }
+  .status.is-error { border-color: #a5463a; background: rgba(165, 70, 58, 0.12); color: #f0b3a9; }
+  .status.is-warn { border-color: var(--signal); background: rgba(226, 162, 111, 0.1); color: #f2c39b; }
   button[disabled] { opacity: 0.6; pointer-events: none; }
 </style>

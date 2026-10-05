@@ -1,7 +1,8 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import ContactForm from '@/components/ContactForm.astro';
-import { site, telHref, formatAddress } from '@/data/site';
+import VisitSection from '@/components/VisitSection.astro';
+import { site, telHref } from '@/data/site';
 
 const crumbs = [{ name: 'Contacto', href: '/contacto/' }];
 const { contact } = site;
@@ -23,7 +24,7 @@ const steps = [
       <div class="intro">
         <nav aria-label="Ruta de navegación" class="crumbs"><a href="/">Inicio</a> / <span aria-current="page">Contacto</span></nav>
         <p class="eyebrow">¿Hablamos de tu proyecto?</p>
-        <h1>Cuéntanos qué necesitas.</h1>
+        <h1>Cuéntanos <em>qué necesitas.</em></h1>
         <p class="lead">Describe tu operación y nuestro equipo analizará contigo la solución más adecuada.</p>
 
         <div class="direct">
@@ -40,11 +41,6 @@ const steps = [
           </ol>
         </div>
 
-        <div class="locs">
-          {site.locations.map((l) => (
-            <p><span class="sub">{l.label}</span>{formatAddress(l.address)}</p>
-          ))}
-        </div>
       </div>
 
       <div class="form-wrap">
@@ -53,6 +49,8 @@ const steps = [
       </div>
     </div>
   </section>
+
+  <VisitSection heading="Visítanos o llámanos." />
 </BaseLayout>
 
 <style>
@@ -61,8 +59,8 @@ const steps = [
   .intro { display: grid; gap: var(--space-6); align-content: start; }
   .crumbs { font-size: var(--fs-sm); color: var(--text-muted); margin-bottom: var(--space-5); }
   .intro h1 { font-size: clamp(2.75rem, 1.6rem + 4.6vw, 6rem); max-width: 10ch; }
-  .direct { display: grid; gap: var(--space-4); padding-top: var(--space-5); border-top: 1px solid var(--ink); }
-  .direct a { font-family: var(--font-display); font-size: var(--fs-xl); letter-spacing: -0.03em; color: var(--ink); }
+  .direct { display: grid; gap: var(--space-4); padding-top: var(--space-5); border-top: 1px solid var(--rule); }
+  .direct a { font-family: var(--font-display); font-size: var(--fs-xl); letter-spacing: -0.03em; color: var(--fg); }
   .direct a:hover { color: var(--brand-ink); }
   .sub { display: block; font-size: var(--fs-xs); letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.2rem; }
   .after ol { margin-top: var(--space-3); }

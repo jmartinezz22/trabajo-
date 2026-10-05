@@ -28,7 +28,7 @@ const { steps, tone = 'light', showText = false } = Astro.props;
 <style>
   .flow { position: relative; display: grid; gap: var(--space-6); padding-left: 2.25rem; }
   .flow::before, .flow::after { content: ''; position: absolute; left: 4px; top: 8px; bottom: 8px; width: 1px; background: var(--line-strong); }
-  .flow::after { background: var(--ink); transform: scaleY(0); transform-origin: top; transition: transform 1.8s var(--ease-out); }
+  .flow::after { background: var(--accent); transform: scaleY(0); transform-origin: top; transition: transform 1.8s var(--ease-out); }
   .flow.is-drawn::after { transform: scaleY(1); }
   li { position: relative; display: grid; gap: 0.4rem; min-width: 0; }
   .many .title { font-size: clamp(1.375rem, 1.1rem + 0.8vw, 1.75rem); }
@@ -40,11 +40,13 @@ const { steps, tone = 'light', showText = false } = Astro.props;
   }
   .flow.is-drawn .dot { background: var(--brand); border-color: var(--brand); }
   .num { font-size: var(--fs-sm); color: var(--text-muted); font-variant-numeric: tabular-nums; }
-  .title { font-family: var(--font-display); font-size: clamp(1.625rem, 1.2rem + 1.4vw, 2.5rem); letter-spacing: -0.035em; line-height: 1.05; color: var(--ink); }
+  .title { font-family: var(--font-display); font-size: clamp(1.625rem, 1.2rem + 1.4vw, 2.5rem); letter-spacing: -0.035em; line-height: 1.05; color: var(--fg); }
   .text { font-size: var(--fs-sm); color: var(--text-muted); max-width: 28ch; }
   .flow--dark::before { background: var(--ink-3); }
-  .flow--dark::after { background: #fff; }
+  .flow--dark::after { background: var(--accent); }
   .flow--dark .dot { background: var(--ink); border-color: var(--ink-3); }
+  .dot { box-shadow: 0 0 0 4px transparent; }
+  .flow.is-drawn .dot { box-shadow: 0 0 0 4px var(--accent-wash); }
   .flow--dark .num { color: var(--text-on-dark-muted); }
   .flow--dark .title { color: #fff; }
   .flow--dark .text { color: var(--text-on-dark-muted); }

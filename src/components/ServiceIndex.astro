@@ -63,11 +63,11 @@ import { services, serviceHref } from '@/data/services';
     font-weight: 400;
     letter-spacing: -0.035em;
     line-height: 1.02;
-    color: var(--ink);
+    color: var(--fg);
     transition: transform 500ms var(--ease-out), color var(--dur) var(--ease);
   }
   .desc { grid-area: desc; max-width: 46ch; font-size: var(--fs-sm); color: var(--text-muted); }
-  .go { grid-area: go; align-self: center; color: var(--ink); transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease); }
+  .go { grid-area: go; align-self: center; color: var(--fg); transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease); }
   .thumb { grid-area: thumb; position: relative; display: block; aspect-ratio: 16 / 9; }
   .thumb :global(.photo) { position: absolute; inset: 0; }
   .stage { display: none; }

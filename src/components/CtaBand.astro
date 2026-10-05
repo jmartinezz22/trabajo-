@@ -19,7 +19,7 @@ const phone = site.contact.phone;
 ---
 <section class="cta on-dark">
   <div class="container inner">
-    <h2 data-reveal>{title}</h2>
+    <h2 data-reveal="mask" set:html={title.replace(/^(\S+)\s(.+)$/, '$1 <em>$2</em>')} />
     <div class="row" data-reveal style="--reveal-i:1">
       <p class="lead">{text}</p>
       <div class="actions">

@@ -51,6 +51,7 @@ const remoteSrcset = REMOTE_WIDTHS.map((w) => `${remoteUrl(slot.unsplash, w)} ${
         loading={loading}
         decoding="async"
         fetchpriority={eager ? 'high' : 'auto'}
+        onerror="this.style.visibility='hidden'"
         style={`object-position:${pos}`}
       />
     </picture>
@@ -65,6 +66,7 @@ const remoteSrcset = REMOTE_WIDTHS.map((w) => `${remoteUrl(slot.unsplash, w)} ${
       loading={loading}
       decoding="async"
       fetchpriority={eager ? 'high' : 'auto'}
+        onerror="this.style.visibility='hidden'"
       referrerpolicy="no-referrer"
       style={`object-position:${pos}`}
     />
@@ -77,7 +79,7 @@ const remoteSrcset = REMOTE_WIDTHS.map((w) => `${remoteUrl(slot.unsplash, w)} ${
     position: relative;
     overflow: hidden;
     /* Fondo de respaldo: tono neutro oscuro con leve degradado */
-    background: linear-gradient(160deg, #2a3740 0%, #141e25 60%, #0d161c 100%);
+    background: linear-gradient(160deg, #2a2724 0%, #17161a 55%, #0d0d0f 100%);
     isolation: isolate;
   }
   .photo :global(img) {
@@ -87,7 +89,7 @@ const remoteSrcset = REMOTE_WIDTHS.map((w) => `${remoteUrl(slot.unsplash, w)} ${
     height: 100%;
     object-fit: cover;
     color: transparent; /* oculta el texto alternativo si la imagen falla */
-    filter: saturate(0.85) contrast(1.04);
+    filter: grayscale(0.55) sepia(0.12) contrast(1.06) brightness(0.88);
     transition: transform 1.2s var(--ease-out);
   }
   .photo :global(picture) { position: absolute; inset: 0; }
@@ -99,9 +101,9 @@ const remoteSrcset = REMOTE_WIDTHS.map((w) => `${remoteUrl(slot.unsplash, w)} ${
   :global(.photo-hover:hover) .zoom :global(img) { transform: scale(1.04); }
 
   .photo::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1; }
-  .ov-bottom::after { background: linear-gradient(180deg, rgba(10, 20, 28, 0) 35%, rgba(10, 20, 28, 0.85) 100%); }
-  .ov-left::after { background: linear-gradient(90deg, rgba(10, 20, 28, 0.88) 0%, rgba(10, 20, 28, 0.55) 45%, rgba(10, 20, 28, 0.1) 100%); }
-  .ov-full::after { background: rgba(10, 20, 28, 0.62); }
+  .ov-bottom::after { background: linear-gradient(180deg, rgba(7, 7, 8, 0) 35%, rgba(7, 7, 8, 0.85) 100%); }
+  .ov-left::after { background: linear-gradient(90deg, rgba(7, 7, 8, 0.88) 0%, rgba(7, 7, 8, 0.55) 45%, rgba(7, 7, 8, 0.1) 100%); }
+  .ov-full::after { background: rgba(7, 7, 8, 0.62); }
 
   .ctx {
     position: absolute;

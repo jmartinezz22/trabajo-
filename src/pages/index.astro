@@ -10,6 +10,7 @@ import SectorList from '@/components/SectorList.astro';
 import FlowSteps from '@/components/FlowSteps.astro';
 import CertList from '@/components/CertList.astro';
 import CtaBand from '@/components/CtaBand.astro';
+import VisitSection from '@/components/VisitSection.astro';
 import { services, serviceHref } from '@/data/services';
 import { methodSteps } from '@/data/navigation';
 import { featuredCase } from '@/data/cases';
@@ -41,7 +42,7 @@ const specials = ['Embalaje', 'Equipos de alto valor', 'Manipulación especial',
     <div class="container hero-inner">
       <div class="hero-copy">
         <p class="eyebrow" data-reveal>PALEX MEDICAL · Soluciones logísticas</p>
-        <h1 data-reveal style="--reveal-i:1">Soluciones logísticas para operaciones que no pueden fallar.</h1>
+        <h1 data-reveal="mask" style="--reveal-i:1">Soluciones logísticas para operaciones que <em>no pueden fallar.</em></h1>
         <p class="lead" data-reveal style="--reveal-i:2">
           Transporte, logística, tecnología y soluciones a medida para operaciones que requieren precisión, trazabilidad y control.
         </p>
@@ -57,7 +58,7 @@ const specials = ['Embalaje', 'Equipos de alto valor', 'Manipulación especial',
   <section class="section statement">
     <div class="container">
       <p class="eyebrow" data-reveal>Más que transporte</p>
-      <h2 class="statement-title" data-reveal style="--reveal-i:1">Más que transporte. Diseñamos y gestionamos soluciones logísticas completas.</h2>
+      <h2 class="statement-title" data-reveal="mask" style="--reveal-i:1"><em>Más que transporte.</em> Diseñamos y gestionamos soluciones logísticas completas.</h2>
       <ul role="list" class="pillars">
         {pillars.map((p, i) => <li data-reveal style={`--reveal-i:${i + 2}`}>{p}</li>)}
       </ul>
@@ -73,12 +74,12 @@ const specials = ['Embalaje', 'Equipos de alto valor', 'Manipulación especial',
 
   <!-- 04 · CAPACIDAD -->
   <section class="capacity">
-    <div class="cap-media" data-reveal>
+    <div class="cap-media" data-reveal="scale">
       <Photo image="capacity" sizes="(max-width: 1024px) 100vw, 58vw" parallax />
     </div>
     <div class="cap-copy">
       <p class="eyebrow" data-reveal>Capacidad</p>
-      <h2 data-reveal style="--reveal-i:1">Una solución. Todas las fases de la operación.</h2>
+      <h2 data-reveal="right" style="--reveal-i:1">Una solución. <em>Todas las fases</em> de la operación.</h2>
       <p class="lead" data-reveal style="--reveal-i:2">
         Combinamos logística, transporte, tecnología, trazabilidad y consultoría para diseñar operaciones adaptadas a cada cliente, y las gestionamos con un único interlocutor.
       </p>
@@ -116,7 +117,7 @@ const specials = ['Embalaje', 'Equipos de alto valor', 'Manipulación especial',
       <div class="section-head split">
         <div>
           <p class="eyebrow" data-reveal>Tecnología</p>
-          <h2 data-reveal style="--reveal-i:1">Tecnología aplicada a la logística.</h2>
+          <h2 data-reveal="mask" style="--reveal-i:1">Tecnología aplicada <em>a la logística.</em></h2>
         </div>
         <p class="lead" data-reveal style="--reveal-i:2">
           Digitalizamos procesos para mejorar la trazabilidad, el control y la eficiencia de las operaciones.
@@ -132,7 +133,7 @@ const specials = ['Embalaje', 'Equipos de alto valor', 'Manipulación especial',
     <Photo image="especiales" overlay="full" class="specials-bg" parallax />
     <div class="container specials-inner">
       <p class="eyebrow" data-reveal>Servicios especiales</p>
-      <h2 data-reveal style="--reveal-i:1">Cuando una operación requiere algo diferente.</h2>
+      <h2 data-reveal="mask" style="--reveal-i:1">Cuando una operación requiere <em>algo diferente.</em></h2>
       <p class="lead" data-reveal style="--reveal-i:2">
         Analizamos las necesidades específicas de cada operación y diseñamos una solución adaptada.
       </p>
@@ -184,7 +185,10 @@ const specials = ['Embalaje', 'Equipos de alto valor', 'Manipulación especial',
     </div>
   </section>
 
-  <!-- 12 · CTA -->
+  <!-- 12 · UBICACIÓN Y HORARIO -->
+  <VisitSection />
+
+  <!-- 13 · CTA -->
   <CtaBand />
 </BaseLayout>
 
@@ -206,7 +210,7 @@ const specials = ['Embalaje', 'Equipos de alto valor', 'Manipulación especial',
   .statement .container { display: grid; gap: var(--space-6); }
   .statement-title { font-size: clamp(2.25rem, 1.3rem + 4vw, 5.5rem); font-weight: 400; max-width: 20ch; }
   .pillars { display: flex; flex-wrap: wrap; gap: var(--space-3) clamp(1.5rem, 1rem + 3vw, 4rem); margin-top: var(--space-6); padding-top: var(--space-6); border-top: 1px solid var(--line); }
-  .pillars li { font-size: var(--fs-sm); font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink); }
+  .pillars li { font-size: var(--fs-sm); font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg); }
   .pillars li::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 0.9rem; border-radius: 50%; background: var(--brand); vertical-align: middle; }
   .numbers { padding-top: 0; }
 

@@ -6,8 +6,9 @@ import CertList from '@/components/CertList.astro';
 import CtaBand from '@/components/CtaBand.astro';
 import Photo from '@/components/Photo.astro';
 import Icon from '@/components/Icon.astro';
+import VisitSection from '@/components/VisitSection.astro';
 import { provenExperience } from '@/data/trust';
-import { site, telHref } from '@/data/site';
+import { site } from '@/data/site';
 
 const crumbs = [{ name: 'Empresa', href: '/empresa/' }];
 ---
@@ -62,24 +63,7 @@ const crumbs = [{ name: 'Empresa', href: '/empresa/' }];
     </div>
   </section>
 
-  <section class="section bg-stone">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow" data-reveal>Dónde estamos</p>
-        <h2 data-reveal style="--reveal-i:1">Ubicaciones.</h2>
-      </div>
-      <ul role="list" class="locs">
-        {site.locations.map((l, i) => (
-          <li data-reveal style={`--reveal-i:${i}`}>
-            <p class="eyebrow">{l.label}</p>
-            <address>{l.address.street}<br />{l.address.postalCode} {l.address.city}<br />{l.address.region}</address>
-            {l.phone && <a href={telHref(l.phone.number)} class="link-arrow">{l.phone.number}</a>}
-          </li>
-        ))}
-      </ul>
-      <p class="cs">{site.contact.customerService.label}: <a href={telHref(site.contact.customerService.number)}>{site.contact.customerService.number}</a></p>
-    </div>
-  </section>
+  <VisitSection />
 
   <CtaBand />
 </BaseLayout>
@@ -98,9 +82,9 @@ const crumbs = [{ name: 'Empresa', href: '/empresa/' }];
     .exp-copy { padding: var(--space-9); }
   }
   .locs { display: grid; gap: var(--space-7); }
-  .locs li { display: grid; gap: var(--space-4); justify-items: start; padding-top: var(--space-5); border-top: 1px solid var(--ink); }
-  .locs address { font-style: normal; font-family: var(--font-display); font-size: var(--fs-xl); letter-spacing: -0.03em; line-height: 1.15; color: var(--ink); }
+  .locs li { display: grid; gap: var(--space-4); justify-items: start; padding-top: var(--space-5); border-top: 1px solid var(--rule); }
+  .locs address { font-style: normal; font-family: var(--font-display); font-size: var(--fs-xl); letter-spacing: -0.03em; line-height: 1.15; color: var(--fg); }
   @media (min-width: 900px) { .locs { grid-template-columns: 1fr 1fr; column-gap: var(--space-9); } }
   .cs { margin-top: var(--space-7); color: var(--text-muted); }
-  .cs a { color: var(--ink); font-weight: 500; }
+  .cs a { color: var(--fg); font-weight: 500; }
 </style>

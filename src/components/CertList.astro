@@ -26,7 +26,7 @@ const shown = certifications.filter((c) => c.status !== 'not-found');
 <style>
   .certs { display: grid; gap: var(--space-6); }
   li { display: grid; gap: var(--space-2); align-content: start; justify-items: start; padding-top: var(--space-5); border-top: 1px solid var(--line); }
-  .code { font-family: var(--font-display); font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); font-weight: 400; letter-spacing: -0.03em; color: var(--ink); line-height: 1.1; }
+  .code { font-family: var(--font-display); font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); font-weight: 400; letter-spacing: -0.03em; color: var(--fg); line-height: 1.1; }
   .name { color: var(--text-muted); font-size: var(--fs-sm); }
   .pending { font-size: 0.6875rem; margin-top: var(--space-2); }
   .note { font-size: var(--fs-xs); color: var(--text-soft); }

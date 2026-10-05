@@ -1,6 +1,6 @@
 # PALEX MEDICAL · Web corporativa de soluciones logísticas
 
-Web B2B estática construida con **Astro 5 + TypeScript + CSS propio**. Cero dependencias de UI,
+Web B2B estática construida con **Astro 5 + TypeScript + CSS propio**. Tema oscuro (negro, grafito y dorado‑cobre), titulares en Fraunces (serif) y texto en Manrope. Cero dependencias de UI,
 ≈1 KB de JavaScript (gzip), diseño editorial sin dependencias de UI y HTML pre‑renderizado para SEO y Core Web Vitals.
 
 - Estrategia, investigación y arquitectura: [`docs/01-investigacion-y-estrategia.md`](docs/01-investigacion-y-estrategia.md)
@@ -29,7 +29,7 @@ Variables de entorno (copiar `.env.example` a `.env`):
 
 | Qué | Archivo |
 |---|---|
-| Datos de empresa y contacto | `src/data/site.ts` |
+| Datos de empresa, contacto, **horarios** y ubicaciones | `src/data/site.ts` |
 | Servicios (genera `/servicios/<slug>/` automáticamente) | `src/data/services.ts` |
 | Sectores | `src/data/sectors.ts` |
 | Tecnología | `src/data/technology.ts` |

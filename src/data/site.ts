@@ -21,10 +21,17 @@ export interface Phone {
   number: string;
 }
 
+/** Franja horaria "HH:MM"–"HH:MM" (hora de España peninsular). */
+export type TimeRange = [string, string];
+/** Lunes = 0 … Domingo = 6. Día sin franjas = cerrado. */
+export type WeeklyHours = [TimeRange[], TimeRange[], TimeRange[], TimeRange[], TimeRange[], TimeRange[], TimeRange[]];
+
 export interface Location {
   label: string;
   address: Address;
   phone?: Phone;
+  /** Horario de atención. null = no confirmado (no inventar). */
+  hours: WeeklyHours | null;
 }
 
 const headquarters: Address = {
@@ -66,8 +73,12 @@ export const site = {
   },
 
   locations: [
-    { label: 'Sede central', address: headquarters, phone: { label: 'Teléfono general', number: '+34 934 006 500' } },
-    { label: 'Almacén central', address: centralWarehouse, phone: { label: 'Almacén', number: '900 181 753' } },
+    /*
+     * Horario: [DATOS PENDIENTES DE CONFIRMAR]. Ejemplo de formato cuando se confirme:
+     * hours: [[['08:00', '14:00'], ['15:00', '18:00']], …(7 días)…, []]
+     */
+    { label: 'Sede central', address: headquarters, phone: { label: 'Teléfono general', number: '+34 934 006 500' }, hours: null },
+    { label: 'Almacén central', address: centralWarehouse, phone: { label: 'Almacén', number: '900 181 753' }, hours: null },
   ] as Location[],
 
   social: {
@@ -80,4 +91,7 @@ export const site = {
 
 export const yearsSince = (year: number) => new Date().getFullYear() - year;
 export const telHref = (phone: string) => `tel:${phone.startsWith('+') ? '' : '+34'}${phone.replace(/[^+\d]/g, '')}`;
+export const mapsQuery = (a: Address) => encodeURIComponent(`${a.street}, ${a.postalCode} ${a.city}, ${a.region}, España`);
+export const mapsEmbedUrl = (a: Address) => `https://maps.google.com/maps?q=${mapsQuery(a)}&z=15&output=embed`;
+export const mapsDirectionsUrl = (a: Address) => `https://www.google.com/maps/dir/?api=1&destination=${mapsQuery(a)}`;
 export const formatAddress = (a: Address) => `${a.street}, ${a.postalCode} ${a.city} (${a.region})`;

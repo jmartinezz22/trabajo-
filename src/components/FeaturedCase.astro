@@ -13,7 +13,7 @@ interface Props {
 const { c, link = true, title = '176 almacenes. Un hospital. Trazabilidad de extremo a extremo.' } = Astro.props;
 ---
 <article class="case" id={c.id}>
-  <div class="media" data-reveal>
+  <div class="media" data-reveal="left">
     <Photo image="hospital" label sizes="(max-width: 1024px) 100vw, 50vw" parallax />
   </div>
   <div class="body">
@@ -50,7 +50,7 @@ const { c, link = true, title = '176 almacenes. Un hospital. Trazabilidad de ext
   .body h2 { font-size: clamp(2.25rem, 1.4rem + 3.2vw, 4.5rem); max-width: 14ch; }
   .facts { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: var(--space-7); width: 100%; padding-block: var(--space-5); border-block: 1px solid var(--line); }
   .facts dt { font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-muted); }
-  .facts dd { margin: var(--space-2) 0 0; font-family: var(--font-display); font-size: clamp(1.75rem, 1.3rem + 1.5vw, 2.75rem); letter-spacing: -0.04em; line-height: 1; color: var(--ink); }
+  .facts dd { margin: var(--space-2) 0 0; font-family: var(--font-display); font-size: clamp(1.75rem, 1.3rem + 1.5vw, 2.75rem); letter-spacing: -0.04em; line-height: 1; color: var(--fg); }
   .facts dd span { font-size: 0.45em; letter-spacing: -0.01em; color: var(--text-muted); }
   .results { display: grid; gap: var(--space-4); width: 100%; }
   .results ul { display: grid; }

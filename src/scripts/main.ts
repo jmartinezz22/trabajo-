@@ -9,6 +9,7 @@ const parallaxEls = Array.from(document.querySelectorAll<HTMLElement>('[data-par
 /* — Cabecera: borde al hacer scroll + CTA fijo en móvil — */
 const header = document.querySelector<HTMLElement>('[data-header]');
 const stickyCta = document.querySelector<HTMLElement>('[data-sticky-cta]');
+const progress = document.querySelector<HTMLElement>('[data-progress]');
 let ticking = false;
 
 function onScroll() {
@@ -21,6 +22,7 @@ function onScroll() {
     stickyCta.setAttribute('aria-hidden', String(!shown));
     stickyCta.querySelector('a')?.setAttribute('tabindex', shown ? '0' : '-1');
   }
+  progress?.style.setProperty('--progress', String(Math.min(1, y / Math.max(1, document.documentElement.scrollHeight - window.innerHeight))));
   if (!reduceMotion) updateParallax();
   ticking = false;
 }
@@ -129,7 +131,7 @@ function updateParallax() {
   for (const el of parallaxEls) {
     const r = el.getBoundingClientRect();
     if (r.bottom < 0 || r.top > vh) continue;
-    const progress = (r.top + r.height / 2 - vh / 2) / vh; // -1 … 1
-    el.style.setProperty('--py', `${(progress * -24).toFixed(1)}px`);
+    const ratio = (r.top + r.height / 2 - vh / 2) / vh; // -1 … 1
+    el.style.setProperty('--py', `${(ratio * -24).toFixed(1)}px`);
   }
 }

@@ -79,7 +79,7 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     position: sticky;
     top: 0;
     z-index: 100;
-    color: var(--ink);
+    color: var(--fg);
     background: var(--paper);
     border-bottom: 1px solid transparent;
     transition: background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
@@ -88,7 +88,7 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
   /* Modo superpuesto: el hero sube por debajo de la cabecera */
   .site-header.is-overlay { position: fixed; left: 0; right: 0; background: transparent; color: #fff; }
   .site-header.is-overlay.is-scrolled,
-  :global(.menu-open) .site-header.is-overlay { background: var(--paper); color: var(--ink); border-color: var(--line); }
+  :global(.menu-open) .site-header.is-overlay { background: var(--paper); color: var(--fg); border-color: var(--line); }
 
   .bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); height: var(--header-h); }
   .brand { flex: none; }
@@ -127,7 +127,7 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     left: 0;
     right: 0;
     top: 100%;
-    color: var(--ink);
+    color: var(--fg);
     background: var(--paper);
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
@@ -166,7 +166,7 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
   .mobile-menu {
     position: fixed;
     inset: var(--header-h) 0 0 0;
-    color: var(--ink);
+    color: var(--fg);
     background: var(--paper);
     overflow-y: auto;
     padding-block: var(--space-5) var(--space-8);
