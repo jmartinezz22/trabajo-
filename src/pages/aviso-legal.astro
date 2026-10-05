@@ -1,0 +1,26 @@
+---
+import LegalLayout from '@/layouts/LegalLayout.astro';
+import Pending from '@/components/Pending.astro';
+import { site, formatAddress } from '@/data/site';
+const hq = site.contact.address!;
+---
+<LegalLayout title="Aviso legal" description="Aviso legal del sitio web de PALEX MEDICAL." href="/aviso-legal/">
+  <h2>1. Titular del sitio web</h2>
+  <p>En cumplimiento del artículo 10 de la Ley 34/2002, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa:</p>
+  <ul>
+    <li>Razón social: {site.legalName}</li>
+    <li>CIF: <Pending /></li>
+    <li>Domicilio: {formatAddress(hq)}</li>
+    <li>Teléfono: {site.contact.phone.number}</li>
+    <li>Datos registrales: <Pending /></li>
+    <li>Email de contacto: <Pending /></li>
+  </ul>
+  <h2>2. Objeto</h2>
+  <p>El presente aviso regula el acceso y uso del sitio web, que tiene por finalidad informar sobre los servicios logísticos de la empresa.</p>
+  <h2>3. Propiedad intelectual e industrial</h2>
+  <p>Los contenidos, marcas, logotipos y diseño del sitio web son titularidad de la empresa o de terceros que han autorizado su uso. Queda prohibida su reproducción sin autorización expresa.</p>
+  <h2>4. Responsabilidad</h2>
+  <p>La empresa no se responsabiliza del uso indebido de los contenidos ni de los daños derivados de interrupciones técnicas ajenas a su control.</p>
+  <h2>5. Legislación aplicable</h2>
+  <p>Este aviso legal se rige por la legislación española. Jurisdicción competente: <Pending /></p>
+</LegalLayout>

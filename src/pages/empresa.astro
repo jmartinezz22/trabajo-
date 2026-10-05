@@ -1,0 +1,90 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import Stats from '@/components/Stats.astro';
+import CertList from '@/components/CertList.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import Photo from '@/components/Photo.astro';
+import Icon from '@/components/Icon.astro';
+import VisitSection from '@/components/VisitSection.astro';
+import { provenExperience } from '@/data/trust';
+import { site } from '@/data/site';
+
+const crumbs = [{ name: 'Empresa', href: '/empresa/' }];
+---
+<BaseLayout
+  title="Empresa · Experiencia en logística hospitalaria desde 1998"
+  description="PALEX MEDICAL: experiencia en soluciones logísticas hospitalarias desde 1998, automatización, trazabilidad y soluciones adaptadas a cada operación. Sede en Sant Cugat del Vallès (Barcelona)."
+  breadcrumbs={crumbs}
+  overlay
+  schema={[{ '@context': 'https://schema.org', '@type': 'AboutPage', name: 'Empresa', url: new URL('/empresa/', Astro.site).href }]}
+>
+  <PageHero
+    eyebrow="Empresa"
+    title="Experiencia logística formada en el entorno más exigente: el hospital."
+    intro={`Desde ${site.hospitalLogisticsSince}, la división de Logística Hospitalaria e Ingeniería de Palex desarrolla soluciones de gestión de material sanitario, medicación y procesos logísticos.`}
+    breadcrumbs={crumbs}
+    image="empresa"
+  >
+    <a href="/contacto/" class="btn">Solicitar una solución <Icon name="arrow" /></a>
+  </PageHero>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Trayectoria</p>
+        <h2 data-reveal style="--reveal-i:1">Más de 25 años en soluciones de logística hospitalaria.</h2>
+      </div>
+      <Stats />
+    </div>
+  </section>
+
+  <section class="exp">
+    <div class="exp-media" data-reveal><Photo image="capacity" sizes="(max-width: 1024px) 100vw, 50vw" parallax /></div>
+    <div class="exp-copy">
+      <p class="eyebrow" data-reveal>Capacidad</p>
+      <h2 data-reveal style="--reveal-i:1">No solo transportamos. Combinamos todo lo que necesita una operación.</h2>
+      <ul role="list" class="list">
+        {provenExperience.map((e, i) => <li data-reveal style={`--reveal-i:${i % 3}`}>{e}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="calidad">
+    <div class="container">
+      <div class="section-head split">
+        <div>
+          <p class="eyebrow" data-reveal>Confianza</p>
+          <h2 data-reveal style="--reveal-i:1">Calidad y cumplimiento.</h2>
+        </div>
+        <p class="lead" data-reveal style="--reveal-i:2">Antes de publicar una certificación confirmamos su alcance, la entidad certificadora, su vigencia y la sociedad a la que corresponde.</p>
+      </div>
+      <CertList detailed />
+    </div>
+  </section>
+
+  <VisitSection />
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .exp { display: grid; background: var(--surface); }
+  .exp-media { position: relative; min-height: 70vw; }
+  .exp-media :global(.photo) { position: absolute; inset: 0; }
+  .exp-copy { display: grid; gap: var(--space-6); align-content: center; padding: var(--space-9) var(--gutter); }
+  .exp-copy h2 { font-size: var(--fs-xl); max-width: 18ch; }
+  .list { border-top: 1px solid var(--line); }
+  .list li { padding: var(--space-3) 0; border-bottom: 1px solid var(--line); }
+  @media (min-width: 1024px) {
+    .exp { grid-template-columns: 1fr 1fr; min-height: 90vh; }
+    .exp-media { min-height: 0; }
+    .exp-copy { padding: var(--space-9); }
+  }
+  .locs { display: grid; gap: var(--space-7); }
+  .locs li { display: grid; gap: var(--space-4); justify-items: start; padding-top: var(--space-5); border-top: 1px solid var(--rule); }
+  .locs address { font-style: normal; font-family: var(--font-display); font-size: var(--fs-xl); letter-spacing: -0.03em; line-height: 1.15; color: var(--fg); }
+  @media (min-width: 900px) { .locs { grid-template-columns: 1fr 1fr; column-gap: var(--space-9); } }
+  .cs { margin-top: var(--space-7); color: var(--text-muted); }
+  .cs a { color: var(--fg); font-weight: 500; }
+</style>

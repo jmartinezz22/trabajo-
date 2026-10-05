@@ -1,0 +1,22 @@
+---
+import LegalLayout from '@/layouts/LegalLayout.astro';
+import Pending from '@/components/Pending.astro';
+import { site, formatAddress } from '@/data/site';
+const hq = site.contact.address!;
+---
+<LegalLayout title="Política de privacidad" description="Política de privacidad y protección de datos de PALEX MEDICAL." href="/politica-de-privacidad/">
+  <h2>1. Responsable del tratamiento</h2>
+  <p>Identidad: {site.legalName}. CIF: <Pending />. Dirección: {formatAddress(hq)}. Teléfono: {site.contact.phone.number}. Email: <Pending />. Delegado de Protección de Datos (si procede): <Pending /></p>
+  <h2>2. Datos que tratamos</h2>
+  <p>Los datos facilitados a través del formulario de solicitud de propuesta: nombre, empresa, email, teléfono, sector, servicio, origen, destino, tipo de mercancía, necesidades y mensaje.</p>
+  <h2>3. Finalidad</h2>
+  <p>Atender la solicitud de información o propuesta comercial y mantener la comunicación derivada de ella.</p>
+  <h2>4. Legitimación</h2>
+  <p>Consentimiento del interesado (art. 6.1.a RGPD) y aplicación de medidas precontractuales a petición del interesado (art. 6.1.b RGPD).</p>
+  <h2>5. Conservación</h2>
+  <p>Plazo de conservación: <Pending /></p>
+  <h2>6. Destinatarios</h2>
+  <p>No se cederán datos a terceros salvo obligación legal. Encargados del tratamiento (p. ej. proveedor del formulario o CRM): <Pending /></p>
+  <h2>7. Derechos</h2>
+  <p>Puedes ejercer los derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a <Pending />, así como presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es).</p>
+</LegalLayout>

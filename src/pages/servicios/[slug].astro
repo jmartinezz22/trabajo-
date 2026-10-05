@@ -1,0 +1,214 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import EditorialList from '@/components/EditorialList.astro';
+import FlowSteps from '@/components/FlowSteps.astro';
+import Faq from '@/components/Faq.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import Icon from '@/components/Icon.astro';
+import Photo from '@/components/Photo.astro';
+import { services, serviceHref, type ServiceLine } from '@/data/services';
+import { sectors } from '@/data/sectors';
+import type { PhotoKey } from '@/data/images';
+import { site } from '@/data/site';
+
+export const getStaticPaths = (() =>
+  services.map((service) => ({ params: { slug: service.slug }, props: { service } }))) satisfies GetStaticPaths;
+
+interface Props {
+  service: ServiceLine;
+}
+const { service: s } = Astro.props;
+
+const crumbs = [
+  { name: 'Servicios', href: '/servicios/' },
+  { name: s.name, href: serviceHref(s.slug) },
+];
+const related = sectors.filter((sec) => s.sectors.includes(sec.slug));
+const others = services.filter((o) => o.slug !== s.slug);
+const contactHref = `/contacto/?servicio=${s.slug}`;
+const isPending = (t: string) => t.includes('[');
+// Segunda fotografía por línea (distinta de la del hero)
+const adaptImage: Record<string, PhotoKey> = {
+  transporte: 'logistica',
+  logistica: 'capacity',
+  'excedentes-industriales': 'capacity',
+  'servicios-especiales': 'transporte',
+  'eventos-y-congresos': 'logistica',
+  'consultoria-logistica': 'tecnologia',
+};
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: s.name,
+    serviceType: s.seo.title,
+    description: s.seo.description,
+    provider: { '@id': new URL('/#organization', Astro.site).href, name: site.name },
+    url: new URL(serviceHref(s.slug), Astro.site).href,
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: s.itemsTitle,
+      itemListElement: s.groups.flatMap((g) =>
+        g.items.map((it) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: it.title } })),
+      ),
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: s.faq
+      .filter((f) => !isPending(f.a))
+      .map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+];
+---
+<BaseLayout title={s.seo.title} description={s.seo.description} breadcrumbs={crumbs} schema={schema} overlay>
+  <PageHero eyebrow={`${s.num} · ${s.name}`} title={s.hero.title} intro={s.hero.intro} breadcrumbs={crumbs} image={s.image}>
+    <a href={contactHref} class="btn">Solicitar una solución <Icon name="arrow" /></a>
+    <a href="#detalle" class="btn btn-ghost">Qué incluye</a>
+  </PageHero>
+
+  {s.statement && (
+    <section class="section tight">
+      <div class="container">
+        <p class="statement" data-reveal>{s.statement}</p>
+      </div>
+    </section>
+  )}
+
+  <section class="section" id="detalle">
+    <div class="container">
+      <div class="section-head split">
+        <div>
+          <p class="eyebrow" data-reveal>Qué incluye</p>
+          <h2 data-reveal style="--reveal-i:1">{s.itemsTitle}</h2>
+        </div>
+        {s.itemsIntro && <p class="lead" data-reveal style="--reveal-i:2">{s.itemsIntro}</p>}
+      </div>
+      {s.groups.map((g) => <EditorialList items={g.items} label={g.label} />)}
+    </div>
+  </section>
+
+  {s.pillars && (
+    <section class="section bg-surface">
+      <div class="container">
+        <div class="section-head split">
+          <div>
+            <p class="eyebrow" data-reveal>{s.pillars.eyebrow}</p>
+            <h2 data-reveal style="--reveal-i:1">{s.pillars.title}</h2>
+          </div>
+          {s.pillars.intro && <p class="lead" data-reveal style="--reveal-i:2">{s.pillars.intro}</p>}
+        </div>
+        <ol role="list" class="pillars">
+          {s.pillars.items.map((it, i) => (
+            <li data-reveal style={`--reveal-i:${i}`}>
+              <span class="p-num">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{it.title}</h3>
+              <p>{it.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )}
+
+  {s.flow && (
+    <section class="section on-dark">
+      <div class="container">
+        <div class="section-head split">
+          <div>
+            <p class="eyebrow" data-reveal>{s.flow.eyebrow}</p>
+            <h2 data-reveal style="--reveal-i:1">{s.flow.title}</h2>
+          </div>
+          {s.flow.intro && <p class="lead" data-reveal style="--reveal-i:2">{s.flow.intro}</p>}
+        </div>
+        <FlowSteps steps={s.flow.steps} tone="dark" showText />
+      </div>
+    </section>
+  )}
+
+  <section class="adapt">
+    <div class="adapt-media" data-reveal><Photo image={adaptImage[s.slug] ?? 'capacity'} sizes="(max-width: 1024px) 100vw, 50vw" parallax /></div>
+    <div class="adapt-copy">
+      <p class="eyebrow" data-reveal>Adaptación</p>
+      <h2 data-reveal style="--reveal-i:1">{s.adapt.title}</h2>
+      <ul role="list" class="points">
+        {s.adapt.points.map((p, i) => (
+          <li data-reveal style={`--reveal-i:${i + 1}`}>
+            {isPending(p) ? <>{p.split('[')[0]}<span class="pending">[{p.split('[')[1]}</span></> : p}
+          </li>
+        ))}
+      </ul>
+      <a href={contactHref} class="btn" data-reveal>Hablar con un especialista <Icon name="arrow" /></a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container faq-grid">
+      <div>
+        <p class="eyebrow" data-reveal>Preguntas frecuentes</p>
+        <h2 data-reveal style="--reveal-i:1">Lo que suelen preguntarnos.</h2>
+        <p class="sectors-line" data-reveal style="--reveal-i:2">
+          Sectores: {related.map((r, i) => <><a href={`/sectores/#${r.slug}`}>{r.name}</a>{i < related.length - 1 ? ' · ' : ''}</>)}
+        </p>
+      </div>
+      <Faq items={s.faq} />
+    </div>
+  </section>
+
+  <CtaBand title={s.cta.title} text={s.cta.text} href={contactHref} />
+
+  <nav class="section tight others" aria-label="Otros servicios">
+    <div class="container">
+      <p class="eyebrow">Otros servicios</p>
+      <ul role="list">
+        {others.map((o) => (
+          <li><a href={serviceHref(o.slug)}><span class="n">{o.num}</span>{o.name}<Icon name="arrow" size={18} /></a></li>
+        ))}
+      </ul>
+    </div>
+  </nav>
+</BaseLayout>
+
+<style>
+  .statement { font-family: var(--font-display); font-size: clamp(1.75rem, 1.2rem + 2.2vw, 3.25rem); letter-spacing: -0.03em; line-height: 1.15; color: var(--fg); max-width: 26ch; }
+  .pillars { display: grid; gap: var(--space-7); }
+  .pillars li { display: grid; gap: var(--space-3); align-content: start; padding-top: var(--space-5); border-top: 1px solid var(--rule); }
+  .p-num { font-size: var(--fs-sm); color: var(--text-soft); }
+  .pillars h3 { font-size: var(--fs-xl); font-weight: 400; letter-spacing: -0.03em; }
+  .pillars p { color: var(--text-muted); max-width: 30ch; }
+  @media (min-width: 768px) { .pillars { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .pillars { grid-template-columns: repeat(4, 1fr); column-gap: var(--space-7); } }
+
+  .adapt { display: grid; background: var(--surface); }
+  .adapt-media { position: relative; min-height: 70vw; }
+  .adapt-media :global(.photo) { position: absolute; inset: 0; }
+  .adapt-copy { display: grid; gap: var(--space-5); align-content: center; justify-items: start; padding: var(--space-9) var(--gutter); }
+  .adapt-copy h2 { max-width: 16ch; font-size: var(--fs-xl); }
+  .points { width: 100%; margin-block: var(--space-3); border-top: 1px solid var(--line); }
+  .points li { padding: var(--space-4) 0; border-bottom: 1px solid var(--line); }
+  @media (min-width: 1024px) {
+    .adapt { grid-template-columns: 1fr 1fr; min-height: 80vh; }
+    .adapt-media { min-height: 0; }
+    .adapt-copy { padding: var(--space-9); }
+  }
+
+  .faq-grid { display: grid; gap: var(--space-7); }
+  .faq-grid h2 { font-size: var(--fs-xl); max-width: 14ch; }
+  .sectors-line { margin-top: var(--space-5); font-size: var(--fs-sm); color: var(--text-muted); }
+  .sectors-line a { color: var(--fg); border-bottom: 1px solid var(--line-strong); }
+  @media (min-width: 1024px) { .faq-grid { grid-template-columns: 1fr 1.6fr; gap: var(--space-9); } }
+
+  .others ul { margin-top: var(--space-5); border-top: 1px solid var(--line); }
+  .others a {
+    display: grid; grid-template-columns: 3rem 1fr auto; align-items: center;
+    padding: var(--space-4) 0; border-bottom: 1px solid var(--line);
+    font-family: var(--font-display); font-size: var(--fs-lg); letter-spacing: -0.02em;
+    transition: padding var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+  .others .n { font-family: var(--font-body); font-size: var(--fs-sm); color: var(--text-soft); }
+  .others a:hover { padding-left: var(--space-3); color: var(--brand-ink); }
+</style>

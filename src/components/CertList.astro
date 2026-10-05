@@ -1,0 +1,38 @@
+---
+/**
+ * Calidad y cumplimiento. GDP no se muestra (no confirmada).
+ * Las certificaciones en validación llevan el marcador oficial pendiente.
+ */
+import { certifications } from '@/data/trust';
+
+interface Props {
+  tone?: 'light' | 'dark';
+  detailed?: boolean;
+}
+const { tone = 'light', detailed = false } = Astro.props;
+const shown = certifications.filter((c) => c.status !== 'not-found');
+---
+<ul role="list" class:list={['certs', `certs--${tone}`]}>
+  {shown.map((c, i) => (
+    <li data-reveal style={`--reveal-i:${i}`}>
+      <span class="code">{c.code}</span>
+      <span class="name">{c.name}</span>
+      {c.status === 'validation' && <span class="pending">[CERTIFICACIÓN PENDIENTE DE VALIDACIÓN]</span>}
+      {detailed && c.status === 'validation' && <span class="note">{c.note}</span>}
+    </li>
+  ))}
+</ul>
+
+<style>
+  .certs { display: grid; gap: var(--space-6); }
+  li { display: grid; gap: var(--space-2); align-content: start; justify-items: start; padding-top: var(--space-5); border-top: 1px solid var(--line); }
+  .code { font-family: var(--font-display); font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); font-weight: 400; letter-spacing: -0.03em; color: var(--fg); line-height: 1.1; }
+  .name { color: var(--text-muted); font-size: var(--fs-sm); }
+  .pending { font-size: 0.6875rem; margin-top: var(--space-2); }
+  .note { font-size: var(--fs-xs); color: var(--text-soft); }
+  .certs--dark li { border-color: var(--ink-3); }
+  .certs--dark .code { color: #fff; }
+  .certs--dark .name { color: var(--text-on-dark-muted); }
+  @media (min-width: 640px) { .certs { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .certs { grid-template-columns: repeat(4, 1fr); column-gap: var(--space-7); } }
+</style>

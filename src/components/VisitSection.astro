@@ -1,0 +1,388 @@
+---
+/**
+ * Dónde estamos: ubicación + horario visual, por sede.
+ *  - Mapa: vista estática ligera; Google Maps solo se carga al pulsar (privacidad / rendimiento).
+ *  - Horario: línea de tiempo semanal 06–22 h con "ahora" en hora de Madrid y estado abierto/cerrado.
+ *    Si el horario no está confirmado (hours: null) se muestra el marcador pendiente: no se inventa.
+ */
+import Icon from './Icon.astro';
+import { site, telHref, formatAddress, mapsEmbedUrl, mapsDirectionsUrl } from '@/data/site';
+
+interface Props {
+  heading?: string;
+  intro?: string;
+}
+const {
+  heading = 'Dónde estamos.',
+  intro = 'Sede central en Sant Cugat del Vallès y almacén central en Cornellà de Llobregat, en el área metropolitana de Barcelona.',
+} = Astro.props;
+
+const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+const START = 6;
+const END = 22;
+const SPAN = END - START;
+const toH = (t: string) => {
+  const [h = 0, m = 0] = t.split(':').map(Number);
+  return h + m / 60;
+};
+const pct = (h: number) => `${(((Math.min(Math.max(h, START), END) - START) / SPAN) * 100).toFixed(3)}%`;
+const ticks = [6, 8, 10, 12, 14, 16, 18, 20, 22];
+---
+<section class="visit section" data-visit>
+  <div class="container">
+    <div class="section-head split">
+      <div>
+        <p class="eyebrow" data-reveal>Ubicación y horario</p>
+        <h2 data-reveal="mask" style="--reveal-i:1">{heading}</h2>
+      </div>
+      <p class="lead" data-reveal style="--reveal-i:2">{intro}</p>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Ubicaciones" data-reveal>
+      {site.locations.map((l, i) => (
+        <button
+          type="button"
+          role="tab"
+          id={`loc-tab-${i}`}
+          aria-controls={`loc-panel-${i}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          tabindex={i === 0 ? 0 : -1}
+          data-tab={i}
+        >
+          <span class="t-num">{String(i + 1).padStart(2, '0')}</span>{l.label}
+          <span class="t-city">{l.address.city}</span>
+        </button>
+      ))}
+    </div>
+
+    {site.locations.map((l, i) => (
+      <div class="panel" role="tabpanel" id={`loc-panel-${i}`} aria-labelledby={`loc-tab-${i}`} data-panel={i}>
+        <div class="info">
+          <p class="eyebrow only-nojs">{l.label}</p>
+          <address class="addr" data-reveal="left">
+            {l.address.street}<br />
+            <span>{l.address.postalCode} {l.address.city}</span>
+          </address>
+          <div class="meta" data-reveal style="--reveal-i:1">
+            {l.phone && (
+              <p><span class="k">{l.phone.label}</span><a href={telHref(l.phone.number)}>{l.phone.number}</a></p>
+            )}
+            <p><span class="k">Provincia</span>{l.address.region}, España</p>
+          </div>
+          <a href={mapsDirectionsUrl(l.address)} class="link-arrow" target="_blank" rel="noopener" data-reveal style="--reveal-i:2">
+            Cómo llegar <Icon name="arrow" />
+          </a>
+
+          <!-- Horario visual -->
+          <div class="schedule" data-schedule data-hours={l.hours ? JSON.stringify(l.hours) : ''} data-reveal style="--reveal-i:3">
+            <div class="sch-head">
+              <p class="k">Horario</p>
+              <p class="status" data-status>
+                {l.hours ? <span class="dot"></span> : null}
+                {l.hours ? <span data-status-text>Consultando…</span> : <span class="pending">[HORARIO PENDIENTE DE CONFIRMAR]</span>}
+              </p>
+            </div>
+            <div class="scale" aria-hidden="true">
+              {ticks.map((t) => <span style={`left:${pct(t)}`}>{String(t).padStart(2, '0')}</span>)}
+            </div>
+            <ol role="list" class="days">
+              {DAYS.map((d, di) => {
+                const ranges = l.hours?.[di] ?? [];
+                const label = !l.hours
+                  ? 'pendiente de confirmar'
+                  : ranges.length
+                    ? ranges.map(([a, b]) => `${a} a ${b}`).join(' y ')
+                    : 'cerrado';
+                return (
+                  <li data-day={di}>
+                    <span class="d">{d.slice(0, 3)}<span class="visually-hidden">{d.slice(3)}: {label}</span></span>
+                    <span class:list={['track', { unknown: !l.hours }]} aria-hidden="true">
+                      {ticks.slice(1, -1).map((t) => <span class="grid" style={`left:${pct(t)}`}></span>)}
+                      {ranges.map(([a, b]) => (
+                        <span class="bar" style={`left:${pct(toH(a))};width:calc(${pct(toH(b))} - ${pct(toH(a))})`}>
+                          <span class="bar-t">{a}–{b}</span>
+                        </span>
+                      ))}
+                      {l.hours && !ranges.length && <span class="closed">Cerrado</span>}
+                      <span class="now" data-now></span>
+                    </span>
+                  </li>
+                );
+              })}
+            </ol>
+            <p class="tz">Hora de España peninsular · <span data-clock></span></p>
+          </div>
+        </div>
+
+        <!-- Mapa: vista ligera, Google Maps bajo demanda -->
+        <div class="map" data-map data-src={mapsEmbedUrl(l.address)} data-title={`Mapa: ${formatAddress(l.address)}`} data-reveal="scale">
+          <div class="map-static" aria-hidden="true">
+            <span class="road r1"></span><span class="road r2"></span><span class="road r3"></span><span class="road r4"></span>
+            <span class="block b1"></span><span class="block b2"></span><span class="block b3"></span>
+          </div>
+          <div class="pin" aria-hidden="true"><span class="ring"></span><span class="ring r-2"></span><span class="core"></span></div>
+          <div class="map-card">
+            <p class="mc-label">{l.label}</p>
+            <p class="mc-addr">{formatAddress(l.address)}</p>
+            <button type="button" class="btn btn-sm" data-map-load>Ver mapa interactivo</button>
+            <p class="mc-note">Al cargar el mapa se conectará con Google Maps.</p>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  const TZ = 'Europe/Madrid';
+  const START = 6;
+  const SPAN = 16;
+  const DAYS = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+  const toH = (t: string) => {
+    const [h = 0, m = 0] = t.split(':').map(Number);
+    return h + m / 60;
+  };
+
+  /** Día (0 = lunes) y hora decimal actuales en Madrid. */
+  function madridNow() {
+    const parts = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+    const get = (t: string) => parts.find((p) => p.type === t)?.value ?? '0';
+    const day = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].indexOf(get('weekday'));
+    const h = Number(get('hour')) + Number(get('minute')) / 60;
+    return { day, h, label: `${get('hour')}:${get('minute')}` };
+  }
+
+  function update(root: HTMLElement) {
+    const now = madridNow();
+    root.querySelectorAll<HTMLElement>('[data-schedule]').forEach((sch) => {
+      sch.querySelectorAll<HTMLElement>('[data-day]').forEach((row) => {
+        const today = Number(row.dataset.day) === now.day;
+        row.classList.toggle('is-today', today);
+        const line = row.querySelector<HTMLElement>('[data-now]');
+        if (line) {
+          const inRange = now.h >= START && now.h <= START + SPAN;
+          line.style.left = `${((now.h - START) / SPAN) * 100}%`;
+          line.hidden = !(today && inRange);
+        }
+      });
+      const clock = sch.querySelector<HTMLElement>('[data-clock]');
+      if (clock) clock.textContent = `ahora ${now.label}`;
+
+      const raw = sch.dataset.hours;
+      const text = sch.querySelector<HTMLElement>('[data-status-text]');
+      if (!raw || !text) return;
+      const hours: [string, string][][] = JSON.parse(raw);
+      const open = (hours[now.day] ?? []).find(([a, b]) => now.h >= toH(a) && now.h < toH(b));
+      sch.classList.toggle('is-open', !!open);
+      if (open) {
+        text.textContent = `Abierto ahora · hasta las ${open[1]}`;
+        return;
+      }
+      // Próxima apertura
+      for (let k = 0; k < 8; k++) {
+        const d = (now.day + k) % 7;
+        const next = (hours[d] ?? []).find(([a]) => k > 0 || toH(a) > now.h);
+        if (next) {
+          text.textContent = `Cerrado ahora · abre ${k === 0 ? 'hoy' : k === 1 ? 'mañana' : `el ${DAYS[d]}`} a las ${next[0]}`;
+          return;
+        }
+      }
+      text.textContent = 'Cerrado';
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-visit]').forEach((root) => {
+    root.classList.add('has-tabs');
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+    const panels = [...root.querySelectorAll<HTMLElement>('[data-panel]')];
+    const select = (i: number, focus = false) => {
+      tabs.forEach((t, k) => {
+        t.setAttribute('aria-selected', String(k === i));
+        t.tabIndex = k === i ? 0 : -1;
+      });
+      panels.forEach((p, k) => {
+        p.hidden = k !== i;
+        if (k === i) p.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-visible'));
+      });
+      if (focus) tabs[i]?.focus();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(i));
+      t.addEventListener('keydown', (e) => {
+        const dir = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (dir) select((i + dir + tabs.length) % tabs.length, true);
+      });
+    });
+    select(0);
+
+    // Mapa bajo demanda
+    root.querySelectorAll<HTMLElement>('[data-map]').forEach((map) => {
+      map.querySelector('[data-map-load]')?.addEventListener('click', () => {
+        const iframe = document.createElement('iframe');
+        iframe.src = map.dataset.src!;
+        iframe.title = map.dataset.title ?? 'Mapa';
+        iframe.loading = 'lazy';
+        iframe.referrerPolicy = 'no-referrer-when-downgrade';
+        iframe.allowFullscreen = true;
+        map.append(iframe);
+        map.classList.add('is-live');
+      });
+    });
+
+    update(root);
+    setInterval(() => update(root), 60_000);
+  });
+</script>
+
+<style>
+  .visit { background: var(--surface); border-top: 1px solid var(--line); }
+
+  /* Pestañas */
+  .tabs { display: none; gap: 0; margin-bottom: var(--space-7); border-bottom: 1px solid var(--line); }
+  .has-tabs .tabs { display: flex; }
+  .has-tabs .only-nojs { display: none; }
+  .tabs button {
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+    padding: var(--space-4) var(--space-6) var(--space-4) 0;
+    margin-right: var(--space-6);
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+    color: var(--text-muted);
+    text-align: left;
+    transition: color var(--dur) var(--ease);
+  }
+  .tabs button::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 600ms var(--ease-out);
+  }
+  .tabs button[aria-selected='true'] { color: var(--fg); }
+  .tabs button[aria-selected='true']::after { transform: scaleX(1); }
+  .tabs button:hover { color: var(--fg); }
+  .t-num { font-family: var(--font-body); font-size: var(--fs-xs); color: var(--accent); letter-spacing: 0.1em; }
+  .t-city { width: 100%; padding-left: 1.6rem; font-family: var(--font-body); font-size: var(--fs-xs); letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-soft); }
+
+  /* Panel */
+  .panel { display: grid; gap: var(--space-7); }
+  .panel[hidden] { display: none; }
+  .panel + .panel { margin-top: var(--space-8); }
+  .has-tabs .panel + .panel { margin-top: 0; }
+  .info { display: grid; gap: var(--space-5); align-content: start; justify-items: start; }
+  .addr { font-style: normal; font-family: var(--font-display); font-size: clamp(2rem, 1.3rem + 2.6vw, 3.5rem); font-weight: 300; line-height: 1.05; letter-spacing: -0.02em; color: var(--fg); }
+  .addr span { color: var(--accent); font-style: italic; }
+  .meta { display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-7); }
+  .k { display: block; margin-bottom: 0.15rem; font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-soft); }
+  .meta a { color: var(--fg); border-bottom: 1px solid var(--line-strong); transition: color var(--dur), border-color var(--dur); }
+  .meta a:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* Horario */
+  .schedule { width: 100%; margin-top: var(--space-4); padding: var(--space-5) 0 0; border-top: 1px solid var(--line); }
+  .sch-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--space-3); margin-bottom: var(--space-5); }
+  .status { display: inline-flex; align-items: center; gap: 0.6rem; font-size: var(--fs-sm); color: var(--text-muted); }
+  .status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-soft); }
+  .is-open .status { color: var(--fg); }
+  .is-open .status .dot { background: var(--accent); box-shadow: 0 0 0 0 rgba(201, 160, 102, 0.6); animation: pulse 2.2s infinite; }
+  .scale { position: relative; height: 1.25rem; margin-left: 3.25rem; font-size: 0.6875rem; color: var(--text-soft); font-variant-numeric: tabular-nums; }
+  .scale span { position: absolute; top: 0; transform: translateX(-50%); }
+  .days { display: grid; gap: 0.45rem; }
+  .days li { display: grid; grid-template-columns: 3.25rem 1fr; align-items: center; }
+  .d { font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-soft); }
+  .is-today .d { color: var(--accent); }
+  .track { position: relative; height: 30px; border-radius: 1px; background: rgba(255, 255, 255, 0.025); box-shadow: inset 0 0 0 1px var(--line); }
+  .is-today .track { box-shadow: inset 0 0 0 1px var(--rule); background: rgba(201, 160, 102, 0.04); }
+  .track.unknown {
+    background-image: repeating-linear-gradient(135deg, rgba(201, 160, 102, 0.09) 0 1px, transparent 1px 9px);
+  }
+  .grid { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); }
+  .bar {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 1px;
+    background: linear-gradient(90deg, var(--accent-deep), var(--accent));
+    transform-origin: left;
+    animation: grow 1.2s var(--ease-out) both;
+  }
+  .bar-t { font-size: 0.6875rem; font-weight: 600; color: var(--ink); white-space: nowrap; }
+  .closed { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-soft); }
+  .now { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; background: var(--fg); box-shadow: 0 0 10px rgba(242, 237, 228, 0.6); }
+  .now::before { content: ''; position: absolute; top: -3px; left: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--fg); }
+  .tz { margin-top: var(--space-4); font-size: var(--fs-xs); color: var(--text-soft); }
+
+  /* Mapa */
+  .map { position: relative; min-height: 420px; overflow: hidden; background: #111113; box-shadow: inset 0 0 0 1px var(--line); }
+  .map-static { position: absolute; inset: 0; background:
+      radial-gradient(circle at 50% 46%, rgba(201, 160, 102, 0.14), transparent 45%),
+      repeating-linear-gradient(0deg, transparent 0 46px, rgba(255, 255, 255, 0.035) 46px 47px),
+      repeating-linear-gradient(90deg, transparent 0 46px, rgba(255, 255, 255, 0.035) 46px 47px); }
+  .road { position: absolute; background: rgba(255, 255, 255, 0.09); }
+  .r1 { left: -10%; right: -10%; top: 46%; height: 6px; transform: rotate(-8deg); }
+  .r2 { top: -10%; bottom: -10%; left: 52%; width: 4px; transform: rotate(14deg); }
+  .r3 { left: -10%; right: 30%; top: 72%; height: 3px; transform: rotate(21deg); }
+  .r4 { left: 20%; right: -10%; top: 22%; height: 3px; transform: rotate(-26deg); }
+  .block { position: absolute; background: rgba(255, 255, 255, 0.035); }
+  .b1 { left: 14%; top: 14%; width: 22%; height: 18%; }
+  .b2 { right: 10%; top: 56%; width: 24%; height: 22%; }
+  .b3 { left: 8%; bottom: 8%; width: 18%; height: 14%; }
+  .pin { position: absolute; left: 50%; top: 46%; width: 18px; height: 18px; transform: translate(-50%, -50%); }
+  .core { position: absolute; inset: 3px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--paper); }
+  .ring { position: absolute; inset: 0; border-radius: 50%; border: 1px solid var(--accent); animation: ripple 2.8s var(--ease-out) infinite; }
+  .ring.r-2 { animation-delay: 1.4s; }
+  .map-card {
+    position: absolute;
+    left: var(--space-5);
+    right: var(--space-5);
+    bottom: var(--space-5);
+    display: grid;
+    gap: var(--space-2);
+    justify-items: start;
+    padding: var(--space-5);
+    background: rgba(13, 13, 15, 0.86);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--line);
+  }
+  .mc-label { font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+  .mc-addr { font-family: var(--font-display); font-size: var(--fs-md); color: var(--fg); margin-bottom: var(--space-3); }
+  .mc-note { font-size: 0.6875rem; color: var(--text-soft); }
+  .map :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: grayscale(1) invert(0.92) contrast(0.9) brightness(0.95) sepia(0.15); }
+  .map.is-live .map-card, .map.is-live .pin { display: none; }
+
+  @keyframes ripple { from { transform: scale(1); opacity: 0.9; } to { transform: scale(4.5); opacity: 0; } }
+  @keyframes pulse { 70% { box-shadow: 0 0 0 10px rgba(201, 160, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(201, 160, 102, 0); } }
+  @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  @media (min-width: 1024px) {
+    .panel { grid-template-columns: 5fr 7fr; gap: var(--space-9); align-items: stretch; }
+    .map { min-height: 100%; }
+    .map-card { left: auto; right: var(--space-6); bottom: var(--space-6); max-width: 22rem; }
+  }
+  @media (max-width: 640px) {
+    .tabs button { flex: 1 1 0; margin-right: var(--space-4); padding-right: 0; font-size: 1.125rem; }
+    .tabs button:last-child { margin-right: 0; }
+    .t-city { padding-left: 0; letter-spacing: 0.08em; font-size: 0.625rem; }
+    .map { min-height: 440px; }
+    .pin { top: 26%; }
+    .map-static { background-position: center top; }
+    .map-card { padding: var(--space-4); }
+    .mc-addr { font-size: var(--fs-base); }
+  }
+  @media (max-width: 520px) {
+    .scale span:nth-child(even) { display: none; }
+    .bar-t { display: none; }
+  }
+</style>

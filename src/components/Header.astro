@@ -1,0 +1,195 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { mainNav, serviceLinks } from '@/data/navigation';
+import { site, telHref } from '@/data/site';
+
+interface Props {
+  /** Cabecera transparente sobre un hero fotográfico oscuro. */
+  overlay?: boolean;
+}
+const { overlay = false } = Astro.props;
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+<header class:list={['site-header', { 'is-overlay': overlay }]} data-header>
+  <div class="container bar">
+    <a href="/" class="brand" aria-label="PALEX MEDICAL — Inicio">
+      <Logo tone="inherit" />
+    </a>
+
+    <nav class="desk-nav" aria-label="Principal">
+      <ul role="list">
+        {mainNav.map((item) => (
+          <li class:list={{ 'has-panel': !!item.children }}>
+            <a href={item.href} class:list={{ active: isActive(item.href) }} aria-current={isActive(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+            {item.children && (
+              <div class="panel">
+                <div class="container panel-inner">
+                  <p class="panel-title">Servicios</p>
+                  <ul role="list" class="panel-list">
+                    {item.children.map((c) => (
+                      <li>
+                        <a href={c.href}><span class="n">{c.num}</span>{c.label}</a>
+                      </li>
+                    ))}
+                  </ul>
+                  <a href="/servicios/" class="link-arrow panel-all">Todos los servicios <Icon name="arrow" /></a>
+                </div>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="actions">
+      <a href="/contacto/" class="btn btn-sm cta">Solicitar propuesta</a>
+      <a href="#menu-movil" class="menu-btn" data-menu-toggle aria-controls="menu-movil" aria-expanded="false">
+        <span class="visually-hidden" data-menu-label>Abrir menú</span>
+        <Icon name="menu" class="i-open" />
+        <Icon name="close" class="i-close" />
+      </a>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="menu-movil" data-menu hidden>
+    <nav class="container" aria-label="Menú móvil">
+      <ul role="list" class="m-main">
+        {mainNav.map((i) => (
+          <li><a href={i.href}>{i.label}</a></li>
+        ))}
+      </ul>
+      <p class="eyebrow">Servicios</p>
+      <ul role="list" class="m-services">
+        {serviceLinks.map((s) => <li><a href={s.href}>{s.label}</a></li>)}
+      </ul>
+      <div class="m-cta">
+        <a href="/contacto/" class="btn btn-block">Solicitar propuesta <Icon name="arrow" /></a>
+        <a href={telHref(site.contact.phone.number)} class="btn btn-ghost btn-block"><Icon name="phone" /> {site.contact.phone.number}</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    color: var(--fg);
+    background: var(--paper);
+    border-bottom: 1px solid transparent;
+    transition: background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .site-header.is-scrolled { border-color: var(--line); }
+  /* Modo superpuesto: el hero sube por debajo de la cabecera */
+  .site-header.is-overlay { position: fixed; left: 0; right: 0; background: transparent; color: #fff; }
+  .site-header.is-overlay.is-scrolled,
+  :global(.menu-open) .site-header.is-overlay { background: var(--paper); color: var(--fg); border-color: var(--line); }
+
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); height: var(--header-h); }
+  .brand { flex: none; }
+
+  .desk-nav { display: none; height: 100%; }
+  .desk-nav > ul { display: flex; height: 100%; gap: var(--space-2); }
+  .desk-nav > ul > li { display: flex; align-items: center; }
+  .desk-nav > ul > li > a {
+    position: relative;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.9375rem;
+    font-weight: 400;
+    opacity: 0.88;
+    transition: opacity var(--dur) var(--ease);
+  }
+  .desk-nav > ul > li > a::after {
+    content: '';
+    position: absolute;
+    left: 0.875rem;
+    right: 0.875rem;
+    bottom: 0.1rem;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur) var(--ease);
+  }
+  .desk-nav > ul > li > a:hover,
+  .desk-nav > ul > li > a.active { opacity: 1; }
+  .desk-nav > ul > li > a:hover::after,
+  .desk-nav > ul > li > a.active::after { transform: scaleX(1); }
+  .desk-nav > ul > li > a.active::after { background: var(--brand); }
+
+  .panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    color: var(--fg);
+    background: var(--paper);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease), visibility 0s linear var(--dur);
+  }
+  .has-panel:hover .panel,
+  .has-panel:focus-within .panel { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+  .panel-inner { display: grid; grid-template-columns: 1fr 3fr auto; align-items: start; gap: var(--space-8); padding-block: var(--space-7) var(--space-8); }
+  .panel-title { font-family: var(--font-display); font-size: var(--fs-xl); letter-spacing: -0.03em; line-height: 1; }
+  .panel-list { display: grid; grid-template-columns: repeat(2, 1fr); column-gap: var(--space-8); }
+  .panel-list a {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-display);
+    font-size: var(--fs-md);
+    letter-spacing: -0.01em;
+    transition: color var(--dur) var(--ease), padding var(--dur) var(--ease);
+  }
+  .panel-list .n { font-family: var(--font-body); font-size: var(--fs-xs); color: var(--text-soft); }
+  .panel-list a:hover { padding-left: var(--space-2); color: var(--brand-ink); }
+  .panel-all { align-self: end; }
+
+  .actions { display: flex; align-items: center; gap: var(--space-3); }
+  .cta { display: none; }
+  .menu-btn { display: grid; place-items: center; width: 44px; height: 44px; color: inherit; }
+  .menu-btn :global(.i-close) { display: none; }
+  :global(.menu-open) .menu-btn :global(.i-close) { display: block; }
+  :global(.menu-open) .menu-btn :global(.i-open) { display: none; }
+
+  .mobile-menu {
+    position: fixed;
+    inset: var(--header-h) 0 0 0;
+    color: var(--fg);
+    background: var(--paper);
+    overflow-y: auto;
+    padding-block: var(--space-5) var(--space-8);
+  }
+  .mobile-menu[hidden] { display: none; }
+  .m-main { margin-bottom: var(--space-7); }
+  .m-main a {
+    display: block;
+    padding: 0.7rem 0;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+  }
+  .m-services { margin: var(--space-3) 0 var(--space-7); }
+  .m-services a { display: block; padding: 0.7rem 0; border-bottom: 1px solid var(--line); color: var(--text-muted); }
+  .m-cta { display: grid; gap: var(--space-3); }
+
+  @media (min-width: 1100px) {
+    .desk-nav { display: block; }
+    .cta { display: inline-flex; }
+    .menu-btn { display: none; }
+    .mobile-menu { display: none !important; }
+  }
+</style>

@@ -1,0 +1,45 @@
+---
+/** CTA final: fondo oscuro, mucho espacio, titular enorme, un botón. */
+import Icon from './Icon.astro';
+import { site, telHref } from '@/data/site';
+
+interface Props {
+  title?: string;
+  text?: string;
+  href?: string;
+  label?: string;
+}
+const {
+  title = 'Cuéntanos qué necesitas.',
+  text = 'Describe tu operación y nuestro equipo analizará contigo la solución más adecuada.',
+  href = '/contacto/',
+  label = 'Solicitar una solución',
+} = Astro.props;
+const phone = site.contact.phone;
+---
+<section class="cta on-dark">
+  <div class="container inner">
+    <h2 data-reveal="mask" set:html={title.replace(/^(\S+)\s(.+)$/, '$1 <em>$2</em>')} />
+    <div class="row" data-reveal style="--reveal-i:1">
+      <p class="lead">{text}</p>
+      <div class="actions">
+        <a href={href} class="btn">{label} <Icon name="arrow" /></a>
+        <a href={telHref(phone.number)} class="tel">{phone.number}</a>
+        {site.contact.email && <a href={`mailto:${site.contact.email}`} class="tel">{site.contact.email}</a>}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta { padding-block: clamp(7rem, 4rem + 12vw, 16rem); }
+  .inner { display: grid; gap: clamp(3rem, 2rem + 4vw, 6rem); }
+  h2 { font-size: clamp(3rem, 1.4rem + 7vw, 9rem); font-weight: 400; letter-spacing: -0.05em; line-height: 0.95; max-width: 12ch; }
+  .row { display: grid; gap: var(--space-6); padding-top: var(--space-6); border-top: 1px solid var(--ink-3); }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-5) var(--space-6); }
+  .tel { font-size: var(--fs-md); color: #fff; opacity: 0.85; border-bottom: 1px solid rgba(255, 255, 255, 0.3); transition: opacity var(--dur) var(--ease); }
+  .tel:hover { opacity: 1; }
+  @media (min-width: 1024px) {
+    .row { grid-template-columns: 1fr auto; align-items: center; }
+  }
+</style>
