@@ -62,7 +62,7 @@ export const credentials = [
   {
     value: 1998,
     kind: 'year' as const,
-    label: 'Inicio de la división de Logística Hospitalaria e Ingeniería',
+    label: 'Inicio de la experiencia en logística hospitalaria',
   },
   {
     value: 176,

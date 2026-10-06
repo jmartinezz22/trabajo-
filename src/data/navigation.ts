@@ -20,11 +20,11 @@ export const mainNav: { label: string; href: string; children?: NavLink[] }[] = 
   { label: 'Sectores', href: '/sectores/' },
   { label: 'Tecnología', href: '/tecnologia/' },
   { label: 'Proyectos', href: '/proyectos/' },
-  { label: 'Empresa', href: '/empresa/' },
+  { label: 'Experiencia', href: '/empresa/' },
 ];
 
 export const companyLinks: NavLink[] = [
-  { label: 'Empresa', href: '/empresa/' },
+  { label: 'Experiencia', href: '/empresa/' },
   { label: 'Soluciones a medida', href: '/soluciones-a-medida/' },
   { label: 'Tecnología', href: '/tecnologia/' },
   { label: 'Proyectos', href: '/proyectos/' },

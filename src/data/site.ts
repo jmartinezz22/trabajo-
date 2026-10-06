@@ -61,7 +61,7 @@ export const site = {
   locale: 'es_ES',
   lang: 'es',
 
-  /** Inicio de la división de Logística Hospitalaria e Ingeniería (verificado). */
+  /** Inicio de la experiencia del servicio en logística hospitalaria (verificado). */
   hospitalLogisticsSince: 1998,
 
   contact: {

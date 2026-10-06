@@ -8,19 +8,19 @@ import Icon from '@/components/Icon.astro';
 import { provenExperience } from '@/data/trust';
 import { site, telHref, yearsSince } from '@/data/site';
 
-const crumbs = [{ name: 'Empresa', href: '/empresa/' }];
+const crumbs = [{ name: 'Experiencia', href: '/empresa/' }];
 const years = yearsSince(site.hospitalLogisticsSince);
 ---
 <BaseLayout
-  title="Empresa · Experiencia en logística hospitalaria desde 1998"
+  title="Experiencia en logística hospitalaria desde 1998"
   description="Experiencia en soluciones logísticas hospitalarias desde 1998, automatización, trazabilidad y soluciones adaptadas a cada operación. Sede en Sant Cugat del Vallès (Barcelona)."
   breadcrumbs={crumbs}
-  schema={[{ '@context': 'https://schema.org', '@type': 'AboutPage', name: 'Empresa', url: new URL('/empresa/', Astro.site).href }]}
+  schema={[{ '@context': 'https://schema.org', '@type': 'AboutPage', name: 'Experiencia', url: new URL('/empresa/', Astro.site).href }]}
 >
   <PageHero
-    eyebrow="Empresa"
+    eyebrow="Experiencia"
     title="Experiencia logística formada en el entorno más exigente: el hospital."
-    intro={`Desde ${site.hospitalLogisticsSince}, la división de Logística Hospitalaria e Ingeniería desarrolla soluciones de gestión de material sanitario, medicación y procesos logísticos. Ese conocimiento es la base de las soluciones que diseñamos para cada operación.`}
+    intro={`Desde ${site.hospitalLogisticsSince}, desarrollamos soluciones de gestión de material sanitario, medicación y procesos logísticos. Ese conocimiento es la base de las soluciones que diseñamos para cada operación.`}
     breadcrumbs={crumbs}
     image="empresa"
   >
@@ -36,7 +36,7 @@ const years = yearsSince(site.hospitalLogisticsSince);
           <h2 data-reveal style="--reveal-i:1">Más de 25 años en soluciones de logística hospitalaria.</h2>
         </div>
         <p class="lead" data-reveal style="--reveal-i:2">
-          {years} años después del inicio de la división, la experiencia se extiende a la gestión de almacenes, el transporte, la automatización y la trazabilidad.
+          {years} años después, esa experiencia se extiende a la gestión de almacenes, el transporte, la automatización y la trazabilidad.
         </p>
       </div>
       <ProofBand />

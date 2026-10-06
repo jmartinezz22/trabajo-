@@ -75,7 +75,7 @@ export const technology: TechCapability[] = [
   },
 ];
 
-/** Soluciones propias de la división de Logística Hospitalaria (verificadas). */
+/** Soluciones propias del servicio de logística hospitalaria (verificadas). */
 export const ownSolutions = [
   { name: 'Dyane SmartKanban', text: 'Gestión de almacenes de planta por doble cajón con RFID.' },
   { name: 'Dyane SmartCabinet', text: 'Armario RFID para control de acceso y consumo de material de alto valor.' },
