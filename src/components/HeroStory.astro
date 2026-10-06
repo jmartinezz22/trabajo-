@@ -11,14 +11,20 @@ import Icon from './Icon.astro';
 import Photo from './Photo.astro';
 
 const areas = ['Transporte', 'Logística', 'Tecnología', 'Consultoría'];
+// Titular partido en palabras para la entrada animada (cada palabra sube desde una máscara)
+const lead = 'Soluciones logísticas para operaciones que'.split(' ');
+const accent = 'no pueden fallar.'.split(' ');
 ---
 <section class="story" data-story aria-label="Presentación">
   <div class="pin">
     <div class="container stage" data-story-copy>
       <div class="s1">
-        <p class="eyebrow">Partner logístico B2B</p>
-        <h1>Soluciones logísticas para operaciones que <span class="hl">no pueden fallar.</span></h1>
-        <div class="s1-foot">
+        <p class="eyebrow in" style="--d:0ms">Partner logístico B2B</p>
+        <h1>
+          {lead.map((w, i) => <><span class="hw"><span style={`--d:${80 + i * 70}ms`}>{w}</span></span>{' '}</>)}
+          <span class="hl">{accent.map((w, i) => <><span class="hw"><span style={`--d:${80 + (lead.length + i) * 70}ms`}>{w}</span></span>{i < accent.length - 1 ? ' ' : ''}</>)}</span>
+        </h1>
+        <div class="s1-foot in" style="--d:700ms">
           <p class="lead">
             Transporte, logística, tecnología y soluciones a medida para operaciones que requieren precisión y control. Con experiencia en logística hospitalaria desde 1998.
           </p>
@@ -58,10 +64,7 @@ const areas = ['Transporte', 'Logística', 'Tecnología', 'Consultoría'];
     max-width: 16ch;
     color: var(--ink);
   }
-  .hl {
-    color: var(--brand-ink);
-    background: linear-gradient(transparent 62%, rgba(0, 168, 134, 0.18) 62%);
-  }
+  .hl { color: var(--brand-ink); }
   .s1-foot { display: grid; gap: var(--space-5); justify-items: start; }
   .s1 .lead { max-width: 52ch; color: var(--text-muted); }
   @media (min-width: 1024px) {
@@ -71,6 +74,16 @@ const areas = ['Transporte', 'Logística', 'Tecnología', 'Consultoría'];
     .s1 .btn-row { width: 100%; }
     .s1 .btn-row .btn { flex: 1 1 100%; }
   }
+
+  /* — Entrada de la portada (tras la intro). Solo si html.hero-wait existió: sin JS
+       o con reduced-motion el contenido se ve directamente. — */
+  .hw { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+  .hw > span { display: inline-block; transition: transform 1000ms cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0ms); }
+  .in { transition: opacity 900ms var(--ease) var(--d, 0ms), transform 900ms cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0ms); }
+  :global(.hero-wait) .hw > span { transform: translateY(105%); transition: none; }
+  :global(.hero-wait) .in { opacity: 0; transform: translateY(24px); transition: none; }
+  .hl { background: linear-gradient(transparent 62%, rgba(0, 168, 134, 0.18) 62%) no-repeat 0 0 / 100% 100%; transition: background-size 900ms var(--ease) 900ms; }
+  :global(.hero-wait) .hl { background-size: 0% 100%; transition: none; }
 
   /* — Ventana fotográfica — */
   .window {
@@ -82,7 +95,21 @@ const areas = ['Transporte', 'Logística', 'Tecnología', 'Consultoría'];
     background: #cfd8d6;
     isolation: isolate;
   }
-  .window :global(.bg) { position: absolute; inset: 0; background: #cfd8d6; }
+  .window :global(.bg) { position: absolute; inset: 0; background: #cfd8d6; transition: transform 1800ms cubic-bezier(0.16, 1, 0.3, 1) 350ms; }
+  /* Telón claro que se retira y descubre la foto */
+  .window::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    background: var(--paper);
+    transform-origin: top;
+    transform: scaleY(0);
+    transition: transform 1100ms cubic-bezier(0.76, 0, 0.24, 1) 300ms;
+    pointer-events: none;
+  }
+  :global(.hero-wait) .window::after { transform: scaleY(1); transition: none; }
+  :global(.hero-wait) .window :global(.bg) { transform: scale(1.25); transition: none; }
   .shade {
     position: absolute;
     inset: 0;

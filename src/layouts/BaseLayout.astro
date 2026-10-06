@@ -111,8 +111,16 @@ const jsonLd = [organization, ...(breadcrumbSchema ? [breadcrumbSchema] : []), .
     {intro && (
       <script is:inline>
         try {
-          if (!matchMedia('(prefers-reduced-motion: reduce)').matches && !sessionStorage.getItem('intro-visto'))
-            document.documentElement.classList.add('intro-on');
+          if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            var r = document.documentElement;
+            // Intro al llegar desde fuera de la web o al recargar; no al navegar entre páginas
+            var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+            var internal = document.referrer && new URL(document.referrer).origin === location.origin;
+            if (!internal || (nav && nav.type === 'reload')) r.classList.add('intro-on');
+            // La portada espera a la intro para entrar animada (con salida de seguridad)
+            r.classList.add('hero-wait');
+            setTimeout(function () { r.classList.remove('hero-wait'); }, 4500);
+          }
         } catch (e) {}
       </script>
     )}
