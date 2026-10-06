@@ -9,7 +9,8 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "images": "node scripts/fetch-images.mjs"
+    "images": "node scripts/fetch-images.mjs",
+    "offline": "astro build && node scripts/make-offline.mjs"
   },
   "engines": {
     "node": ">=20.3.0"
