@@ -1,18 +1,17 @@
 ---
 /**
- * Introducción de entrada (≈2 s): PALEX → MOVEMOS → CONECTAMOS → OPTIMIZAMOS → PALEX MEDICAL.
+ * Introducción de entrada (≈2 s): Movemos → Almacenamos → Conectamos → Optimizamos → Soluciones logísticas.
  *  - Solo la primera visita de la sesión, nunca con prefers-reduced-motion.
  *  - Se salta con clic, tecla, rueda o gesto táctil.
  *  - La página se carga debajo: no retrasa el contenido.
  * La clase html.intro-on la activa un script inline en <head> (BaseLayout) antes de pintar.
  */
-const words = ['Movemos', 'Conectamos', 'Optimizamos'];
+const words = ['Movemos', 'Almacenamos', 'Conectamos', 'Optimizamos'];
 ---
 <div class="intro" data-intro>
   <div class="words" aria-hidden="true">
-    <span class="w w0">PALEX</span>
-    {words.map((w, i) => <span class={`w w${i + 1}`}>{w}</span>)}
-    <span class="w final">PALEX <em>MEDICAL</em></span>
+    {words.map((w, i) => <span class={`w w${i}`}>{w}</span>)}
+    <span class="w final">Soluciones <em>logísticas</em></span>
   </div>
   <span class="bar" aria-hidden="true"></span>
   <button type="button" class="skip" data-intro-skip>Saltar introducción</button>
@@ -26,7 +25,7 @@ const words = ['Movemos', 'Conectamos', 'Optimizamos'];
     const end = (fast = false) => {
       if (done) return;
       done = true;
-      try { sessionStorage.setItem('palex-intro', '1'); } catch {}
+      try { sessionStorage.setItem('intro-visto', '1'); } catch {}
       intro.classList.add(fast ? 'is-skip' : 'is-out');
       window.setTimeout(() => {
         root.classList.remove('intro-on');
@@ -52,8 +51,8 @@ const words = ['Movemos', 'Conectamos', 'Optimizamos'];
     z-index: 500;
     display: grid;
     place-items: center;
-    background: var(--black);
-    color: #fff;
+    background: var(--paper);
+    color: var(--ink);
     cursor: pointer;
     transition: clip-path 750ms var(--ease-out), opacity 320ms var(--ease);
     clip-path: inset(0 0 0 0);
@@ -61,14 +60,14 @@ const words = ['Movemos', 'Conectamos', 'Optimizamos'];
   .intro.is-out { clip-path: inset(0 0 100% 0); }
   .intro.is-skip { opacity: 0; }
 
-  .words { position: relative; width: min(92vw, 60rem); height: 1.2em; font-family: var(--font-display); font-size: clamp(2.5rem, 1.5rem + 5vw, 6rem); font-weight: 300; letter-spacing: -0.02em; text-align: center; }
+  .words { position: relative; width: min(92vw, 60rem); height: 1.2em; font-family: var(--font-display); font-size: clamp(2.5rem, 1.5rem + 5vw, 6rem); font-weight: 600; letter-spacing: -0.035em; text-align: center; }
   .w { position: absolute; inset: 0; opacity: 0; transform: translateY(0.25em); animation: word 380ms var(--ease-out) forwards; }
-  .w0 { font-family: var(--font-body); font-weight: 600; font-size: 0.5em; letter-spacing: 0.4em; line-height: 2.4; animation-delay: 0ms; }
+  .w0 { animation-delay: 0ms; }
   .w1 { animation-delay: 380ms; }
   .w2 { animation-delay: 760ms; }
   .w3 { animation-delay: 1140ms; }
-  .final { animation: final 520ms var(--ease-out) 1520ms forwards; }
-  .final em { font-style: italic; color: #2fd1ad; }
+  .final { white-space: nowrap; font-size: clamp(1.75rem, 0.8rem + 5.2vw, 5rem); line-height: 1.4; animation: final 520ms var(--ease-out) 1520ms forwards; }
+  .final em { font-style: normal; color: var(--brand-ink); }
   .w0, .w1, .w2, .w3 { animation-name: word; }
   @keyframes word {
     0% { opacity: 0; transform: translateY(0.25em); }
@@ -89,9 +88,9 @@ const words = ['Movemos', 'Conectamos', 'Optimizamos'];
     font-weight: 600;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: rgba(243, 245, 244, 0.75);
-    border-bottom: 1px solid rgba(243, 245, 244, 0.35);
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--line-strong);
     padding-bottom: 0.2rem;
   }
-  .skip:hover { color: #fff; }
+  .skip:hover { color: var(--ink); }
 </style>

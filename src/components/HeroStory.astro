@@ -1,101 +1,122 @@
 ---
 /**
- * Portada con narrativa de scroll.
- *  1. Fotografía a pantalla completa + titular.
- *  2. Al hacer scroll la foto se desplaza y acerca lentamente, el titular se retira
- *     y aparecen las áreas: Transporte · Logística · Tecnología · Consultoría.
- * Mejora progresiva: sin JS o con reduced-motion es una portada estática.
- * El progreso (--p, 0→1) lo calcula src/scripts/main.ts.
+ * Portada clara con narrativa de scroll.
+ *  1. Fondo claro, titular grande y una gran ventana fotográfica (zoom lento de fondo).
+ *  2. Al hacer scroll la ventana se abre hasta ocupar toda la pantalla, el titular
+ *     se retira y aparecen las áreas: Transporte · Logística · Tecnología · Consultoría.
+ * Mejora progresiva: sin JS, con reduced-motion o en móvil es una portada estática.
+ * El progreso (--p, 0→1) y la altura del bloque de texto (--wt) los calcula src/scripts/main.ts.
  */
 import Icon from './Icon.astro';
 import Photo from './Photo.astro';
 
 const areas = ['Transporte', 'Logística', 'Tecnología', 'Consultoría'];
 ---
-<section class="story on-dark" data-story aria-label="Presentación">
+<section class="story" data-story aria-label="Presentación">
   <div class="pin">
-    <Photo image="hero" eager class="bg" sizes="100vw" />
-    <div class="shade" aria-hidden="true"></div>
-
-    <div class="container stage">
-      <div class="s1" data-story-s1>
-        <p class="eyebrow">PALEX MEDICAL</p>
-        <h1>Soluciones logísticas para operaciones que <em>no pueden fallar.</em></h1>
-        <p class="lead">
-          Transporte, logística, tecnología y soluciones a medida para operaciones que requieren precisión y control.
-        </p>
-        <div class="btn-row">
-          <a href="/contacto/" class="btn">Solicitar una solución <Icon name="arrow" /></a>
-          <a href="#servicios" class="btn btn-ghost">Descubrir nuestros servicios</a>
+    <div class="container stage" data-story-copy>
+      <div class="s1">
+        <p class="eyebrow">Partner logístico B2B</p>
+        <h1>Soluciones logísticas para operaciones que <span class="hl">no pueden fallar.</span></h1>
+        <div class="s1-foot">
+          <p class="lead">
+            Transporte, logística, tecnología y soluciones a medida para operaciones que requieren precisión y control. Con experiencia en logística hospitalaria desde 1998.
+          </p>
+          <div class="btn-row">
+            <a href="/contacto/" class="btn">Solicitar una solución <Icon name="arrow" /></a>
+            <a href="#servicios" class="btn btn-ghost">Descubrir los servicios</a>
+          </div>
         </div>
       </div>
+    </div>
 
+    <div class="window">
+      <Photo image="hero" eager kenburns class="bg" sizes="100vw" />
+      <div class="shade" aria-hidden="true"></div>
       <ul role="list" class="s2" aria-label="Áreas de actividad">
         {areas.map((a, i) => (
           <li style={`--i:${i}`}><span class="n">{String(i + 1).padStart(2, '0')}</span>{a}</li>
         ))}
       </ul>
+      <div class="hint" aria-hidden="true"><span class="hint-line"></span>Desliza</div>
     </div>
-
-    <div class="hint" aria-hidden="true"><span class="hint-line"></span>Desliza</div>
   </div>
 </section>
 
 <style>
-  .story { position: relative; background: var(--black); }
-  .pin { position: relative; min-height: max(100svh, 620px); overflow: hidden; display: flex; }
-  .pin :global(.bg) { position: absolute; inset: 0; }
-  .pin :global(.bg img) { transform: scale(1.06); transform-origin: 50% 60%; }
+  .story { position: relative; background: var(--paper); }
+  .pin { position: relative; display: flex; flex-direction: column; }
+
+  /* — Texto — */
+  .stage { position: relative; z-index: 1; padding-top: clamp(2.25rem, 1.5rem + 3vw, 4.5rem); padding-bottom: clamp(1.75rem, 1rem + 2vw, 3rem); }
+  .s1 { display: grid; gap: var(--space-5); }
+  .s1 h1 {
+    font-size: clamp(2.6rem, 1.3rem + 5.4vw, 7rem);
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    max-width: 16ch;
+    color: var(--ink);
+  }
+  .hl {
+    color: var(--brand-ink);
+    background: linear-gradient(transparent 62%, rgba(0, 168, 134, 0.18) 62%);
+  }
+  .s1-foot { display: grid; gap: var(--space-5); justify-items: start; }
+  .s1 .lead { max-width: 52ch; color: var(--text-muted); }
+  @media (min-width: 1024px) {
+    .s1-foot { grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: var(--space-8); }
+  }
+  @media (max-width: 560px) {
+    .s1 .btn-row { width: 100%; }
+    .s1 .btn-row .btn { flex: 1 1 100%; }
+  }
+
+  /* — Ventana fotográfica — */
+  .window {
+    position: relative;
+    margin: 0 var(--gutter) var(--gutter);
+    height: clamp(340px, 62svh, 760px);
+    border-radius: 6px;
+    overflow: hidden;
+    background: #cfd8d6;
+    isolation: isolate;
+  }
+  .window :global(.bg) { position: absolute; inset: 0; background: #cfd8d6; }
   .shade {
     position: absolute;
     inset: 0;
-    z-index: 1;
-    background:
-      linear-gradient(90deg, rgba(8, 11, 13, 0.86) 0%, rgba(8, 11, 13, 0.55) 48%, rgba(8, 11, 13, 0.15) 100%),
-      linear-gradient(0deg, rgba(8, 11, 13, 0.7) 0%, rgba(8, 11, 13, 0) 45%);
-  }
-  .stage {
-    position: relative;
     z-index: 2;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    gap: var(--space-8);
-    width: 100%;
-    min-height: max(100svh, 620px);
-    padding-top: calc(var(--header-h) + var(--space-7));
-    padding-bottom: clamp(4.5rem, 3rem + 6vw, 9rem);
+    background: linear-gradient(0deg, rgba(14, 26, 36, 0.62) 0%, rgba(14, 26, 36, 0.18) 38%, rgba(14, 26, 36, 0) 60%);
   }
-  .s1 { display: grid; gap: var(--space-6); justify-items: start; max-width: 72rem; }
-  .s1 h1 { font-size: clamp(2.5rem, min(1.2rem + 6vw, 10.5svh), 7.5rem); max-width: 15ch; }
-  .s1 .lead { max-width: 46ch; color: rgba(243, 245, 244, 0.84); }
-  .s1 .btn-row { margin-top: var(--space-3); }
-
   .s2 {
+    position: absolute;
+    z-index: 3;
+    left: clamp(1.25rem, 0.5rem + 2.5vw, 3rem);
+    right: clamp(1.25rem, 0.5rem + 2.5vw, 3rem);
+    bottom: clamp(1.25rem, 0.5rem + 2.5vw, 2.75rem);
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-3) 0;
-    padding-top: var(--space-5);
-    border-top: 1px solid rgba(243, 245, 244, 0.22);
+    gap: var(--space-2) clamp(1.25rem, 0.5rem + 2.5vw, 3rem);
   }
   .s2 li {
     display: inline-flex;
     align-items: baseline;
-    gap: 0.75rem;
-    margin-right: clamp(1.5rem, 1rem + 3vw, 4.5rem);
-    font-size: var(--fs-sm);
+    gap: 0.6rem;
+    font-family: var(--font-display);
+    font-size: var(--fs-md);
     font-weight: 600;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
+    letter-spacing: -0.01em;
     color: #fff;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.3);
   }
-  .s2 .n { font-size: 0.6875rem; letter-spacing: 0.1em; color: var(--accent-text); }
+  .s2 .n { font-family: var(--font-mono); font-size: 0.6875rem; color: #7ff0d4; }
 
   .hint {
     position: absolute;
-    z-index: 2;
-    right: var(--gutter);
-    bottom: clamp(4.5rem, 3rem + 6vw, 9rem);
+    z-index: 3;
+    right: clamp(1.25rem, 0.5rem + 2.5vw, 3rem);
+    bottom: clamp(1.25rem, 0.5rem + 2.5vw, 2.75rem);
     display: none;
     align-items: center;
     gap: 0.75rem;
@@ -103,44 +124,61 @@ const areas = ['Transporte', 'Logística', 'Tecnología', 'Consultoría'];
     font-size: 0.6875rem;
     letter-spacing: 0.24em;
     text-transform: uppercase;
-    color: rgba(243, 245, 244, 0.7);
+    color: #fff;
   }
-  .hint-line { width: 1px; height: 48px; background: linear-gradient(rgba(243, 245, 244, 0), rgba(243, 245, 244, 0.8)); }
+  .hint-line { width: 1px; height: 48px; background: linear-gradient(rgba(255, 255, 255, 0), #fff); }
 
-  @media (max-width: 560px) {
-    .s1 .btn-row { width: 100%; }
-    .s1 .btn-row .btn { flex: 1 1 100%; }
-    .s2 li { margin-right: 1.25rem; letter-spacing: 0.14em; font-size: 0.75rem; }
+  /* — Modo narrativo (main.ts lo activa en escritorio con JS y sin reduced-motion) — */
+  :global(.story-live) .story {
+    --e: clamp(0, calc((var(--p, 0) - 0.06) * 2.4), 1);
+    height: calc(220svh);
   }
-
-  /* — Modo narrativo (lo activa main.ts si hay JS y no se pide reducir movimiento) — */
-  :global(.story-live) .story { height: 230svh; }
-  :global(.story-live) .pin { position: sticky; top: 0; height: 100svh; min-height: 0; }
-  :global(.story-live) .stage { min-height: 0; height: 100%; }
-  :global(.story-live) .pin :global(.bg img) {
-    transform: scale(calc(1.14 - var(--p, 0) * 0.12)) translate3d(0, calc(var(--p, 0) * -3%), 0);
-    transition: none;
-    will-change: transform;
+  :global(.story-live) .pin {
+    position: sticky;
+    top: var(--header-h);
+    height: calc(100svh - var(--header-h));
+    overflow: hidden;
   }
-  :global(.story-live) .shade { opacity: calc(0.9 + var(--p, 0) * 0.1); }
-  :global(.story-live) .s1 {
-    opacity: clamp(0, calc(1 - (var(--p, 0) - 0.22) * 3.2), 1);
-    transform: translate3d(0, calc(max(0, var(--p, 0) - 0.22) * -160px), 0);
+  :global(.story-live) .stage {
+    opacity: clamp(0, calc(1 - var(--e) * 1.6), 1);
+    transform: translate3d(0, calc(var(--e) * -40px), 0);
     will-change: opacity, transform;
   }
-  :global(.story-live) .s2 { border-top-color: transparent; position: absolute; left: var(--gutter); right: var(--gutter); bottom: clamp(4.5rem, 3rem + 6vw, 9rem); flex-direction: column; gap: var(--space-2); padding: 0; }
-  :global(.story-live) .s2 li {
+  :global(.story-live) .window {
+    position: absolute;
+    inset: 0;
     margin: 0;
-    font-family: var(--font-display);
-    font-size: clamp(2.5rem, 1.2rem + 5.4vw, 6.5rem);
-    font-weight: 300;
-    letter-spacing: -0.02em;
-    text-transform: none;
-    line-height: 1.02;
-    opacity: clamp(0, calc((var(--p, 0) - 0.42 - var(--i) * 0.09) * 9), 1);
-    transform: translate3d(calc((1 - clamp(0, calc((var(--p, 0) - 0.42 - var(--i) * 0.09) * 9), 1)) * 40px), 0, 0);
+    height: auto;
+    border-radius: 0;
+    clip-path: inset(
+      calc(var(--wt, 55%) * (1 - var(--e))) calc(var(--gutter) * (1 - var(--e))) calc(var(--gutter) * (1 - var(--e)))
+      round calc(6px * (1 - var(--e)))
+    );
+    will-change: clip-path;
   }
-  :global(.story-live) .s2 .n { font-family: var(--font-body); font-size: 0.75rem; align-self: center; }
-  :global(.story-live) .hint { display: flex; opacity: clamp(0, calc(1 - var(--p, 0) * 6), 1); }
-  :global(.story-live.story-past) .s1 { pointer-events: none; }
+  :global(.story-live) .shade {
+    background:
+      linear-gradient(90deg, rgba(14, 26, 36, 0.55) 0%, rgba(14, 26, 36, 0.12) 55%, rgba(14, 26, 36, 0) 100%),
+      linear-gradient(0deg, rgba(14, 26, 36, 0.5) 0%, rgba(14, 26, 36, 0) 50%);
+    opacity: clamp(0, calc((var(--p, 0) - 0.3) * 4), 1);
+  }
+  :global(.story-live) .s2 {
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    flex-direction: column;
+    gap: var(--space-1);
+    left: max(var(--gutter), calc((100% - var(--container)) / 2));
+  }
+  :global(.story-live) .s2 li {
+    font-size: clamp(2.75rem, 1.2rem + 5.6vw, 7rem);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    opacity: clamp(0, calc((var(--p, 0) - 0.42 - var(--i) * 0.09) * 9), 1);
+    transform: translate3d(calc((1 - clamp(0, calc((var(--p, 0) - 0.42 - var(--i) * 0.09) * 9), 1)) * 48px), 0, 0);
+  }
+  :global(.story-live) .s2 .n { font-size: 0.8125rem; align-self: center; }
+  :global(.story-live) .hint { display: flex; opacity: clamp(0, calc(1 - var(--e) * 3), 1); }
+  :global(.story-live.story-past) .stage { pointer-events: none; }
 </style>

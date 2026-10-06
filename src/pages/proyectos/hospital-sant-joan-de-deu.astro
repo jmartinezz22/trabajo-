@@ -1,9 +1,8 @@
 ---
-/** Caso real verificado. Solo información y resultados publicados por Palex. */
+/** Caso real verificado. Solo información y resultados publicados. */
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHero from '@/components/PageHero.astro';
 import Photo from '@/components/Photo.astro';
-import EditorialList from '@/components/EditorialList.astro';
 import CtaBand from '@/components/CtaBand.astro';
 import Icon from '@/components/Icon.astro';
 import { featuredCase as c } from '@/data/cases';
@@ -18,10 +17,9 @@ const crumbs = [
   title="Caso de éxito: Hospital Sant Joan de Déu · 176 almacenes"
   description="Automatización y digitalización de los procesos logísticos del Hospital Sant Joan de Déu (Barcelona): 176 almacenes, RFID, Dyane SmartKanban, SmartCabinet y Captis."
   breadcrumbs={crumbs}
-  overlay
   schema={[{ '@context': 'https://schema.org', '@type': 'Article', headline: `${c.client}: ${c.title}`, about: 'Logística hospitalaria', author: { '@id': new URL('/#organization', Astro.site).href } }]}
 >
-  <PageHero eyebrow={`Caso de éxito · ${c.client}`} title="176 almacenes. Un hospital. Trazabilidad de extremo a extremo." intro={c.title + '.'} breadcrumbs={crumbs} image="hospital" size="full" />
+  <PageHero eyebrow={`Caso de éxito · ${c.client}`} title="176 almacenes. Un hospital. Trazabilidad de extremo a extremo." intro={c.title + '.'} breadcrumbs={crumbs} image="hospital" />
 
   <section class="section">
     <div class="container facts-wrap">
@@ -60,7 +58,7 @@ const crumbs = [
           <li data-reveal style={`--reveal-i:${i}`}><span class="n">{String(i + 1).padStart(2, '0')}</span>{r}</li>
         ))}
       </ol>
-      <p class="src">Fuente: caso publicado por Palex. <span class="pending">[AÑADIR ENLACE A LA PUBLICACIÓN ORIGINAL]</span></p>
+      <p class="src">Fuente: caso publicado por la empresa. <span class="pending">[AÑADIR ENLACE A LA PUBLICACIÓN ORIGINAL]</span></p>
     </div>
   </section>
 
@@ -71,7 +69,11 @@ const crumbs = [
         <h2 data-reveal style="--reveal-i:1">Soluciones propias de la división de Logística Hospitalaria.</h2>
         <a href="/tecnologia/" class="link-arrow" data-reveal>Ver tecnología <Icon name="arrow" /></a>
       </div>
-      <EditorialList items={ownSolutions.map((o) => ({ title: o.name, text: o.text }))} columns={1} />
+      <ul role="list" class="own">
+        {ownSolutions.map((o, i) => (
+          <li data-reveal style={`--reveal-i:${i}`}><h3>{o.name}</h3><p>{o.text}</p></li>
+        ))}
+      </ul>
     </div>
   </section>
 
@@ -99,6 +101,9 @@ const crumbs = [
   .two > div { display: grid; gap: var(--space-5); align-content: start; justify-items: start; }
   .two h2 { font-size: var(--fs-xl); max-width: 18ch; }
   @media (min-width: 1024px) { .two { grid-template-columns: 1fr 1fr; gap: var(--space-9); } }
+  .own li { display: grid; gap: var(--space-2); padding: var(--space-5) 0; border-top: 1px solid var(--line); }
+  .own h3 { font-size: var(--fs-lg); }
+  .own p { color: var(--text-muted); }
   .wide-photo { position: relative; height: 70vh; }
   .wide-photo :global(.photo) { position: absolute; inset: 0; }
 </style>

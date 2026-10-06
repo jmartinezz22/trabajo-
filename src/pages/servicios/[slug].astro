@@ -2,15 +2,15 @@
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHero from '@/components/PageHero.astro';
-import EditorialList from '@/components/EditorialList.astro';
+import ItemGrid from '@/components/ItemGrid.astro';
 import FlowSteps from '@/components/FlowSteps.astro';
 import Faq from '@/components/Faq.astro';
 import CtaBand from '@/components/CtaBand.astro';
 import Icon from '@/components/Icon.astro';
-import Photo from '@/components/Photo.astro';
+import Visual from '@/components/Visual.astro';
 import { services, serviceHref, type ServiceLine } from '@/data/services';
 import { sectors } from '@/data/sectors';
-import type { PhotoKey } from '@/data/images';
+import type { ImageKey } from '@/data/images';
 import { site } from '@/data/site';
 
 export const getStaticPaths = (() =>
@@ -29,14 +29,14 @@ const related = sectors.filter((sec) => s.sectors.includes(sec.slug));
 const others = services.filter((o) => o.slug !== s.slug);
 const contactHref = `/contacto/?servicio=${s.slug}`;
 const isPending = (t: string) => t.includes('[');
-// Segunda fotografía por línea (distinta de la del hero)
-const adaptImage: Record<string, PhotoKey> = {
-  transporte: 'transporte2',
+// Segunda composición visual por línea (distinta de la del hero)
+const adaptImage: Record<string, ImageKey> = {
+  transporte: 'frio',
   logistica: 'logistica2',
-  'excedentes-industriales': 'capacity',
+  'excedentes-industriales': 'industria',
   'servicios-especiales': 'especiales2',
   'eventos-y-congresos': 'eventos2',
-  'consultoria-logistica': 'tecnologia',
+  'consultoria-logistica': 'medida',
 };
 
 const schema = [
@@ -65,16 +65,16 @@ const schema = [
   },
 ];
 ---
-<BaseLayout title={s.seo.title} description={s.seo.description} breadcrumbs={crumbs} schema={schema} overlay>
-  <PageHero eyebrow={`${s.num} · ${s.name}`} title={s.hero.title} intro={s.hero.intro} breadcrumbs={crumbs} image={s.image}>
-    <a href={contactHref} class="btn">Solicitar una solución <Icon name="arrow" /></a>
-    <a href="#detalle" class="btn btn-ghost">Qué incluye</a>
+<BaseLayout title={s.seo.title} description={s.seo.description} breadcrumbs={crumbs} schema={schema}>
+  <PageHero eyebrow={`${s.num} — ${s.name}`} title={s.hero.title} intro={s.hero.intro} breadcrumbs={crumbs} image={s.image}>
+    <a href={contactHref} class="btn">Solicitar propuesta <Icon name="arrow" /></a>
+    <a href="#detalle" class="btn btn-ghost">Ver servicios</a>
   </PageHero>
 
   {s.statement && (
-    <section class="section tight">
-      <div class="container">
-        <p class="statement" data-reveal>{s.statement}</p>
+    <section class="section tight statement">
+      <div class="container narrow">
+        <p class="display" data-reveal>{s.statement}</p>
       </div>
     </section>
   )}
@@ -88,32 +88,9 @@ const schema = [
         </div>
         {s.itemsIntro && <p class="lead" data-reveal style="--reveal-i:2">{s.itemsIntro}</p>}
       </div>
-      {s.groups.map((g) => <EditorialList items={g.items} label={g.label} />)}
+      {s.groups.map((g) => <ItemGrid items={g.items} label={g.label} columns={g.items.length === 4 || g.items.length === 8 ? 4 : 3} />)}
     </div>
   </section>
-
-  {s.pillars && (
-    <section class="section bg-surface">
-      <div class="container">
-        <div class="section-head split">
-          <div>
-            <p class="eyebrow" data-reveal>{s.pillars.eyebrow}</p>
-            <h2 data-reveal style="--reveal-i:1">{s.pillars.title}</h2>
-          </div>
-          {s.pillars.intro && <p class="lead" data-reveal style="--reveal-i:2">{s.pillars.intro}</p>}
-        </div>
-        <ol role="list" class="pillars">
-          {s.pillars.items.map((it, i) => (
-            <li data-reveal style={`--reveal-i:${i}`}>
-              <span class="p-num">{String(i + 1).padStart(2, '0')}</span>
-              <h3>{it.title}</h3>
-              <p>{it.text}</p>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-  )}
 
   {s.flow && (
     <section class="section on-dark">
@@ -125,24 +102,71 @@ const schema = [
           </div>
           {s.flow.intro && <p class="lead" data-reveal style="--reveal-i:2">{s.flow.intro}</p>}
         </div>
-        <FlowSteps steps={s.flow.steps} tone="dark" showText />
+        <FlowSteps steps={s.flow.steps} tone="dark" />
       </div>
     </section>
   )}
 
-  <section class="adapt">
-    <div class="adapt-media" data-reveal><Photo image={adaptImage[s.slug] ?? 'capacity'} sizes="(max-width: 1024px) 100vw, 50vw" parallax /></div>
-    <div class="adapt-copy">
-      <p class="eyebrow" data-reveal>Adaptación</p>
-      <h2 data-reveal style="--reveal-i:1">{s.adapt.title}</h2>
-      <ul role="list" class="points">
-        {s.adapt.points.map((p, i) => (
-          <li data-reveal style={`--reveal-i:${i + 1}`}>
-            {isPending(p) ? <>{p.split('[')[0]}<span class="pending">[{p.split('[')[1]}</span></> : p}
+  {s.pillars && (
+    <section class="section bg-surface pillars">
+      <div class="container">
+        <div class="section-head split">
+          <div>
+            <p class="eyebrow" data-reveal>{s.pillars.eyebrow}</p>
+            <h2 data-reveal style="--reveal-i:1">{s.pillars.title}</h2>
+          </div>
+          {s.pillars.intro && <p class="lead" data-reveal style="--reveal-i:2">{s.pillars.intro}</p>}
+        </div>
+        <ol role="list" class="pillar-list">
+          {s.pillars.items.map((it, i) => (
+            <li data-reveal style={`--reveal-i:${i}`}>
+              <span class="mono">{String(i + 1).padStart(2, '0')}</span>
+              <Icon name={it.icon} size={30} />
+              <h3>{it.title}</h3>
+              <p>{it.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="container adapt">
+      <div data-reveal>
+        <Visual image={adaptImage[s.slug] ?? 'capacity'} ratio="square" kenburns />
+      </div>
+      <div class="adapt-copy">
+        <p class="eyebrow" data-reveal>Adaptación</p>
+        <h2 data-reveal style="--reveal-i:1">{s.adapt.title}</h2>
+        <ul role="list" class="checks">
+          {s.adapt.points.map((p, i) => (
+            <li data-reveal style={`--reveal-i:${i + 1}`}>
+              <Icon name="check" size={20} />
+              {isPending(p) ? <span>{p.split('[')[0]}<span class="pending">[{p.split('[')[1]}</span></span> : <span>{p}</span>}
+            </li>
+          ))}
+        </ul>
+        <a href={contactHref} class="btn" data-reveal>Hablar con un especialista <Icon name="arrow" /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-surface">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>Sectores</p>
+        <h2 data-reveal style="--reveal-i:1">Dónde aporta más valor</h2>
+      </div>
+      <ul role="list" class="grid grid-4 rel-sectors">
+        {related.map((sec, i) => (
+          <li data-reveal style={`--reveal-i:${i}`}>
+            <Icon name={sec.icon} size={24} />
+            <h3>{sec.name}</h3>
+            <p>{sec.challenge}</p>
           </li>
         ))}
       </ul>
-      <a href={contactHref} class="btn" data-reveal>Hablar con un especialista <Icon name="arrow" /></a>
     </div>
   </section>
 
@@ -150,10 +174,7 @@ const schema = [
     <div class="container faq-grid">
       <div>
         <p class="eyebrow" data-reveal>Preguntas frecuentes</p>
-        <h2 data-reveal style="--reveal-i:1">Lo que suelen preguntarnos.</h2>
-        <p class="sectors-line" data-reveal style="--reveal-i:2">
-          Sectores: {related.map((r, i) => <><a href={`/sectores/#${r.slug}`}>{r.name}</a>{i < related.length - 1 ? ' · ' : ''}</>)}
-        </p>
+        <h2 data-reveal style="--reveal-i:1">Lo que suelen preguntarnos</h2>
       </div>
       <Faq items={s.faq} />
     </div>
@@ -166,7 +187,9 @@ const schema = [
       <p class="eyebrow">Otros servicios</p>
       <ul role="list">
         {others.map((o) => (
-          <li><a href={serviceHref(o.slug)}><span class="n">{o.num}</span>{o.name}<Icon name="arrow" size={18} /></a></li>
+          <li>
+            <a href={serviceHref(o.slug)}><span class="mono">{o.num}</span>{o.name}<Icon name="arrow" size={18} /></a>
+          </li>
         ))}
       </ul>
     </div>
@@ -174,41 +197,57 @@ const schema = [
 </BaseLayout>
 
 <style>
-  .statement { font-family: var(--font-display); font-size: clamp(1.75rem, 1.2rem + 2.2vw, 3.25rem); letter-spacing: -0.03em; line-height: 1.15; color: var(--fg); max-width: 26ch; }
-  .pillars { display: grid; gap: var(--space-7); }
-  .pillars li { display: grid; gap: var(--space-3); align-content: start; padding-top: var(--space-5); border-top: 1px solid var(--rule); }
-  .p-num { font-size: var(--fs-sm); color: var(--text-soft); }
-  .pillars h3 { font-size: var(--fs-xl); font-weight: 400; letter-spacing: -0.03em; }
-  .pillars p { color: var(--text-muted); max-width: 30ch; }
-  @media (min-width: 768px) { .pillars { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1100px) { .pillars { grid-template-columns: repeat(4, 1fr); column-gap: var(--space-7); } }
-
-  .adapt { display: grid; background: var(--surface); }
-  .adapt-media { position: relative; min-height: 70vw; }
-  .adapt-media :global(.photo) { position: absolute; inset: 0; }
-  .adapt-copy { display: grid; gap: var(--space-5); align-content: center; justify-items: start; padding: var(--space-9) var(--gutter); }
-  .adapt-copy h2 { max-width: 16ch; font-size: var(--fs-xl); }
-  .points { width: 100%; margin-block: var(--space-3); border-top: 1px solid var(--line); }
-  .points li { padding: var(--space-4) 0; border-bottom: 1px solid var(--line); }
+  .statement { border-bottom: 1px solid var(--line); }
+  .statement .display {
+    font-size: var(--fs-xl);
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    max-width: 32ch;
+  }
+  .adapt { display: grid; gap: var(--space-7); align-items: center; }
+  .adapt-copy { display: grid; gap: var(--space-5); justify-items: start; }
+  .checks { display: grid; gap: var(--space-4); margin-block: var(--space-3); }
+  .checks li { display: grid; grid-template-columns: 20px 1fr; gap: var(--space-3); align-items: start; }
+  .checks :global(svg) { color: var(--brand-ink); margin-top: 3px; }
+  .checks .pending { margin-left: 0.25rem; }
   @media (min-width: 1024px) {
-    .adapt { grid-template-columns: 1fr 1fr; min-height: 80vh; }
-    .adapt-media { min-height: 0; }
-    .adapt-copy { padding: var(--space-9); }
+    .adapt { grid-template-columns: 1fr 1.1fr; gap: var(--space-9); }
   }
-
-  .faq-grid { display: grid; gap: var(--space-7); }
-  .faq-grid h2 { font-size: var(--fs-xl); max-width: 14ch; }
-  .sectors-line { margin-top: var(--space-5); font-size: var(--fs-sm); color: var(--text-muted); }
-  .sectors-line a { color: var(--fg); border-bottom: 1px solid var(--line-strong); }
-  @media (min-width: 1024px) { .faq-grid { grid-template-columns: 1fr 1.6fr; gap: var(--space-9); } }
-
-  .others ul { margin-top: var(--space-5); border-top: 1px solid var(--line); }
+  .pillar-list { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .pillar-list li { display: grid; gap: var(--space-3); align-content: start; padding: var(--space-6) var(--space-5); background: var(--surface); }
+  .pillar-list .mono { color: var(--text-muted); }
+  .pillar-list :global(svg) { color: var(--brand-ink); margin-block: var(--space-2); }
+  .pillar-list h3 { font-size: var(--fs-lg); }
+  .pillar-list p { font-size: var(--fs-sm); color: var(--text-muted); }
+  @media (min-width: 640px) { .pillar-list { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .pillar-list { grid-template-columns: repeat(4, 1fr); } }
+  .rel-sectors li { display: grid; gap: var(--space-3); align-content: start; padding-top: var(--space-5); border-top: 2px solid var(--ink); }
+  .rel-sectors :global(svg) { color: var(--brand-ink); }
+  .rel-sectors h3 { font-size: var(--fs-md); }
+  .rel-sectors p { font-size: var(--fs-sm); color: var(--text-muted); }
+  .faq-grid { display: grid; gap: var(--space-6); }
+  @media (min-width: 1024px) {
+    .faq-grid { grid-template-columns: 1fr 1.6fr; gap: var(--space-9); }
+  }
+  .others ul { display: grid; margin-top: var(--space-4); border-top: 1px solid var(--line); }
   .others a {
-    display: grid; grid-template-columns: 3rem 1fr auto; align-items: center;
-    padding: var(--space-4) 0; border-bottom: 1px solid var(--line);
-    font-family: var(--font-display); font-size: var(--fs-lg); letter-spacing: -0.02em;
-    transition: padding var(--dur) var(--ease), color var(--dur) var(--ease);
+    display: grid;
+    grid-template-columns: 2.5rem 1fr auto;
+    align-items: center;
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--ink);
+    transition: color var(--dur) var(--ease);
   }
-  .others .n { font-family: var(--font-body); font-size: var(--fs-sm); color: var(--text-soft); }
-  .others a:hover { padding-left: var(--space-3); color: var(--brand-ink); }
+  .others .mono { color: var(--brand-ink); }
+  .others a:hover { color: var(--brand-ink); }
+  @media (min-width: 900px) {
+    .others ul { grid-template-columns: repeat(5, 1fr); border-top: 0; gap: var(--space-4); }
+    .others a { grid-template-columns: 1fr auto; grid-template-rows: auto auto; gap: var(--space-2); border-top: 1px solid var(--line); border-bottom: 0; }
+    .others .mono { grid-column: 1 / -1; }
+  }
 </style>

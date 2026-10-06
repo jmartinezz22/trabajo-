@@ -1,7 +1,7 @@
 /**
  * Sectores seleccionados a partir del análisis de mercado
  * (ver docs/01-investigacion-y-estrategia.md): se incluyen solo sectores con
- * necesidad documentada de los servicios que ofrece PALEX MEDICAL.
+ * necesidad documentada de los servicios ofrecidos.
  */
 import type { IconName } from './icons';
 

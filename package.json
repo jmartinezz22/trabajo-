@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Web corporativa de PALEX MEDICAL — soluciones logísticas B2B",
+  "description": "Web de servicio — soluciones logísticas B2B",
   "scripts": {
     "dev": "astro dev",
     "build": "astro check && astro build",

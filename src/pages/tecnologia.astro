@@ -1,26 +1,23 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHero from '@/components/PageHero.astro';
-import TechList from '@/components/TechList.astro';
-import EditorialList from '@/components/EditorialList.astro';
+import TechGrid from '@/components/TechGrid.astro';
 import CtaBand from '@/components/CtaBand.astro';
 import Icon from '@/components/Icon.astro';
-import Photo from '@/components/Photo.astro';
-import { ownSolutions, technology } from '@/data/technology';
+import Visual from '@/components/Visual.astro';
+import { ownSolutions } from '@/data/technology';
 
 const crumbs = [{ name: 'Tecnología', href: '/tecnologia/' }];
-const pendingTech = technology.filter((t) => !t.confirmed);
 ---
 <BaseLayout
   title="Tecnología logística · Automatización, RFID, trazabilidad y SAP HANA"
   description="Automatización de almacenes, trazabilidad RFID, soluciones Dyane SmartKanban, SmartCabinet y Captis, control de impactos y experiencia en SAP HANA y SAP EWM."
   breadcrumbs={crumbs}
-  overlay
 >
   <PageHero
     eyebrow="Tecnología"
-    title="Tecnología aplicada a la logística."
-    intro="Digitalizamos procesos para mejorar la trazabilidad, el control y la eficiencia de las operaciones."
+    title="Experiencia en automatización y trazabilidad."
+    intro="La operación física respaldada por tecnología: RFID, soluciones propias de gestión de almacenes, control de impactos y experiencia en SAP HANA y EWM."
     breadcrumbs={crumbs}
     image="tecnologia"
   >
@@ -32,14 +29,13 @@ const pendingTech = technology.filter((t) => !t.confirmed);
       <div class="section-head split">
         <div>
           <p class="eyebrow" data-reveal>Capacidades</p>
-          <h2 data-reveal style="--reveal-i:1">Experiencia en automatización y trazabilidad.</h2>
+          <h2 data-reveal style="--reveal-i:1">Qué controlamos y cómo</h2>
         </div>
-        <p class="lead" data-reveal style="--reveal-i:2">Las herramientas de cada operación se definen en la fase de diseño, según los sistemas del cliente.</p>
+        <p class="lead" data-reveal style="--reveal-i:2">
+          Las herramientas concretas de cada operación se definen en la fase de diseño, según los sistemas del cliente.
+        </p>
       </div>
-      <TechList tone="light" />
-      <p class="impact" id="trazabilidad" data-reveal>
-        Para equipos sensibles y envíos de alto valor utilizamos además indicadores de impacto ShockWatch 50G, que registran cualquier golpe fuera de rango durante la manipulación, el almacenamiento y el transporte.
-      </p>
+      <TechGrid tone="light" showDetail />
     </div>
   </section>
 
@@ -48,25 +44,35 @@ const pendingTech = technology.filter((t) => !t.confirmed);
       <div>
         <p class="eyebrow" data-reveal>Soluciones propias</p>
         <h2 data-reveal style="--reveal-i:1">Desarrolladas por la división de Logística Hospitalaria e Ingeniería.</h2>
-        <p class="lead" data-reveal style="--reveal-i:2">RFID aplicado a la gestión de almacenes, la reposición y el control de material de alto valor. Implantadas, entre otros, en los 176 almacenes del Hospital Sant Joan de Déu.</p>
-        <a href="/proyectos/hospital-sant-joan-de-deu/" class="link-arrow" data-reveal>Ver el proyecto <Icon name="arrow" /></a>
+        <p class="lead" data-reveal style="--reveal-i:2">
+          Tecnología RFID aplicada a la gestión de almacenes, la reposición y el control de material de alto valor. Implantada, entre otros, en los 176 almacenes del Hospital Sant Joan de Déu.
+        </p>
+        <a href="/proyectos/#hospital-sant-joan-de-deu" class="link-arrow" data-reveal>Ver el caso <Icon name="arrow" /></a>
       </div>
-      <EditorialList items={ownSolutions.map((o) => ({ title: o.name, text: o.text }))} columns={1} tone="dark" />
+      <ul role="list" class="own-list">
+        {ownSolutions.map((o, i) => (
+          <li data-reveal style={`--reveal-i:${i}`}>
+            <span class="mono">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{o.name}</h3>
+            <p>{o.text}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
 
-  <section class="sap">
-    <div class="sap-media" data-reveal><Photo image="consultoria" sizes="(max-width: 1024px) 100vw, 50vw" /></div>
-    <div class="sap-copy">
-      <p class="eyebrow" data-reveal>SAP HANA · SAP EWM</p>
-      <h2 data-reveal style="--reveal-i:1">Logística y sistemas, en la misma conversación.</h2>
-      <p class="lead" data-reveal style="--reveal-i:2">
-        Contamos con experiencia en la implantación de SAP HANA y del módulo de gestión de almacenes EWM en centros propios. Ese conocimiento permite alinear procesos y sistema desde el diseño de la operación.
-      </p>
-      <p class="muted" data-reveal>Alcance del servicio SAP para terceros: <span class="pending">[PENDIENTE DE VALIDACIÓN COMERCIAL]</span></p>
-      <p class="muted" data-reveal>
-        {pendingTech.map((t) => <>{t.title}: <span class="pending">[CONFIRMAR TECNOLOGÍA]</span>. </>)}
-      </p>
+  <section class="section">
+    <div class="container sap">
+      <div data-reveal><Visual image="logistica2" ratio="landscape" kenburns /></div>
+      <div class="sap-copy">
+        <p class="eyebrow" data-reveal>SAP HANA · SAP EWM</p>
+        <h2 data-reveal style="--reveal-i:1">Logística y sistemas, en la misma conversación.</h2>
+        <p class="lead" data-reveal style="--reveal-i:2">
+          Contamos con experiencia en la implantación de SAP HANA y del módulo de gestión de almacenes EWM en centros propios. Ese conocimiento nos permite alinear procesos logísticos y sistema desde el diseño de la operación.
+        </p>
+        <p class="pending" data-reveal>Alcance del servicio SAP para terceros: [PENDIENTE DE VALIDACIÓN COMERCIAL]</p>
+        <a href="/servicios/consultoria-logistica/" class="link-arrow" data-reveal>Ver consultoría logística <Icon name="arrow" /></a>
+      </div>
     </div>
   </section>
 
@@ -74,19 +80,17 @@ const pendingTech = technology.filter((t) => !t.confirmed);
 </BaseLayout>
 
 <style>
-  .impact { margin-top: var(--space-7); max-width: 60ch; font-size: var(--fs-md); color: var(--text-muted); }
-  .own { display: grid; gap: var(--space-8); }
-  .own > div:first-child { display: grid; gap: var(--space-5); align-content: start; justify-items: start; }
-  .own h2 { max-width: 18ch; font-size: var(--fs-xl); }
-  .sap { display: grid; background: var(--surface); }
-  .sap-media { position: relative; min-height: 70vw; }
-  .sap-media :global(.photo) { position: absolute; inset: 0; }
-  .sap-copy { display: grid; gap: var(--space-5); align-content: center; justify-items: start; padding: var(--space-9) var(--gutter); }
-  .sap-copy h2 { max-width: 15ch; font-size: var(--fs-xl); }
+  .own { display: grid; gap: var(--space-7); }
+  .own > div:first-child { display: grid; gap: var(--space-5); justify-items: start; align-content: start; }
+  .own h2 { max-width: 22ch; }
+  .own-list { border-top: 1px solid var(--ink-3); }
+  .own-list li { display: grid; grid-template-columns: 3rem 1fr; gap: 0.25rem var(--space-4); padding: var(--space-5) 0; border-bottom: 1px solid var(--ink-3); }
+  .own-list .mono { color: var(--brand); grid-row: span 2; padding-top: 0.3rem; }
+  .own-list p { color: var(--text-on-dark-muted); font-size: var(--fs-sm); }
+  .sap { display: grid; gap: var(--space-7); align-items: center; }
+  .sap-copy { display: grid; gap: var(--space-5); justify-items: start; }
   @media (min-width: 1024px) {
     .own { grid-template-columns: 1fr 1fr; gap: var(--space-9); }
-    .sap { grid-template-columns: 1fr 1fr; min-height: 80vh; }
-    .sap-media { min-height: 0; }
-    .sap-copy { padding: var(--space-9); }
+    .sap { grid-template-columns: 1fr 1fr; gap: var(--space-9); }
   }
 </style>

@@ -1,6 +1,6 @@
 /**
  * Proyectos / casos.
- *  - status 'verified'   → caso real publicado por Palex. Solo resultados publicados, sin cifras añadidas.
+ *  - status 'verified'   → caso real publicado. Solo resultados publicados, sin cifras añadidas.
  *  - status 'validation' → proyecto encontrado en fuentes públicas (perfiles profesionales).
  *                          Se describe de forma cualitativa; cifras y cliente NO se publican
  *                          hasta validación interna (ver docs/03-registro-de-datos.md).

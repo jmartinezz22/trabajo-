@@ -1,64 +1,47 @@
 /* ==========================================================================
-   PALEX MEDICAL · Design tokens (v5 — identidad PALEX, editorial premium)
-   Blanco / negro / petróleo oscuro + verde corporativo como acento.
-   Los tokens se redefinen por tema de sección: claro (por defecto),
-   .on-dark (negro) y .on-petrol (azul‑verde oscuro).
-   [CONFIRMAR] Valores exactos con el manual de marca oficial.
+   Design tokens
+   Único archivo a editar para ajustar la marca (colores, tipografías, ritmo).
+   [CONFIRMAR] Valores de color y tipografía con el manual de marca oficial.
    ========================================================================== */
 
 :root {
-  color-scheme: light;
+  /* — Marca — */
+  --brand: #00a886;          /* Verde corporativo (acento principal, CTA, rutas) */
+  --brand-strong: #008a6e;   /* Hover / texto sobre claro (contraste AA) */
+  --brand-ink: #006b56;      /* Texto de acento sobre fondos claros */
+  --brand-soft: #e3f4ef;     /* Fondos de estado suaves */
+  --signal: #f4823a;         /* Naranja secundario: uso puntual (máx. 1 por pantalla) */
 
-  /* — Acento corporativo — */
-  --accent: #00a886;          /* Verde PALEX: botones, líneas, indicadores */
-  --accent-strong: #00c49c;   /* Hover */
-  --accent-deep: #007a62;
-  --accent-wash: rgba(0, 168, 134, 0.1);
-  --accent-text: #00775f;     /* Verde para texto sobre claro (AA) */
-  --on-accent: #04110e;       /* Texto sobre botón verde */
+  /* — Neutros — */
+  --ink: #0e1a24;            /* Tinta principal / fondos oscuros */
+  --ink-2: #16252f;          /* Superficie oscura elevada */
+  --ink-3: #22333e;          /* Bordes sobre oscuro */
+  --text: #1c2830;
+  --text-muted: #56636b;
+  --text-on-dark: #eef2f1;
+  --text-on-dark-muted: #9fb0b5;
+  --paper: #f7f7f4;          /* Fondo cálido principal */
+  --surface: #ffffff;
+  --surface-2: #eeeeea;
+  --line: #d9dbd6;
+  --line-strong: #b9bdb7;
 
-  /* Alias heredados */
-  --brand: var(--accent);
-  --brand-strong: var(--accent-strong);
-  --brand-ink: var(--accent-text);
-  --signal: #9c4a10;          /* Marcadores de contenido pendiente */
+  /* — Tipografía — */
+  --font-display: 'Inter Tight', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
-  /* — Fondos de referencia (fijos) — */
-  --black: #080b0d;
-  --petrol: #0b2a30;
-  --petrol-2: #103740;
-
-  /* — Tema claro (por defecto) — */
-  --ink: var(--black);        /* Fondo de secciones negras */
-  --paper: #ffffff;
-  --surface: #f5f5f2;         /* Blanco roto */
-  --stone: #ebebe7;           /* Gris claro */
-  --ink-2: #1a2226;
-  --ink-3: #2a3438;
-  --fg: #0b1215;              /* Titulares */
-  --text: #2a3236;
-  --text-muted: #5a6468;
-  --text-soft: #5f696d;
-  --text-on-dark: #f3f5f4;
-  --text-on-dark-muted: #a9b4b6;
-  --line: #e1e2de;
-  --line-strong: #b9bdbb;
-  --rule: #0b1215;
-
-  /* — Tipografía: serif potente para títulos, sans limpia para texto — */
-  --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
-  --font-body: 'Manrope', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-
+  /* Escala fluida (móvil → escritorio) */
   --fs-xs: 0.75rem;
   --fs-sm: 0.875rem;
-  --fs-base: 1.0625rem;
-  --fs-md: clamp(1.125rem, 1.05rem + 0.3vw, 1.3125rem);
-  --fs-lg: clamp(1.375rem, 1.2rem + 0.7vw, 1.75rem);
-  --fs-xl: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem);
-  --fs-2xl: clamp(2.25rem, 1.6rem + 2.8vw, 4.25rem);
-  --fs-3xl: clamp(2.75rem, 1.6rem + 5vw, 7rem);
+  --fs-base: 1rem;
+  --fs-md: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --fs-lg: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --fs-xl: clamp(1.5rem, 1.25rem + 1.1vw, 2.125rem);
+  --fs-2xl: clamp(2rem, 1.5rem + 2.2vw, 3.25rem);
+  --fs-3xl: clamp(2.5rem, 1.6rem + 3.9vw, 5rem);
 
-  /* — Espaciado: más aire entre bloques — */
+  /* — Espaciado — */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -66,60 +49,52 @@
   --space-5: 1.5rem;
   --space-6: 2rem;
   --space-7: 3rem;
-  --space-8: 5rem;
-  --space-9: 8rem;
-  --section-y: clamp(7rem, 4rem + 10vw, 15rem);
-  --gutter: clamp(1.25rem, 0.5rem + 3.5vw, 4rem);
-  --container: 1400px;
-  --container-narrow: 900px;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --section-y: clamp(4.5rem, 3rem + 6vw, 9rem);
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
+  --container: 1280px;
+  --container-narrow: 840px;
 
-  /* — Forma y movimiento: lento y preciso — */
-  --radius: 2px;
-  --header-h: 88px;
-  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  /* — Forma y movimiento — */
+  --radius: 3px;
+  --radius-sm: 2px;
+  --header-h: 72px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 240ms;
+  --dur-slow: 700ms;
+  --shadow-1: 0 1px 2px rgba(14, 26, 36, 0.06), 0 8px 24px -12px rgba(14, 26, 36, 0.18);
+}
+
+@media (max-width: 768px) {
+  :root { --header-h: 60px; }
+}
+
+/* ==========================================================================
+   Tokens de compatibilidad para los componentes añadidos después
+   (portada narrativa, ubicación y horario, intro, fotografía).
+   ========================================================================== */
+:root {
+  --accent: var(--brand);
+  --accent-strong: #00c49c;
+  --accent-text: var(--brand-ink);
+  --accent-wash: rgba(0, 168, 134, 0.1);
+  --on-accent: var(--ink);
+  --black: #0b141b;
+  --fg: var(--ink);
+  --text-soft: #5f6b72;
+  --rule: var(--ink);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --dur: 360ms;
-  --dur-slow: 1300ms;
 }
-
-/* Tema negro */
+/* Dentro de secciones oscuras los tokens de texto y líneas se invierten */
 .on-dark {
-  color-scheme: dark;
-  --paper: #080b0d;
-  --surface: #0f1417;
-  --stone: #151b1e;
-  --fg: #f3f5f4;
-  --text: #d4dadb;
-  --text-muted: #a9b4b6;
-  --text-soft: #9aa5a8;
-  --line: #222b2f;
-  --line-strong: #3a4549;
-  --rule: #f3f5f4;
+  --fg: #ffffff;
+  --text: var(--text-on-dark);
+  --text-muted: var(--text-on-dark-muted);
+  --text-soft: #93a4aa;
+  --line: var(--ink-3);
+  --line-strong: #3a4d58;
+  --surface: var(--ink-2);
   --accent-text: #2fd1ad;
-  --signal: #f0a46e;
-  background: var(--black);
-  color: var(--text);
-}
-
-/* Tema petróleo (azul‑verde oscuro de marca) */
-.on-petrol {
-  color-scheme: dark;
-  --paper: #0b2a30;
-  --surface: #0e3239;
-  --stone: #123a42;
-  --fg: #f2f6f5;
-  --text: #d1dfde;
-  --text-muted: #a3bcbc;
-  --text-soft: #97b2b2;
-  --line: #1d4850;
-  --line-strong: #2f5f68;
-  --rule: #f2f6f5;
-  --accent-text: #3ddbb6;
-  --signal: #f0a46e;
-  background: var(--petrol);
-  color: var(--text);
-}
-
-@media (max-width: 900px) {
-  :root { --header-h: 66px; }
+  --rule: #ffffff;
 }

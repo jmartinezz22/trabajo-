@@ -38,14 +38,15 @@ export const certifications: Certification[] = [
     code: 'ISO 37001',
     name: 'Sistema de gestión antisoborno',
     status: 'validation',
-    note: 'Publicado en relación con Palex España. Confirmar sociedad exacta.',
+    note: 'Confirmar sociedad titular exacta.',
   },
   {
     code: 'UNE 19601',
     name: 'Sistema de gestión de compliance penal',
     status: 'validation',
-    note: 'Publicado en relación con Palex España. Confirmar sociedad exacta.',
+    note: 'Confirmar sociedad titular exacta.',
   },
+  // GDP: NO se muestra en la web (CertList filtra 'not-found') hasta confirmación.
   {
     code: 'GDP',
     name: 'Buenas Prácticas de Distribución',

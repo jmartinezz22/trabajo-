@@ -1,92 +1,86 @@
 ---
-/**
- * Caso real verificado (sección completa, a sangre).
- * Composición editorial: fotografía principal + fotografía superpuesta, titular de impacto,
- * cifras verificadas y resultados publicados. No se añaden cifras ni resultados no publicados.
- * Las fotografías son ilustrativas (no corresponden al hospital) y se etiquetan como tal.
- */
+/** Caso real verificado. No añadir cifras ni resultados no publicados. */
 import Icon from './Icon.astro';
-import Photo from './Photo.astro';
+import Visual from './Visual.astro';
 import type { CaseStudy } from '@/data/cases';
 
 interface Props {
   c: CaseStudy;
-  /** En la página del proyecto no se repite el enlace. */
-  link?: boolean;
+  headingLevel?: 'h2' | 'h3';
 }
-const { c, link = true } = Astro.props;
+const { c, headingLevel = 'h3' } = Astro.props;
+const H = headingLevel;
 ---
-<section class="case on-petrol" id={c.id} aria-labelledby={`${c.id}-title`}>
-  <div class="media">
-    <div class="main-photo" data-reveal="scale">
-      <Photo image="hospital" sizes="(max-width: 1024px) 100vw, 55vw" parallax />
-    </div>
-    <div class="inset-photo" data-reveal="right" style="--reveal-i:2">
-      <Photo image="hospital2" sizes="(max-width: 1024px) 50vw, 22vw" />
-    </div>
-    <p class="ctx">Imágenes ilustrativas</p>
-  </div>
-
-  <div class="body">
-    <p class="eyebrow" data-reveal>Caso de éxito</p>
-    <h2 id={`${c.id}-title`} data-reveal="mask" style="--reveal-i:1">176 almacenes. Un hospital. <em>Trazabilidad de extremo a extremo.</em></h2>
-    <div class="who" data-reveal style="--reveal-i:2">
-      <p class="client">Hospital Sant Joan de Déu — Barcelona</p>
-      <p class="muted">Automatización y digitalización de procesos logísticos.</p>
-    </div>
-
-    <dl class="facts" data-reveal style="--reveal-i:3">
-      <div><dt>Almacenes</dt><dd data-count="176">176</dd></div>
-      <div><dt>Tecnología</dt><dd>RFID</dd></div>
-      <div><dt>Soluciones</dt><dd>Dyane</dd></div>
-    </dl>
-
-    <ul role="list" class="results" data-reveal style="--reveal-i:4" aria-label="Resultados publicados">
-      {c.results.map((r) => <li>{r}</li>)}
-    </ul>
-
-    {link && (
-      <a href={`/proyectos/${c.id}/`} class="btn" data-reveal style="--reveal-i:5">Ver proyecto <Icon name="arrow" /></a>
+<article class="featured" id={c.id}>
+  <div class="media" data-reveal>
+    <Visual image="hospital" ratio="fill" caption="Caso real · imagen ilustrativa" kenburns />
+    {c.scope && (
+      <div class="scope">
+        <span class="mono">Alcance</span>
+        <strong>{c.scope}</strong>
+      </div>
     )}
   </div>
-</section>
+  <div class="body">
+    <p class="mono tag" data-reveal><span class="dot" aria-hidden="true"></span>Caso real · {c.tag}</p>
+    <H class="title" data-reveal style="--reveal-i:1">{c.client}</H>
+    <p class="subtitle" data-reveal style="--reveal-i:2">{c.title}</p>
+
+    <dl data-reveal style="--reveal-i:3">
+      <div><dt class="mono">Reto</dt><dd>{c.problem}</dd></div>
+      <div><dt class="mono">Solución</dt><dd>{c.solution}</dd></div>
+      <div>
+        <dt class="mono">Resultados publicados</dt>
+        <dd>
+          <ul role="list" class="results">
+            {c.results.map((r) => <li><Icon name="check" size={18} />{r}</li>)}
+          </ul>
+        </dd>
+      </div>
+    </dl>
+    <ul role="list" class="chips">
+      {c.technologies.map((t) => <li>{t}</li>)}
+    </ul>
+    <p class="source mono">Fuente: caso publicado. <span class="pending">[AÑADIR ENLACE A LA PUBLICACIÓN ORIGINAL]</span></p>
+  </div>
+</article>
 
 <style>
-  .case { display: grid; overflow: hidden; }
-  .media { position: relative; min-height: 78vw; }
-  .main-photo { position: absolute; inset: 0 0 12% 0; }
-  .main-photo :global(.photo) { position: absolute; inset: 0; }
-  .inset-photo {
+  .featured { display: grid; gap: var(--space-6); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .media { position: relative; min-height: 280px; }
+  .media :global(.visual) { border-radius: 0; height: 100%; }
+  .scope {
     position: absolute;
-    right: var(--gutter);
-    bottom: 0;
-    width: 42%;
-    aspect-ratio: 4 / 5;
-    box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.55);
-    outline: 8px solid var(--petrol);
+    right: 1rem;
+    top: 1rem;
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.75rem 1rem;
+    background: var(--brand);
+    color: var(--ink);
+    border-radius: var(--radius-sm);
   }
-  .inset-photo :global(.photo) { position: absolute; inset: 0; }
-  .ctx { position: absolute; left: var(--gutter); bottom: 0.5rem; z-index: 2; font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-soft); }
-
-  .body { display: grid; gap: var(--space-6); align-content: center; justify-items: start; padding: var(--space-9) var(--gutter); }
-  .body h2 { font-size: clamp(2.5rem, 1.4rem + 3.8vw, 5.25rem); max-width: 13ch; }
-  .who { display: grid; gap: var(--space-1); padding-left: var(--space-5); border-left: 2px solid var(--accent); }
-  .client { font-family: var(--font-display); font-size: var(--fs-lg); color: var(--fg); }
-  .facts { display: grid; grid-template-columns: repeat(3, auto); gap: var(--space-8); padding-block: var(--space-5); border-block: 1px solid var(--line); width: 100%; }
-  .facts dt { font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); }
-  .facts dd { margin: var(--space-2) 0 0; font-family: var(--font-display); font-size: clamp(2.25rem, 1.6rem + 2vw, 3.75rem); font-weight: 300; line-height: 1; color: var(--fg); font-variant-numeric: tabular-nums; }
-  .results { display: grid; width: 100%; }
-  .results li { padding: 0.7rem 0; border-bottom: 1px solid var(--line); font-size: var(--fs-sm); color: var(--text); }
-  .results li::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 0.85rem; border-radius: 50%; background: var(--accent); vertical-align: middle; }
-
-  @media (min-width: 640px) { .results { grid-template-columns: 1fr 1fr; column-gap: var(--space-6); } }
-  @media (max-width: 520px) { .facts { gap: var(--space-5); } }
+  .scope .mono { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.12em; }
+  .scope strong { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: -0.02em; line-height: 1; }
+  .body { display: grid; gap: var(--space-4); align-content: start; padding: 0 var(--space-5) var(--space-6); }
+  .tag { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--brand-ink); text-transform: uppercase; letter-spacing: 0.1em; font-size: var(--fs-xs); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--brand); }
+  .title { font-size: var(--fs-xl); }
+  .subtitle { font-size: var(--fs-md); color: var(--text-muted); }
+  dl { display: grid; gap: var(--space-4); margin-top: var(--space-2); }
+  dl > div { display: grid; gap: 0.35rem; padding-top: var(--space-4); border-top: 1px solid var(--line); }
+  dt { font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); }
+  dd { margin: 0; font-size: var(--fs-sm); }
+  .results { display: grid; gap: 0.4rem; }
+  @media (min-width: 640px) { .results { grid-template-columns: repeat(2, 1fr); } }
+  .results li { display: grid; grid-template-columns: 18px 1fr; gap: 0.5rem; }
+  .results :global(svg) { color: var(--brand-ink); margin-top: 2px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+  .chips li { padding: 0.25rem 0.625rem; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); font-size: var(--fs-xs); font-weight: 500; }
+  .source { font-size: 0.6875rem; color: var(--text-muted); }
   @media (min-width: 1024px) {
-    .case { grid-template-columns: 55fr 45fr; min-height: 100vh; }
-    .media { min-height: 0; }
-    .main-photo { inset: 0 18% 0 0; }
-    .inset-photo { right: 4%; bottom: 12%; width: 34%; }
-    .ctx { left: var(--space-5); bottom: var(--space-4); color: rgba(243, 245, 244, 0.75); }
-    .body { padding: var(--space-9) var(--gutter) var(--space-9) var(--space-8); }
+    .featured { grid-template-columns: 5fr 7fr; gap: var(--space-8); }
+    .media { min-height: 100%; }
+    .body { padding: var(--space-7) var(--space-7) var(--space-7) 0; }
   }
 </style>

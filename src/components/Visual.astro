@@ -1,0 +1,46 @@
+---
+/**
+ * Hueco visual de la primera muestra, ahora con fotografía real relacionada
+ * (ver src/data/images.ts). Mantiene proporciones, pie de foto y parallax.
+ */
+import Photo from './Photo.astro';
+import type { PhotoKey } from '@/data/images';
+
+interface Props {
+  image: PhotoKey;
+  ratio?: 'wide' | 'landscape' | 'square' | 'portrait' | 'fill';
+  caption?: string;
+  eager?: boolean;
+  class?: string;
+  parallax?: boolean;
+  kenburns?: boolean;
+  label?: boolean;
+}
+const { image, ratio = 'landscape', caption, eager = false, class: className, parallax = false, kenburns = false, label = false } = Astro.props;
+---
+<figure class:list={['visual', `visual--${ratio}`, className]}>
+  <Photo image={image} eager={eager} parallax={parallax} kenburns={kenburns} label={label} sizes="(max-width: 1024px) 100vw, 50vw" class="visual-photo" />
+  {caption && <figcaption><span class="mono">{caption}</span></figcaption>}
+</figure>
+
+<style>
+  .visual { position: relative; overflow: hidden; background: var(--ink); border-radius: var(--radius); isolation: isolate; }
+  .visual--wide { aspect-ratio: 21 / 9; }
+  .visual--landscape { aspect-ratio: 4 / 3; }
+  .visual--square { aspect-ratio: 1; }
+  .visual--portrait { aspect-ratio: 4 / 5; }
+  .visual--fill { height: 100%; min-height: 320px; }
+  @media (max-width: 640px) { .visual--wide { aspect-ratio: 4 / 3; } }
+  .visual :global(.visual-photo) { position: absolute; inset: 0; }
+  figcaption { position: absolute; left: 1rem; bottom: 1rem; z-index: 3; }
+  figcaption .mono {
+    padding: 0.25rem 0.5rem;
+    background: rgba(14, 26, 36, 0.72);
+    color: #dfe7e6;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: var(--radius-sm);
+    backdrop-filter: blur(6px);
+  }
+</style>

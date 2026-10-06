@@ -6,7 +6,7 @@
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Photo from '@/components/Photo.astro';
-import { photos, type PhotoKey } from '@/data/images';
+import { photos, sourcePage, type PhotoKey } from '@/data/images';
 
 const usage: Record<string, string> = {
   hero: 'Home · portada narrativa',
@@ -37,7 +37,7 @@ const keys = Object.keys(photos) as PhotoKey[];
       <h1 class="h2">Revisión de fotografía</h1>
       <p class="lead">
         Comprueba cada imagen: debe transmitir orden, limpieza y profesionalidad. Si alguna no encaja, cambia su identificador en
-        <code>src/data/images.ts</code>. Ninguna representa instalaciones propias de PALEX: son imágenes de contexto.
+        <code>src/data/images.ts</code>. Ninguna representa instalaciones propias: son imágenes de contexto.
       </p>
       <ul role="list" class="grid-r">
         {keys.map((k) => (
@@ -47,7 +47,7 @@ const keys = Object.keys(photos) as PhotoKey[];
             <p class="u">{usage[k] ?? '—'}</p>
             <p class="m">
               {photos[k].credit ?? 'Autor sin confirmar'} ·
-              <a href={`https://unsplash.com/photos/${photos[k].unsplash}`} target="_blank" rel="noopener">Ver en Unsplash ({photos[k].unsplash})</a>
+              <a href={sourcePage(photos[k].pexels)} target="_blank" rel="noopener">Ver en Pexels ({photos[k].pexels})</a>
             </p>
           </li>
         ))}

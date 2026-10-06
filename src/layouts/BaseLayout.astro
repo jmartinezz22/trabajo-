@@ -14,7 +14,7 @@ export interface Crumb {
 interface Props {
   title: string;
   description: string;
-  /** Título exacto para <title> (si no, se compone "title · PALEX MEDICAL"). */
+  /** Título exacto para <title> (si no, se compone "title · nombre del sitio"). */
   fullTitle?: string;
   ogImage?: string;
   breadcrumbs?: Crumb[];
@@ -53,7 +53,6 @@ const organization: Record<string, unknown> = {
   name: site.name,
   url: new URL('/', Astro.site).href,
   description: site.description,
-  ...(site.legalName && { legalName: site.legalName }),
   ...(contact.email && { email: contact.email }),
   ...(contact.phone && { telephone: contact.phone.number }),
   contactPoint: [contact.phone, contact.customerService].map((p) => ({
@@ -112,7 +111,7 @@ const jsonLd = [organization, ...(breadcrumbSchema ? [breadcrumbSchema] : []), .
     {intro && (
       <script is:inline>
         try {
-          if (!matchMedia('(prefers-reduced-motion: reduce)').matches && !sessionStorage.getItem('palex-intro'))
+          if (!matchMedia('(prefers-reduced-motion: reduce)').matches && !sessionStorage.getItem('intro-visto'))
             document.documentElement.classList.add('intro-on');
         } catch (e) {}
       </script>
@@ -140,12 +139,12 @@ const jsonLd = [organization, ...(breadcrumbSchema ? [breadcrumbSchema] : []), .
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogUrl} />
 
-    <!-- Tipografía: Fraunces (títulos, serif) + Manrope (texto, sans) -->
+    <!-- Tipografía: Inter Tight (títulos) + Inter (texto) + JetBrains Mono (datos) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..600,0..100,0..1;1,9..144,300..600,0..100,0..1&family=Manrope:wght@400..700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
     />
 
     {jsonLd.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}

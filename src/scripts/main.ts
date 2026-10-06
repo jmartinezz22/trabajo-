@@ -14,7 +14,15 @@ let ticking = false;
 
 /* — Portada narrativa: progreso 0→1 mientras la portada está fijada — */
 const story = document.querySelector<HTMLElement>('[data-story]');
-if (story && !reduceMotion) document.documentElement.classList.add('story-live');
+const storyCopy = story?.querySelector<HTMLElement>('[data-story-copy]');
+const storyMq = window.matchMedia('(min-width: 900px) and (min-height: 560px)');
+const storyOn = () => !!story && !reduceMotion && storyMq.matches;
+function setStoryMode() {
+  document.documentElement.classList.toggle('story-live', storyOn());
+  if (story && storyCopy) story.style.setProperty('--wt', `${storyCopy.offsetHeight}px`);
+}
+setStoryMode();
+storyMq.addEventListener?.('change', setStoryMode);
 const driftEls = Array.from(document.querySelectorAll<HTMLElement>('[data-drift]'));
 
 /** Hasta dónde la cabecera superpuesta sigue transparente (fin de la foto de portada). */
@@ -28,7 +36,7 @@ function headerThreshold() {
 }
 
 function updateStory() {
-  if (!story || reduceMotion) return;
+  if (!storyOn() || !story) return;
   const range = Math.max(1, story.offsetHeight - window.innerHeight);
   const p = Math.min(1, Math.max(0, (window.scrollY - story.offsetTop) / range));
   story.style.setProperty('--p', p.toFixed(4));
@@ -75,6 +83,8 @@ window.addEventListener(
   { passive: true },
 );
 onScroll();
+window.addEventListener('resize', () => { setStoryMode(); onScroll(); }, { passive: true });
+document.fonts?.ready.then(setStoryMode);
 
 /* — Menú móvil — */
 const toggle = document.querySelector<HTMLAnchorElement>('[data-menu-toggle]');

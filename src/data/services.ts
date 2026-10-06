@@ -1,5 +1,5 @@
 /**
- * Catálogo de servicios de PALEX MEDICAL (fuente: briefing de la empresa).
+ * Catálogo de servicios (fuente: briefing de la empresa).
  * Cada línea genera automáticamente su página en /servicios/<slug>/.
  */
 import type { IconName } from './icons';
@@ -107,7 +107,6 @@ const serviceData: ServiceLine[] = [
         'Modalidades mixtas en una misma operación según cada destino.',
         'Experiencia en optimización del transporte, consolidación de envíos y planificación de la distribución.',
         'Cobertura geográfica: [DATOS PENDIENTES DE CONFIRMAR].',
-        'Certificación de distribución farmacéutica: [CONFIRMAR CERTIFICACIÓN GDP].',
       ],
     },
     sectors: ['pharma-healthcare', 'industria', 'distribucion', 'ecommerce'],

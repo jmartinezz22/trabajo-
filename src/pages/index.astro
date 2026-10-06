@@ -1,263 +1,311 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Icon from '@/components/Icon.astro';
+import Visual from '@/components/Visual.astro';
 import Photo from '@/components/Photo.astro';
 import HeroStory from '@/components/HeroStory.astro';
-import Stats from '@/components/Stats.astro';
-import PhotoBand from '@/components/PhotoBand.astro';
-import ServiceIndex from '@/components/ServiceIndex.astro';
-import FeaturedCase from '@/components/FeaturedCase.astro';
-import TechList from '@/components/TechList.astro';
-import SectorList from '@/components/SectorList.astro';
+import VisitSection from '@/components/VisitSection.astro';
+import ServiceCard from '@/components/ServiceCard.astro';
 import FlowSteps from '@/components/FlowSteps.astro';
+import SectorGrid from '@/components/SectorGrid.astro';
+import TechGrid from '@/components/TechGrid.astro';
+import FeaturedCase from '@/components/FeaturedCase.astro';
+import ProofBand from '@/components/ProofBand.astro';
 import CertList from '@/components/CertList.astro';
 import CtaBand from '@/components/CtaBand.astro';
-import VisitSection from '@/components/VisitSection.astro';
 import { services, serviceHref } from '@/data/services';
-import { methodSteps } from '@/data/navigation';
+import { methodSteps, valueChain } from '@/data/navigation';
 import { featuredCase } from '@/data/cases';
 import { site } from '@/data/site';
 
 const schema = [
-  { '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: new URL('/', Astro.site).href, inLanguage: 'es-ES' },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: site.name,
+    url: new URL('/', Astro.site).href,
+    inLanguage: 'es-ES',
+  },
   {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Servicios logísticos de PALEX MEDICAL',
-    itemListElement: services.map((s, i) => ({ '@type': 'ListItem', position: i + 1, name: s.name, url: new URL(serviceHref(s.slug), Astro.site).href })),
+    name: 'Servicios logísticos',
+    itemListElement: services.map((s, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: s.name,
+      url: new URL(serviceHref(s.slug), Astro.site).href,
+    })),
   },
 ];
-
-const capabilities = ['Transporte', 'Almacenaje', 'Distribución', 'Tecnología', 'Consultoría'];
 ---
 <BaseLayout
   title="Operador logístico B2B"
-  fullTitle="Soluciones logísticas integrales para operaciones complejas | PALEX MEDICAL"
-  description="Transporte, logística, tecnología y soluciones a medida para operaciones que requieren precisión, trazabilidad y control. Experiencia en logística hospitalaria desde 1998."
+  fullTitle="Operador logístico B2B · Soluciones logísticas integrales a medida"
+  description="Logística, transporte, tecnología y trazabilidad para operaciones complejas. Experiencia en logística hospitalaria desde 1998, automatización y soluciones a medida."
   schema={schema}
-  overlay
   intro
 >
-  <!-- 01 · PORTADA NARRATIVA -->
+  <!-- 01 — PORTADA (clara, narrativa de scroll) -->
   <HeroStory />
 
-  <!-- 02 · CAPACIDAD -->
-  <section class="capacity">
-    <div class="container cap-head">
-      <p class="eyebrow" data-reveal>Capacidad</p>
-      <h2 data-reveal="mask" style="--reveal-i:1">Más que transporte. Diseñamos soluciones para <em>toda la operación logística.</em></h2>
-    </div>
-
-    <div class="cap-words" aria-label="Capacidades">
-      <ul role="list" class="drift" data-drift>
-        {capabilities.map((c) => <li>{c}</li>)}
-      </ul>
-    </div>
-
-    <div class="cap-figure">
-      <div class="cap-photo" data-reveal="scale">
-        <Photo image="capacity" sizes="100vw" parallax />
+  <!-- 02 — EXPERIENCIA (solo datos verificados) -->
+  <section class="section tight experience" aria-labelledby="exp-title">
+    <div class="container">
+      <div class="exp-head">
+        <p class="eyebrow" data-reveal>Experiencia demostrable</p>
+        <h2 id="exp-title" class="h3" data-reveal style="--reveal-i:1">Experiencia en entornos donde la logística no puede fallar: el hospital.</h2>
       </div>
-      <div class="container">
-        <div class="cap-note" data-reveal="right" style="--reveal-i:2">
-          <p>
-            Combinamos logística, transporte, tecnología, trazabilidad y consultoría para diseñar operaciones adaptadas a cada cliente, y las gestionamos con un único interlocutor.
-          </p>
-          <p class="muted">Una experiencia formada en el entorno hospitalario, donde cada referencia, cada plazo y cada registro cuentan.</p>
-          <a href="/empresa/" class="link-arrow">Conocer la empresa <Icon name="arrow" /></a>
-        </div>
-      </div>
-    </div>
-
-    <div class="container cap-stats">
-      <Stats />
+      <ProofBand />
     </div>
   </section>
 
-  <!-- 03 · TRANSPORTE Y LOGÍSTICA: identidad visual por área -->
-  <PhotoBand
-    image="transporte2"
-    num="01"
-    eyebrow="Transporte"
-    title="Movemos mercancías con <em>precisión y control.</em>"
-    text="Paquetería, grupaje y camión completo. Temperatura ambiente, refrigerada, congelada o controlada. Servicio express."
-    href="/servicios/transporte/"
-    linkLabel="Ver transporte"
-  />
-  <PhotoBand
-    image="logistica2"
-    num="02"
-    eyebrow="Logística"
-    title="Del almacenaje <em>a la distribución.</em>"
-    text="Almacenaje, preparación de pedidos, picking, packing, manipulados, e-commerce y fulfillment, adaptados a cada operación."
-    href="/servicios/logistica/"
-    linkLabel="Ver logística"
-    align="right"
-  />
+  <!-- 03 — CAPACIDAD / PROPUESTA DE VALOR -->
+  <section class="section capacity bg-surface">
+    <div class="container">
+      <div class="section-head split">
+        <div>
+          <p class="eyebrow" data-reveal>Propuesta de valor</p>
+          <h2 data-reveal style="--reveal-i:1">No solo transportamos. Combinamos todo lo que necesita una operación.</h2>
+        </div>
+        <p class="lead" data-reveal style="--reveal-i:2">
+          Logística, transporte, tecnología, trazabilidad y consultoría, integradas en una solución diseñada para tu operación y gestionada por un único interlocutor.
+        </p>
+      </div>
+      <ol role="list" class="chain" data-draw>
+        {valueChain.map((c, i) => (
+          <li style={`--i:${i}`}>
+            <a href={c.href}>
+              <span class="mono">{i === 0 ? '' : '+ '}{String(i + 1).padStart(2, '0')}</span>
+              <span class="chain-label">{c.label}</span>
+              <span class="chain-text">{c.text}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
 
-  <!-- 04 · SERVICIOS -->
+  <!-- 04 — SERVICIOS -->
   <section class="section" id="servicios">
     <div class="container">
       <div class="section-head split">
         <div>
           <p class="eyebrow" data-reveal>Servicios</p>
-          <h2 data-reveal="mask" style="--reveal-i:1">Seis líneas de servicio. <em>Una operación coordinada.</em></h2>
+          <h2 data-reveal style="--reveal-i:1">Seis líneas de servicio. Un único interlocutor.</h2>
         </div>
-        <p class="lead" data-reveal style="--reveal-i:2">Desde una necesidad puntual hasta la externalización completa de la logística.</p>
+        <div class="head-aside" data-reveal style="--reveal-i:2">
+          <p class="lead">Combinables entre sí para cubrir desde una necesidad puntual hasta la externalización completa de tu logística.</p>
+          <a href="/servicios/" class="link-arrow">Ver todos los servicios <Icon name="arrow" /></a>
+        </div>
       </div>
-      <ServiceIndex />
+      <ul role="list" class="grid grid-3">
+        {services.map((s, i) => <ServiceCard service={s} variant="card" index={i} />)}
+      </ul>
     </div>
   </section>
 
-  <!-- 05 · CASO REAL -->
-  <FeaturedCase c={featuredCase} />
-
-  <!-- 06 · TECNOLOGÍA -->
-  <section class="tech on-dark">
-    <div class="tech-photo" aria-hidden="true" data-reveal="scale"><Photo image="tecnologia" sizes="(max-width: 1024px) 100vw, 45vw" parallax /></div>
-    <div class="container tech-inner">
-      <div class="tech-copy">
-        <p class="eyebrow" data-reveal>Tecnología</p>
-        <h2 data-reveal="mask" style="--reveal-i:1">Tecnología aplicada <em>a la logística.</em></h2>
-        <p class="lead" data-reveal style="--reveal-i:2">
-          Digitalizamos procesos para mejorar la trazabilidad, el control y la eficiencia de las operaciones.
+  <!-- 05 — SOLUCIONES A MEDIDA -->
+  <section class="section custom on-dark photo-bg">
+    <div class="photo-bg__media" aria-hidden="true"><Photo image="medida" kenburns sizes="100vw" /></div>
+    <div class="container custom-grid">
+      <div class="custom-copy">
+        <p class="eyebrow" data-reveal>Soluciones a medida</p>
+        <h2 data-reveal style="--reveal-i:1">Tu operación. Nuestra solución.</h2>
+        <p class="question" data-reveal style="--reveal-i:2">¿Tienes una necesidad logística que no encaja en una solución estándar?</p>
+        <p class="lead" data-reveal style="--reveal-i:3">
+          Analizamos tu operación, identificamos las necesidades y diseñamos una solución adaptada. Después la implantamos, la gestionamos y la mejoramos.
         </p>
-        <TechList />
-        <a href="/tecnologia/" class="link-arrow more" data-reveal>Ver tecnología <Icon name="arrow" /></a>
+        <div class="btn-row" data-reveal style="--reveal-i:4">
+          <a href="/contacto/?servicio=solucion-a-medida" class="btn">Cuéntanos tu proyecto <Icon name="arrow" /></a>
+          <a href="/soluciones-a-medida/" class="btn btn-ghost">Cómo trabajamos</a>
+        </div>
+      </div>
+      <div data-reveal style="--reveal-i:2">
+        <Visual image="consultoria" ratio="portrait" caption="Diseño de operación" parallax />
       </div>
     </div>
   </section>
 
-  <!-- 07 · OPERACIONES ESPECIALES -->
-  <PhotoBand
-    image="especiales2"
-    eyebrow="Operaciones especiales"
-    title="Cuando una operación requiere <em>algo diferente.</em>"
-    text="Analizamos las necesidades específicas de cada operación y diseñamos una solución adaptada."
-    items={['Embalaje', 'Equipos de alto valor', 'Manipulación especial', 'Transporte', 'Soluciones a medida']}
-    href="/servicios/servicios-especiales/"
-    linkLabel="Ver servicios especiales"
-  />
-
-  <!-- 08 · SECTORES -->
+  <!-- 06 — SECTORES -->
   <section class="section">
     <div class="container">
       <div class="section-head split">
         <div>
           <p class="eyebrow" data-reveal>Sectores</p>
-          <h2 data-reveal="mask" style="--reveal-i:1">Necesidades distintas. <em>La misma exigencia.</em></h2>
+          <h2 data-reveal style="--reveal-i:1">Necesidades distintas. La misma exigencia.</h2>
         </div>
-        <a href="/sectores/" class="link-arrow head-link" data-reveal style="--reveal-i:2">Ver sectores <Icon name="arrow" /></a>
+        <div class="head-aside" data-reveal style="--reveal-i:2">
+          <p class="lead">Cada sector plantea un problema logístico diferente. Así lo resolvemos.</p>
+          <a href="/sectores/" class="link-arrow">Ver sectores <Icon name="arrow" /></a>
+        </div>
       </div>
-      <SectorList />
+      <SectorGrid />
     </div>
   </section>
 
-  <!-- 09 · PROCESO -->
+  <!-- 07 — PROCESO -->
   <section class="section bg-surface">
     <div class="container">
-      <div class="section-head">
-        <p class="eyebrow" data-reveal>Cómo trabajamos</p>
-        <h2 data-reveal="mask" style="--reveal-i:1">Un método para <em>cada operación.</em></h2>
+      <div class="section-head split">
+        <div>
+          <p class="eyebrow" data-reveal>Método</p>
+          <h2 data-reveal style="--reveal-i:1">Diseñamos la logística. La ejecutamos. La mejoramos.</h2>
+        </div>
+        <p class="lead" data-reveal style="--reveal-i:2">
+          Un proceso de cinco fases que convierte una necesidad en una operación estable y medible.
+        </p>
       </div>
       <FlowSteps steps={methodSteps} />
     </div>
   </section>
 
-  <!-- 10 · CALIDAD Y CUMPLIMIENTO -->
-  <section class="section quality">
-    <div class="container q-grid">
-      <div class="q-head">
-        <p class="eyebrow" data-reveal>Confianza</p>
-        <h2 data-reveal="mask" style="--reveal-i:1">Calidad y <em>cumplimiento.</em></h2>
-        <p class="lead" data-reveal style="--reveal-i:2">
-          Nuestro compromiso con la calidad, la seguridad y la mejora continua forma parte de nuestra forma de trabajar.
-        </p>
+  <!-- 08 — TECNOLOGÍA -->
+  <section class="section on-dark photo-bg">
+    <div class="photo-bg__media" aria-hidden="true"><Photo image="logistica2" kenburns sizes="100vw" /></div>
+    <div class="container">
+      <div class="section-head split">
+        <div>
+          <p class="eyebrow" data-reveal>Tecnología</p>
+          <h2 data-reveal style="--reveal-i:1">Automatización, trazabilidad y sistemas.</h2>
+        </div>
+        <div class="head-aside" data-reveal style="--reveal-i:2">
+          <p class="lead">RFID, soluciones propias de trazabilidad, control de impactos y experiencia en SAP HANA y EWM: la operación física respaldada por tecnología.</p>
+          <a href="/tecnologia/" class="link-arrow">Ver tecnología <Icon name="arrow" /></a>
+        </div>
+      </div>
+      <TechGrid />
+    </div>
+  </section>
+
+  <!-- 09 — PROYECTOS: caso real -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head split">
+        <div>
+          <p class="eyebrow" data-reveal>Caso de éxito</p>
+          <h2 data-reveal style="--reveal-i:1">176 almacenes. Un hospital. Trazabilidad de extremo a extremo.</h2>
+        </div>
+        <div class="head-aside" data-reveal style="--reveal-i:2">
+          <p class="lead">Así aplicamos automatización y trazabilidad a una operación logística real y exigente.</p>
+          <a href="/proyectos/" class="link-arrow">Ver proyectos <Icon name="arrow" /></a>
+        </div>
+      </div>
+      <FeaturedCase c={featuredCase} />
+    </div>
+  </section>
+
+  <!-- 10 — CONFIANZA -->
+  <section class="section tight bg-surface trust">
+    <div class="container">
+      <div class="section-head split">
+        <div>
+          <p class="eyebrow" data-reveal>Calidad y cumplimiento</p>
+          <h2 class="h3" data-reveal style="--reveal-i:1">Sistemas de gestión</h2>
+        </div>
+        <div class="head-aside" data-reveal style="--reveal-i:2">
+          <p class="muted">Certificaciones en proceso de validación de alcance, vigencia y sociedad antes de su publicación definitiva.</p>
+          <a href="/empresa/#calidad" class="link-arrow">Más sobre la empresa <Icon name="arrow" /></a>
+        </div>
       </div>
       <CertList />
     </div>
   </section>
 
-  <!-- 11 · UBICACIÓN Y HORARIO -->
+  <!-- 11 — UBICACIÓN Y HORARIO -->
   <VisitSection />
 
-  <!-- 12 · CTA -->
-  <CtaBand />
+  <!-- 12 — CTA -->
+  <CtaBand
+    title="Cuéntanos qué necesitas."
+    text="Describe tu operación y te propondremos una solución logística adaptada: un servicio concreto o la cadena completa."
+    label="Solicitar propuesta"
+    image="transporte2"
+  />
 </BaseLayout>
 
 <style>
-  /* CAPACIDAD */
-  .capacity { padding-top: var(--section-y); overflow: hidden; }
-  .cap-head { display: grid; gap: var(--space-5); }
-  .cap-head h2 { font-size: clamp(2.5rem, 1.4rem + 4.4vw, 6.25rem); max-width: 17ch; }
-  .cap-words { margin-block: clamp(3rem, 2rem + 4vw, 6rem); border-block: 1px solid var(--line); overflow: hidden; }
-  .drift {
-    display: flex;
-    gap: clamp(2rem, 1rem + 4vw, 6rem);
-    padding: var(--space-5) var(--gutter);
-    white-space: nowrap;
-    transform: translate3d(var(--dx, 0px), 0, 0);
-    will-change: transform;
+  @media (max-width: 520px) {
+    .custom-copy .btn-row { width: 100%; }
+    .custom-copy .btn-row .btn { flex: 1 1 100%; }
   }
-  .drift li {
-    font-size: clamp(0.8125rem, 0.75rem + 0.3vw, 1rem);
-    font-weight: 600;
-    letter-spacing: 0.26em;
-    text-transform: uppercase;
-    color: var(--fg);
-  }
-  .drift li::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 1.1rem; border-radius: 50%; background: var(--accent); vertical-align: middle; }
 
-  @media (max-width: 760px) {
-    .drift { flex-wrap: wrap; gap: var(--space-3) var(--space-5); white-space: normal; transform: none; }
-    .drift li { letter-spacing: 0.16em; }
-  }
-  .cap-figure { position: relative; }
-  .cap-photo { position: relative; height: clamp(420px, 78vh, 860px); }
-  .cap-photo :global(.photo) { position: absolute; inset: 0; }
-  .cap-note {
+  /* CAPACIDAD — cadena de valor */
+  .chain {
     position: relative;
-    z-index: 2;
     display: grid;
+    gap: 0;
+    border-top: 1px solid var(--line);
+  }
+  .chain li { border-bottom: 1px solid var(--line); }
+  .chain a {
+    display: flex;
+    align-items: baseline;
     gap: var(--space-4);
-    justify-items: start;
-    max-width: 34rem;
-    margin: -6rem 0 0 auto;
-    padding: var(--space-7) var(--space-6);
-    background: var(--paper);
-    box-shadow: 0 40px 80px -40px rgba(8, 11, 13, 0.35);
+    padding: var(--space-4) 0;
+    transition: color var(--dur) var(--ease), padding var(--dur) var(--ease);
   }
-  .cap-note p:first-child { font-family: var(--font-display); font-size: var(--fs-lg); line-height: 1.3; color: var(--fg); }
-  .cap-note .muted { font-size: var(--fs-sm); }
-  .cap-stats { padding-block: var(--space-9) var(--section-y); }
-  @media (max-width: 640px) {
-    .cap-note { margin: -3rem 0 0; padding: var(--space-6) var(--space-5); }
+  .chain .mono { color: var(--brand-ink); }
+  .chain-label {
+    font-family: var(--font-display);
+    font-size: var(--fs-lg);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink);
   }
-
-  /* TECNOLOGÍA */
-  .tech { position: relative; overflow: hidden; }
-  .tech-photo { position: relative; height: 60vw; max-height: 520px; }
-  .tech-photo :global(.photo) { position: absolute; inset: 0; }
-  .tech-photo::after { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(0deg, var(--black) 0%, rgba(8, 11, 13, 0) 60%); }
-  .tech-inner { position: relative; z-index: 2; padding-block: var(--space-8) var(--section-y); }
-  .tech-copy { display: grid; gap: var(--space-6); }
-  .tech-copy h2 { max-width: 14ch; }
-  .tech .more { margin-top: var(--space-3); justify-self: start; }
+  .chain-text { display: none; font-size: var(--fs-sm); color: var(--text-muted); line-height: 1.45; }
+  .chain a:hover { padding-left: var(--space-3); }
+  .chain a:hover .chain-label { color: var(--brand-ink); }
   @media (min-width: 1024px) {
-    .tech-photo { position: absolute; top: 0; right: 0; bottom: 0; width: 46%; height: auto; max-height: none; }
-    .tech-photo::after { background: linear-gradient(90deg, var(--black) 0%, rgba(8, 11, 13, 0.4) 35%, rgba(8, 11, 13, 0) 70%); }
-    .tech-inner { padding-block: var(--section-y); }
-    .tech-copy { max-width: 58%; }
+    .chain {
+      grid-template-columns: repeat(6, 1fr);
+      border-top: 0;
+      padding-top: var(--space-6);
+    }
+    .chain::before,
+    .chain::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--line);
+    }
+    .chain::after {
+      background: var(--brand);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 1.8s var(--ease);
+    }
+    .chain.is-drawn::after { transform: scaleX(1); }
+    .chain li { border-bottom: 0; border-left: 1px solid var(--line); }
+    .chain a { flex-direction: column; gap: var(--space-3); padding: 0 var(--space-4) var(--space-4); min-height: 11rem; }
+    .chain .mono { margin-bottom: var(--space-4); }
+    .chain-text { display: block; }
+    .chain a:hover { padding-left: var(--space-4); background: var(--paper); }
+    .chain-label { font-size: var(--fs-md); line-height: 1.2; }
   }
 
-  /* CALIDAD */
-  .q-grid { display: grid; gap: var(--space-8); }
-  .q-head { display: grid; gap: var(--space-5); align-content: start; }
+  .experience { border-bottom: 1px solid var(--line); }
+  .exp-head { display: grid; gap: var(--space-4); margin-bottom: var(--space-6); }
+  .exp-head h2 { max-width: 30ch; }
+  .head-aside { display: grid; gap: var(--space-4); justify-items: start; }
+  .service-index { border-top: 1px solid var(--line); }
+
+  /* SOLUCIONES A MEDIDA */
+  .custom-grid { display: grid; gap: var(--space-7); align-items: center; }
+  .custom-copy { display: grid; gap: var(--space-5); justify-items: start; }
+  .question {
+    font-family: var(--font-display);
+    font-size: var(--fs-lg);
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--brand);
+    max-width: 30ch;
+    letter-spacing: -0.015em;
+  }
   @media (min-width: 1024px) {
-    .q-grid { grid-template-columns: 5fr 7fr; gap: var(--space-9); }
-    .q-head { position: sticky; top: calc(var(--header-h) + var(--space-6)); }
+    .custom-grid { grid-template-columns: 1.2fr 1fr; gap: var(--space-9); }
   }
-
-  .head-link { justify-self: start; }
-  @media (min-width: 1024px) { .head-link { justify-self: end; } }
 </style>

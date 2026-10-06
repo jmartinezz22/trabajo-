@@ -1,11 +1,12 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import ContactForm from '@/components/ContactForm.astro';
-import VisitSection from '@/components/VisitSection.astro';
-import { site, telHref } from '@/data/site';
+import Icon from '@/components/Icon.astro';
+import { site, telHref, formatAddress, PENDING } from '@/data/site';
 
 const crumbs = [{ name: 'Contacto', href: '/contacto/' }];
 const { contact } = site;
+
 const steps = [
   'Revisamos tu solicitud y, si hace falta, te pedimos más detalle.',
   'Analizamos la operación: mercancía, volúmenes, plazos y requisitos.',
@@ -13,62 +14,92 @@ const steps = [
 ];
 ---
 <BaseLayout
-  title="Solicitar una solución logística"
+  title="Solicitar propuesta logística"
   description="Cuéntanos tu operación: servicio, origen, destino, tipo de mercancía y necesidades especiales. Diseñamos una propuesta logística adaptada."
   breadcrumbs={crumbs}
   hideStickyCta
-  schema={[{ '@context': 'https://schema.org', '@type': 'ContactPage', name: 'Solicitar una solución', url: new URL('/contacto/', Astro.site).href }]}
+  schema={[{ '@context': 'https://schema.org', '@type': 'ContactPage', name: 'Solicitar propuesta', url: new URL('/contacto/', Astro.site).href }]}
 >
   <section class="contact">
     <div class="container grid-c">
-      <div class="intro">
-        <nav aria-label="Ruta de navegación" class="crumbs"><a href="/">Inicio</a> / <span aria-current="page">Contacto</span></nav>
+      <div class="intro on-dark">
+        <nav aria-label="Ruta de navegación" class="crumbs">
+          <a href="/">Inicio</a> <span aria-hidden="true">/</span> <span aria-current="page">Contacto</span>
+        </nav>
         <p class="eyebrow">¿Hablamos de tu proyecto?</p>
-        <h1>Cuéntanos <em>qué necesitas.</em></h1>
-        <p class="lead">Describe tu operación y nuestro equipo analizará contigo la solución más adecuada.</p>
-
-        <div class="direct">
-          {[contact.phone, contact.customerService].map((p) => (
-            <p><span class="sub">{p.label}</span><a href={telHref(p.number)}>{p.number}</a></p>
-          ))}
-          {contact.email && <p><span class="sub">Email</span><a href={`mailto:${contact.email}`}>{contact.email}</a></p>}
-        </div>
-
-        <div class="after">
-          <p class="eyebrow">Qué ocurre después</p>
-          <ol role="list">
-            {steps.map((s, i) => <li><span class="n">{String(i + 1).padStart(2, '0')}</span>{s}</li>)}
-          </ol>
-        </div>
-
+        <h1>Cuéntanos qué necesitas.</h1>
+        <p class="lead">Un servicio puntual o una operación completa. Cuanto más concreta sea la información, más precisa será la propuesta.</p>
       </div>
 
       <div class="form-wrap">
-        <h2 class="visually-hidden">Formulario de solicitud</h2>
+        <h2 class="h3">Solicitar propuesta</h2>
         <ContactForm />
       </div>
+
+      <aside class="extra on-dark" aria-label="Qué ocurre después y contacto directo">
+        <p class="mono label">Qué ocurre después</p>
+        <ol role="list" class="next">
+          {steps.map((s, i) => (
+            <li><span class="mono">{String(i + 1).padStart(2, '0')}</span><p>{s}</p></li>
+          ))}
+        </ol>
+
+        <ul role="list" class="direct">
+          {[contact.phone, contact.customerService].map((p) => (
+            <li>
+              <Icon name="phone" size={18} />
+              <span><span class="sub">{p.label}</span><a href={telHref(p.number)}>{p.number}</a></span>
+            </li>
+          ))}
+          <li>
+            <Icon name="mail" size={18} />
+            {contact.email ? <a href={`mailto:${contact.email}`}>{contact.email}</a> : <span class="pending">Email {PENDING}</span>}
+          </li>
+          {site.locations.map((l) => (
+            <li>
+              <Icon name="pin" size={18} />
+              <span>
+                <span class="sub">{l.label}</span>
+                {formatAddress(l.address)}
+                {l.phone && <><br /><a href={telHref(l.phone.number)}>{l.phone.number}</a></>}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </aside>
     </div>
   </section>
-
-  <VisitSection heading="Visítanos o llámanos." />
 </BaseLayout>
 
 <style>
-  .contact { padding-block: var(--space-7) var(--section-y); }
-  .grid-c { display: grid; gap: var(--space-8); }
-  .intro { display: grid; gap: var(--space-6); align-content: start; }
-  .crumbs { font-size: var(--fs-sm); color: var(--text-muted); margin-bottom: var(--space-5); }
-  .intro h1 { font-size: clamp(2.75rem, 1.6rem + 4.6vw, 6rem); max-width: 10ch; }
-  .direct { display: grid; gap: var(--space-4); padding-top: var(--space-5); border-top: 1px solid var(--rule); }
-  .direct a { font-family: var(--font-display); font-size: var(--fs-xl); letter-spacing: -0.03em; color: var(--fg); }
-  .direct a:hover { color: var(--brand-ink); }
-  .sub { display: block; font-size: var(--fs-xs); letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.2rem; }
-  .after ol { margin-top: var(--space-3); }
-  .after li { display: grid; grid-template-columns: 2.5rem 1fr; padding: var(--space-3) 0; border-bottom: 1px solid var(--line); font-size: var(--fs-sm); color: var(--text-muted); }
-  .after .n { color: var(--text-soft); }
-  .locs { display: grid; gap: var(--space-4); font-size: var(--fs-sm); color: var(--text-muted); }
+  .contact { padding-block: 0 var(--section-y); }
+  .grid-c { display: grid; padding-inline: 0; }
+  .intro, .extra { display: grid; gap: var(--space-5); align-content: start; padding: var(--space-7) var(--gutter); }
+  .crumbs { font-size: var(--fs-sm); color: var(--text-on-dark-muted); margin-bottom: var(--space-2); }
+  .crumbs a:hover { color: #fff; }
+  .intro h1 { font-size: var(--fs-2xl); }
+  .label { color: var(--brand); text-transform: uppercase; letter-spacing: 0.12em; font-size: var(--fs-xs); }
+  .next { display: grid; gap: var(--space-4); }
+  .next li { display: grid; grid-template-columns: 2.5rem 1fr; gap: var(--space-3); font-size: var(--fs-sm); color: #dbe3e3; }
+  .next .mono { color: var(--brand); }
+  .direct { display: grid; gap: var(--space-3); padding-top: var(--space-5); border-top: 1px solid var(--ink-3); font-size: var(--fs-sm); }
+  .direct li { display: grid; grid-template-columns: 18px 1fr; gap: var(--space-3); align-items: start; }
+  .direct :global(svg) { color: var(--brand); margin-top: 2px; }
+  .direct a:hover { color: var(--brand); }
+  .sub { display: block; font-size: var(--fs-xs); color: var(--text-on-dark-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .form-wrap { padding: var(--space-7) var(--gutter); }
+  .form-wrap h2 { margin-bottom: var(--space-6); }
   @media (min-width: 1024px) {
-    .grid-c { grid-template-columns: 5fr 7fr; gap: var(--space-9); align-items: start; }
-    .form-wrap { padding-top: 6.5rem; }
+    .contact { padding-top: var(--space-6); }
+    .grid-c {
+      grid-template-columns: 5fr 7fr;
+      grid-template-areas: 'intro form' 'extra form';
+      grid-template-rows: auto 1fr;
+      column-gap: var(--space-8);
+      padding-inline: var(--gutter);
+    }
+    .intro { grid-area: intro; padding: var(--space-7) var(--space-7) var(--space-5); border-radius: var(--radius) var(--radius) 0 0; }
+    .extra { grid-area: extra; align-self: start; padding: var(--space-5) var(--space-7) var(--space-7); border-radius: 0 0 var(--radius) var(--radius); }
+    .form-wrap { grid-area: form; padding: var(--space-6) 0 0; }
   }
 </style>
