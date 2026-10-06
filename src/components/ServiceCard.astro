@@ -26,7 +26,6 @@ const { service: s, variant = 'row', index = 0 } = Astro.props;
       <div class="card-body">
         <div class="card-top">
           <span class="mono num">{s.num}</span>
-          <Icon name={s.icon} class="ico" />
         </div>
         <h3>{s.name}</h3>
         <p>{s.short}</p>
@@ -95,7 +94,6 @@ const { service: s, variant = 'row', index = 0 } = Astro.props;
   .card-link :global(.visual) { border-radius: 0; }
   .card-body { display: grid; align-content: start; gap: var(--space-3); padding: var(--space-5) var(--space-5) var(--space-6); }
   .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2); }
-  .card-top :global(.ico) { color: var(--brand-ink); }
   .card p { font-size: var(--fs-sm); color: var(--text-muted); margin-bottom: var(--space-3); }
   .card .link-arrow { align-self: end; }
 </style>

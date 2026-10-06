@@ -78,7 +78,7 @@ const deliverables = [
       <ul role="list" class="grid grid-4 deliv">
         {deliverables.map((d, i) => (
           <li data-reveal style={`--reveal-i:${i}`}>
-            <Icon name={d.icon} size={28} />
+            <span class="mono num">{String(i + 1).padStart(2, '0')}</span>
             <h3>{d.title}</h3>
             <p>{d.text}</p>
           </li>
@@ -97,8 +97,8 @@ const deliverables = [
   .signals .mono { color: var(--brand); padding-top: 0.2rem; }
   .signals p { font-size: var(--fs-md); color: #dbe3e3; }
   @media (min-width: 1024px) { .signals { grid-template-columns: 1fr 1.5fr; gap: var(--space-9); } }
-  .deliv li { display: grid; gap: var(--space-3); align-content: start; padding-top: var(--space-5); border-top: 2px solid var(--ink); }
-  .deliv :global(svg) { color: var(--brand-ink); margin-bottom: var(--space-2); }
-  .deliv h3 { font-size: var(--fs-md); }
+  .deliv li { display: grid; gap: var(--space-3); align-content: start; padding-top: var(--space-5); border-top: 1px solid var(--ink); }
+  .deliv .num { font-size: var(--fs-xs); color: var(--brand-ink); margin-bottom: var(--space-4); }
+  .deliv h3 { font-size: var(--fs-lg); letter-spacing: -0.02em; }
   .deliv p { font-size: var(--fs-sm); color: var(--text-muted); }
 </style>
