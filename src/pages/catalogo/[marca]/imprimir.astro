@@ -1,0 +1,117 @@
+---
+/**
+ * Versión imprimible del catálogo completo (A4).
+ * Portada → índice → por categoría: portada + fichas (una por página).
+ * Se convierte en PDF con "Imprimir → Guardar como PDF" o con un generador headless
+ * (p. ej. Playwright: page.pdf({ format: 'A4', printBackground: true })).
+ */
+import CatalogLayout from '@/layouts/CatalogLayout.astro';
+import CatalogCover from '@/components/catalog/CatalogCover.astro';
+import CategoryIndex from '@/components/catalog/CategoryIndex.astro';
+import Process from '@/components/catalog/Process.astro';
+import CIcon from '@/components/catalog/CIcon.astro';
+import Photo from '@/components/Photo.astro';
+import { activeBrands, catalogConfig, catalogPath, PENDING, type CatalogConfig } from '@/data/catalog/config';
+import { categories, itemsOf, localize, localizeCategory } from '@/data/catalog/content';
+
+export function getStaticPaths() {
+  return activeBrands.map((id) => ({ params: { marca: catalogConfig[id].slug }, props: { b: catalogConfig[id] } }));
+}
+const { b } = Astro.props as { b: CatalogConfig };
+const parts = (t: string) => (t.includes(PENDING) ? [t.replace(PENDING, '').trim(), PENDING] : [t, '']);
+---
+<CatalogLayout b={b} title="Versión imprimible" noindex>
+  <div class="print-bar wrap">
+    <p>Versión preparada para imprimir o guardar como PDF (A4).</p>
+    <button type="button" class="btn" data-print><CIcon name="print" /> Imprimir / Guardar PDF</button>
+  </div>
+
+  <CatalogCover b={b} />
+
+  <section class="sec p-break">
+    <div class="wrap">
+      <p class="kicker">Índice</p>
+      <p class="statement" style="margin:1.5rem 0 3rem">{b.statement}</p>
+      <CategoryIndex b={b} />
+    </div>
+  </section>
+
+  {categories.map((raw) => {
+    const c = localizeCategory(raw, b.showBranding);
+    return (
+      <>
+        <section class="p-break pc">
+          <div class="pc__media"><Photo image={c.image} /></div>
+          <div class="wrap pc__body">
+            <span class="cat-cover__num">{c.num}</span>
+            <h2 class="d-title h-xl">{c.name}</h2>
+            <p class="cat-cover__tag">{c.tagline}</p>
+            <p class="lead">{c.intro}</p>
+            {c.process && <Process steps={c.process} variant={c.layout === 'feature' ? 'flow' : 'row'} />}
+          </div>
+        </section>
+        {itemsOf(c.key).map((r) => {
+          const it = localize(r, b.showBranding);
+          return (
+            <article class="p-break pf wrap">
+              <div class="pf__head">
+                <p class="kicker">{c.num} · {c.name}</p>
+                <h3 class="d-title h-lg">{it.name}</h3>
+                <p class="lead">{it.summary}</p>
+              </div>
+              <div class="pf__media"><Photo image={it.image} /><span class="ill">Imagen ilustrativa</span></div>
+              <p class="offer__text">{it.offer}</p>
+              <div class="facts">
+                {[['Aplicaciones', it.applications], ['Características', it.features], ['Ventajas', it.advantages]].map(([t, list]) => (
+                  <div class="facts__col">
+                    <h4 class="d-title facts__title">{t as string}</h4>
+                    <ol role="list" class="facts__list">
+                      {(list as string[]).map((x, i) => {
+                        const [txt, p] = parts(x);
+                        return <li><span class="num">{String(i + 1).padStart(2, '0')}</span><span>{txt} {p && <span class="pending">{p}</span>}</span></li>;
+                      })}
+                    </ol>
+                  </div>
+                ))}
+              </div>
+              <p class="pf__url mono">{new URL(catalogPath(b, c.slug, it.slug), Astro.site).href}</p>
+            </article>
+          );
+        })}
+      </>
+    );
+  })}
+
+  <section class="sec p-break on-ink">
+    <div class="wrap">
+      <p class="kicker">¿Necesitas una solución personalizada?</p>
+      <h2 class="d-title h-xl" style="margin:1rem 0 2rem">Cuéntanos qué necesitas.</h2>
+      <p class="lead">
+        {b.contactEmail || PENDING}
+        {b.phones.map((p) => <><br />{p.label}: {p.number}</>)}
+        {b.address && <><br />{b.address}</>}
+      </p>
+    </div>
+  </section>
+</CatalogLayout>
+
+<style>
+  .print-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 1rem; }
+  .pc { position: relative; }
+  .pc__media { position: relative; height: clamp(260px, 45svh, 520px); }
+  .pc__media :global(.photo) { position: absolute; inset: 0; }
+  .pc__body { display: grid; gap: 1.25rem; padding-block: 2.5rem; }
+  .pf { display: grid; gap: 1.5rem; padding-block: 3rem; }
+  .pf__head { display: grid; gap: 0.75rem; }
+  .pf__media { position: relative; aspect-ratio: 16 / 7; overflow: hidden; border-radius: var(--radius); }
+  .pf__media :global(.photo) { position: absolute; inset: 0; }
+  .pf__url { font-size: 0.75rem; color: var(--c-muted); overflow-wrap: anywhere; }
+  .pc__body, .pf { min-width: 0; }
+  @media print {
+    .pc__media { height: 110mm; }
+    .pf { padding-block: 0; gap: 6mm; }
+    .pf__media { aspect-ratio: 16 / 8; }
+    .pf .offer__text { font-size: 13pt; }
+    .facts { grid-template-columns: repeat(3, 1fr); gap: 6mm; }
+  }
+</style>

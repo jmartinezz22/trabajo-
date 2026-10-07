@@ -1,0 +1,25 @@
+---
+/** CTA comercial presente en todo el catálogo. */
+import CIcon from './CIcon.astro';
+import ShareButton from './ShareButton.astro';
+import { proposalHref, type CatalogConfig } from '@/data/catalog/config';
+
+interface Props {
+  b: CatalogConfig;
+  subject?: string;
+  shareTitle: string;
+}
+const { b, subject = 'Solicitud de propuesta', shareTitle } = Astro.props;
+---
+<section class="cta sec on-ink" id="contacto-cta">
+  <div class="wrap cta__in">
+    <div>
+      <p class="kicker" data-rv>¿Necesitas una solución personalizada?</p>
+      <h2 class="d-title cta__title" data-rv style="--i:1">Cuéntanos qué necesitas.</h2>
+    </div>
+    <div class="cta__actions" data-rv style="--i:2">
+      <a href={proposalHref(b, subject)} class="btn">Solicitar propuesta <CIcon name="arrow" /></a>
+      <ShareButton title={shareTitle} up />
+    </div>
+  </div>
+</section>

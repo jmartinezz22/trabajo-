@@ -11,10 +11,12 @@ export default defineConfig({
   build: { format: 'directory', inlineStylesheets: 'auto' },
   compressHTML: true,
   prefetch: { prefetchAll: false, defaultStrategy: 'hover' },
+  // Alias del catálogo sin marca
+  redirects: { '/catalogo/white-label': '/catalogo/neutro/' },
   integrations: [
     sitemap({
       // Excluye páginas noindex (404 y legales)
-      filter: (page) => !/\/(404|aviso-legal|politica-de-privacidad|politica-de-cookies|revision-imagenes)\/?$/.test(page),
+      filter: (page) => !/\/(404|aviso-legal|politica-de-privacidad|politica-de-cookies|revision-imagenes)\/?$/.test(page) && !/\/catalogo\/[^/]+\/imprimir\/?$/.test(page) && !/white-label/.test(page),
       i18n: undefined,
     }),
   ],

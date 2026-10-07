@@ -42,6 +42,10 @@ export const photos = {
   consultoria: { pexels: 4484155, alt: 'Responsable de operaciones con tableta en un almacén', credit: 'Tiger Lily', position: '50% 35%', contextual: true },
   medida: { pexels: 4483610, alt: 'Almacén amplio con suelo de hormigón y estanterías', credit: 'Tiger Lily', position: '50% 50%', contextual: true },
 
+  // Catálogo (nuevas)
+  picking: { pexels: 1267338, alt: 'Interior de almacén con operarios manipulando cajas en estanterías', credit: null, position: '50% 50%', contextual: true },
+  ecografo: { pexels: 7108402, alt: 'Equipo de ecografía de alta tecnología en una consulta médica', credit: null, position: '50% 50%', contextual: true },
+
   // Tecnología
   tecnologia: { pexels: 4508751, alt: 'Racks de servidores en un centro de datos', credit: null, position: '50% 50%', contextual: true },
 

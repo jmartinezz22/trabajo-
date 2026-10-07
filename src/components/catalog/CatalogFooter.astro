@@ -1,0 +1,42 @@
+---
+import BrandMark from './BrandMark.astro';
+import { catalogPath, PENDING, type CatalogConfig } from '@/data/catalog/config';
+import { categories } from '@/data/catalog/content';
+
+interface Props {
+  b: CatalogConfig;
+}
+const { b } = Astro.props;
+const year = new Date().getFullYear();
+const tel = (n: string) => `tel:${n.startsWith('+') ? '' : '+34'}${n.replace(/[^+\d]/g, '')}`;
+---
+<footer class="c-footer">
+  <div class="wrap">
+    <div class="c-footer__grid">
+      <div>
+        <BrandMark b={b} />
+        <p class="c-footer__note">{b.footerNote}</p>
+      </div>
+      <div>
+        <h2>Categorías</h2>
+        <ul role="list">
+          {categories.map((c) => <li><a href={catalogPath(b, c.slug)}>{c.num} · {c.name}</a></li>)}
+        </ul>
+      </div>
+      <div>
+        <h2>Contacto</h2>
+        <ul role="list">
+          <li>{b.contactEmail ? <a href={`mailto:${b.contactEmail}`}>{b.contactEmail}</a> : <span class="pending">Email {PENDING}</span>}</li>
+          {b.phones.map((p) => <li>{p.label}: <a href={tel(p.number)}>{p.number}</a></li>)}
+          {b.address && <li>{b.address}</li>}
+          {b.socialLinks.map((s) => <li><a href={s.href} target="_blank" rel="noopener">{s.label}</a></li>)}
+          <li><a href={catalogPath(b, 'imprimir')}>Versión imprimible / PDF</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="c-footer__bottom">
+      <span>© {year}{b.legalName ? ` ${b.legalName}` : ''}</span>
+      <span>Fotografías ilustrativas: no corresponden a instalaciones propias.</span>
+    </div>
+  </div>
+</footer>

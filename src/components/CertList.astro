@@ -9,7 +9,7 @@ interface Props {
   tone?: 'light' | 'dark';
   detailed?: boolean;
 }
-const { tone = 'light', detailed = false } = Astro.props;
+const { tone = 'light' } = Astro.props;
 ---
 <ul role="list" class:list={['certs', `certs--${tone}`]}>
   {certifications.filter((c) => c.status !== 'not-found').map((c) => (

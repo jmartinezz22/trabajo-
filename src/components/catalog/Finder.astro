@@ -1,0 +1,55 @@
+---
+/**
+ * Buscador "¿Qué necesitas?" + filtros por categoría y necesidad.
+ * Todos los servicios se renderizan en HTML (accesibles sin JS); src/scripts/catalog.ts
+ * filtra al instante y sincroniza la URL (?q=…&categoria=…&necesidad=…).
+ */
+import CIcon from './CIcon.astro';
+import ServiceTile from './ServiceTile.astro';
+import type { CatalogConfig } from '@/data/catalog/config';
+import { categories, items, needs, usedNeeds } from '@/data/catalog/content';
+
+interface Props {
+  b: CatalogConfig;
+}
+const { b } = Astro.props;
+const suggestions = ['transporte', 'almacenaje', 'temperatura controlada', 'embalaje', 'eventos', 'consultoría', 'alto valor'];
+---
+<div class="finder" data-finder>
+  <form class="finder__search" role="search" onsubmit="return false">
+    <CIcon name="search" />
+    <label for="finder-q" class="sr">¿Qué necesitas?</label>
+    <input id="finder-q" class="finder__input" type="search" placeholder="¿Qué necesitas?" autocomplete="off" data-q />
+    <button type="button" class="finder__clear" data-reset>Limpiar</button>
+  </form>
+  <p class="sr" id="finder-help">Prueba con: {suggestions.join(', ')}.</p>
+
+  <div class="finder__filters">
+    <div class="chips" role="group" aria-label="Filtrar por categoría">
+      <span class="chips__label">Categoría</span>
+      <button type="button" class="chip" aria-pressed="true" data-filter="cat" data-value="">Todas</button>
+      {categories.map((c) => <button type="button" class="chip" aria-pressed="false" data-filter="cat" data-value={c.key}>{c.short}</button>)}
+    </div>
+    <div class="chips" role="group" aria-label="Filtrar por necesidad">
+      <span class="chips__label">Necesidad</span>
+      <button type="button" class="chip" aria-pressed="true" data-filter="need" data-value="">Todas</button>
+      {usedNeeds.map((n) => <button type="button" class="chip" aria-pressed="false" data-filter="need" data-value={n}>{needs[n]}</button>)}
+    </div>
+  </div>
+
+  <p class="finder__status" role="status" aria-live="polite">
+    <span data-count>{items.length} servicios</span>
+    <span class="hide-sm">Sugerencias: {suggestions.slice(0, 4).join(' · ')}</span>
+  </p>
+
+  <div class="results" data-results>
+    {items.map((it, i) => <ServiceTile b={b} item={it} index={i} searchable />)}
+  </div>
+  <p class="finder__empty" hidden data-empty>
+    No hay servicios que coincidan. Prueba con otra palabra o <button type="button" class="link" data-reset>quita los filtros</button>.
+  </p>
+</div>
+
+<style>
+  @media (max-width: 760px) { .hide-sm { display: none; } }
+</style>

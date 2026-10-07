@@ -1,0 +1,68 @@
+---
+/** Página de categoría: portada visual + servicios (lista, mosaico, proceso o solución a medida). */
+import CatalogLayout from '@/layouts/CatalogLayout.astro';
+import CategoryCover from '@/components/catalog/CategoryCover.astro';
+import ServiceList from '@/components/catalog/ServiceList.astro';
+import Process from '@/components/catalog/Process.astro';
+import CatalogCta from '@/components/catalog/CatalogCta.astro';
+import CIcon from '@/components/catalog/CIcon.astro';
+import { activeBrands, catalogConfig, catalogPath, type CatalogConfig } from '@/data/catalog/config';
+import { categories, itemsOf, localizeCategory, type Category } from '@/data/catalog/content';
+
+export function getStaticPaths() {
+  return activeBrands.flatMap((id) =>
+    categories.map((c) => ({ params: { marca: catalogConfig[id].slug, categoria: c.slug }, props: { b: catalogConfig[id], c } })),
+  );
+}
+const { b, c: raw } = Astro.props as { b: CatalogConfig; c: Category };
+const c = localizeCategory(raw, b.showBranding);
+const list = itemsOf(c.key);
+const idx = categories.findIndex((x) => x.key === c.key);
+const prev = categories[(idx - 1 + categories.length) % categories.length];
+const next = categories[(idx + 1) % categories.length];
+const current = ['transporte', 'logistica', 'especiales', 'eventos', 'consultoria'].includes(c.key) ? c.key : undefined;
+const title = `${c.name} · Catálogo`;
+---
+<CatalogLayout b={b} title={title} description={`${c.name}: ${c.tagline} ${c.intro}`} current={current} ogImage={b.seo.ogImage}>
+  <CategoryCover b={b} c={c} />
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="s-head s-head--split">
+        <p class="statement" data-rv>{c.intro}</p>
+        <p class="lead" data-rv style="--i:1">{list.length} {list.length === 1 ? 'servicio' : 'servicios'} en esta categoría. Cada uno con su ficha detallada.</p>
+      </div>
+
+      {c.layout === 'process' && c.process && (
+        <div class="block">
+          <p class="kicker" data-rv>El proceso</p>
+          <Process steps={c.process} variant="row" />
+        </div>
+      )}
+
+      {c.layout === 'feature' && c.process && (
+        <div class="block">
+          <p class="kicker" data-rv>Cómo trabajamos</p>
+          <Process steps={c.process} variant="flow" />
+        </div>
+      )}
+
+      <div class="block">
+        {c.layout !== 'list' ? <h2 class="kicker" data-rv>Servicios</h2> : <h2 class="sr">Servicios de {c.name}</h2>}
+        <ServiceList b={b} items={list} variant={c.layout === 'mosaic' ? 'mosaic' : 'list'} />
+      </div>
+
+      <nav class="pager" aria-label="Otras categorías">
+        <a href={catalogPath(b, prev.slug)}><small>← {prev.num}</small><strong>{prev.name}</strong></a>
+        <a href={catalogPath(b, next.slug)}><small>{next.num} →</small><strong>{next.name}</strong></a>
+      </nav>
+      <p style="margin-top:1rem"><a href={`${catalogPath(b)}?categoria=${c.key}#buscador`} class="link">Ver en el buscador <CIcon name="arrow" /></a></p>
+    </div>
+  </section>
+
+  <CatalogCta b={b} subject={`Solicitud de propuesta — ${c.name}`} shareTitle={title} />
+</CatalogLayout>
+
+<style>
+  .block { display: grid; gap: 1.5rem; margin-bottom: clamp(3rem, 2rem + 3vw, 5rem); }
+</style>

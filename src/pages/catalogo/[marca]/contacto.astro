@@ -1,0 +1,56 @@
+---
+/** Contacto del catálogo. Usa el contacto de cada versión (CONTACT_EMAIL configurable). */
+import CatalogLayout from '@/layouts/CatalogLayout.astro';
+import ShareButton from '@/components/catalog/ShareButton.astro';
+import CIcon from '@/components/catalog/CIcon.astro';
+import { activeBrands, catalogConfig, proposalHref, PENDING, type CatalogConfig } from '@/data/catalog/config';
+
+export function getStaticPaths() {
+  return activeBrands.map((id) => ({ params: { marca: catalogConfig[id].slug }, props: { b: catalogConfig[id] } }));
+}
+const { b } = Astro.props as { b: CatalogConfig };
+const tel = (n: string) => `tel:${n.startsWith('+') ? '' : '+34'}${n.replace(/[^+\d]/g, '')}`;
+const title = 'Contacto';
+---
+<CatalogLayout b={b} title={title} description="Cuéntanos qué necesitas y te enviaremos una propuesta logística adaptada a tu operación." current="contacto">
+  <section class="sec">
+    <div class="wrap contact">
+      <div class="contact__copy">
+        <p class="kicker" data-rv>¿Necesitas una solución personalizada?</p>
+        <h1 class="d-title h-xl" data-rv style="--i:1">Cuéntanos qué necesitas.</h1>
+        <p class="lead" data-rv style="--i:2">
+          Indícanos el tipo de mercancía, volúmenes, destinos y plazos. Cuanto más concreta sea la información, más precisa será la propuesta.
+        </p>
+        <div class="btn-row" data-rv style="--i:3">
+          {b.contactEmail && <a href={proposalHref(b)} class="btn">Solicitar propuesta <CIcon name="arrow" /></a>}
+          <ShareButton title={b.seo.title} />
+        </div>
+      </div>
+      <dl class="contact__data" data-rv style="--i:2">
+        <div>
+          <dt>Email</dt>
+          <dd>{b.contactEmail ? <a href={`mailto:${b.contactEmail}`}>{b.contactEmail}</a> : <span class="pending">{PENDING}</span>}</dd>
+        </div>
+        {b.phones.map((p) => (
+          <div><dt>{p.label}</dt><dd><a href={tel(p.number)}><CIcon name="phone" class="ci" />{p.number}</a></dd></div>
+        ))}
+        {b.address && <div><dt>Dirección</dt><dd><CIcon name="pin" class="ci" />{b.address}</dd></div>}
+        {!b.showBranding && b.phones.length === 0 && (
+          <div><dt>Teléfono</dt><dd><span class="pending">{PENDING}</span></dd></div>
+        )}
+      </dl>
+    </div>
+  </section>
+</CatalogLayout>
+
+<style>
+  .contact { display: grid; gap: 3rem; min-height: 60svh; align-content: center; }
+  .contact__copy { display: grid; gap: 1.5rem; justify-items: start; }
+  .contact__data { display: grid; gap: 0; border-top: 1px solid var(--c-ink); align-self: end; }
+  .contact__data div { padding: 1.1rem 0; border-bottom: 1px solid var(--c-line); }
+  .contact__data dt { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-muted); }
+  .contact__data dd { margin: 0.4rem 0 0; font-family: var(--f-display); font-size: var(--fs-lg); font-weight: 600; overflow-wrap: anywhere; }
+  .contact__data dd a, .contact__data dd { display: flex; align-items: center; gap: 0.6rem; }
+  .contact__data :global(.ci) { width: 20px; height: 20px; flex: none; color: var(--c-accent-text); }
+  @media (min-width: 960px) { .contact { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 5rem; } }
+</style>

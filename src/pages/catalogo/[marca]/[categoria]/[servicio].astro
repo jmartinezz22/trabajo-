@@ -1,0 +1,118 @@
+---
+/** Ficha detallada de servicio. */
+import CatalogLayout from '@/layouts/CatalogLayout.astro';
+import ServiceTile from '@/components/catalog/ServiceTile.astro';
+import ShareButton from '@/components/catalog/ShareButton.astro';
+import CatalogCta from '@/components/catalog/CatalogCta.astro';
+import CIcon from '@/components/catalog/CIcon.astro';
+import Photo from '@/components/Photo.astro';
+import { activeBrands, catalogConfig, catalogPath, proposalHref, PENDING, type CatalogConfig } from '@/data/catalog/config';
+import { items, getCategory, itemsOf, localize, needs, relatedOf, type CatalogItem } from '@/data/catalog/content';
+
+export function getStaticPaths() {
+  return activeBrands.flatMap((id) =>
+    items.map((it) => ({
+      params: { marca: catalogConfig[id].slug, categoria: getCategory(it.category).slug, servicio: it.slug },
+      props: { b: catalogConfig[id], raw: it },
+    })),
+  );
+}
+const { b, raw } = Astro.props as { b: CatalogConfig; raw: CatalogItem };
+const it = localize(raw, b.showBranding);
+const cat = getCategory(it.category);
+const siblings = itemsOf(it.category);
+const pos = siblings.findIndex((s) => s.slug === it.slug);
+const prev = siblings[pos - 1];
+const next = siblings[pos + 1];
+const related = relatedOf(it);
+const title = `${it.name} · ${cat.name}`;
+
+/** Muestra el marcador de dato pendiente con su estilo. */
+const parts = (t: string) => (t.includes(PENDING) ? [t.replace(PENDING, '').trim(), PENDING] : [t, '']);
+const lists = [
+  { title: 'Aplicaciones', items: it.applications },
+  { title: 'Características', items: it.features },
+  { title: 'Ventajas', items: it.advantages },
+];
+---
+<CatalogLayout b={b} title={title} description={`${it.name}. ${it.summary} ${it.offer}`.slice(0, 300)}>
+  <section class="wrap">
+    <div class="item-hero">
+      <div class="item-hero__copy">
+        <nav aria-label="Ruta">
+          <ol role="list" class="crumbs">
+            <li><a href={catalogPath(b)}>Catálogo</a></li>
+            <li><a href={catalogPath(b, cat.slug)}>{cat.name}</a></li>
+            <li><span aria-current="page">{it.name}</span></li>
+          </ol>
+        </nav>
+        <p class="kicker">{cat.num} · {cat.name}</p>
+        <h1 class="d-title item-hero__title">{it.name}</h1>
+        <p class="lead">{it.summary}</p>
+        <div class="btn-row">
+          <a href={proposalHref(b, `Solicitud de información — ${it.name}`)} class="btn">Solicitar información <CIcon name="arrow" /></a>
+          <ShareButton title={title} label="Compartir" />
+        </div>
+      </div>
+      <div class="item-hero__media" data-rv-img>
+        <Photo image={it.image} eager sizes="(min-width: 960px) 55vw, 100vw" />
+        <span class="ill">Imagen ilustrativa</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="offer">
+        <h2 class="d-title h-md" data-rv>¿Qué ofrecemos?</h2>
+        <p class="offer__text" data-rv style="--i:1">{it.offer}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec on-surface">
+    <div class="wrap">
+      <div class="facts">
+        {lists.map((l, li) => (
+          <div class="facts__col" data-rv style={`--i:${li}`}>
+            <h2 class="d-title facts__title">{l.title}</h2>
+            <ol role="list" class="facts__list">
+              {l.items.map((x, i) => {
+                const [t, p] = parts(x);
+                return <li><span class="num">{String(i + 1).padStart(2, '0')}</span><span>{t} {p && <span class="pending">{p}</span>}</span></li>;
+              })}
+            </ol>
+          </div>
+        ))}
+      </div>
+      <div class="needs" data-rv>
+        <p class="kicker">Necesidades que cubre</p>
+        <ul role="list" class="tags">
+          {it.needs.map((n) => <li><a href={`${catalogPath(b)}?necesidad=${n}#buscador`}>{needs[n]}</a></li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="s-head s-head--split">
+        <h2 class="d-title h-lg" data-rv>Servicios relacionados</h2>
+        <p class="lead" data-rv style="--i:1">Servicios que suelen combinarse con {it.name.toLowerCase()}.</p>
+      </div>
+      <div class="results">
+        {related.map((r, i) => <ServiceTile b={b} item={r} index={i} />)}
+      </div>
+      <nav class="pager" aria-label={`Más servicios de ${cat.name}`} style="margin-top:4rem">
+        {prev ? <a href={catalogPath(b, cat.slug, prev.slug)}><small>← Anterior</small><strong>{localize(prev, b.showBranding).name}</strong></a> : <a href={catalogPath(b, cat.slug)}><small>← Categoría</small><strong>{cat.name}</strong></a>}
+        {next ? <a href={catalogPath(b, cat.slug, next.slug)}><small>Siguiente →</small><strong>{localize(next, b.showBranding).name}</strong></a> : <a href={catalogPath(b)}><small>Catálogo →</small><strong>Índice</strong></a>}
+      </nav>
+    </div>
+  </section>
+
+  <CatalogCta b={b} subject={`Solicitud de propuesta — ${it.name}`} shareTitle={title} />
+</CatalogLayout>
+
+<style>
+  .needs { display: grid; gap: 1rem; margin-top: 3rem; }
+</style>

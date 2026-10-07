@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#111111"/>
+  <text x="80" y="100" font-family="Helvetica, Arial, sans-serif" font-size="16" letter-spacing="5" fill="#f3f2ef" fill-opacity="0.7">CATÁLOGO DE SERVICIOS</text>
+  <text font-family="Helvetica, Arial, sans-serif" font-size="96" font-weight="800" fill="#f3f2ef" letter-spacing="-1">
+    <tspan x="76" y="300">SOLUCIONES</tspan>
+    <tspan x="76" y="396">LOGÍSTICAS</tspan>
+    <tspan x="76" y="492">INTEGRALES</tspan>
+  </text>
+  <rect x="80" y="540" width="40" height="6" fill="#b84a22"/>
+  <text x="140" y="548" font-family="Helvetica, Arial, sans-serif" font-size="18" letter-spacing="3" fill="#f3f2ef" fill-opacity="0.8">TRANSPORTE · ALMACENAJE · DISTRIBUCIÓN · ESPECIALES</text>
+</svg>

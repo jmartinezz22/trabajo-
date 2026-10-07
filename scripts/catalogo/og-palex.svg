@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0b2f55"/>
+  <rect x="80" y="80" width="12" height="40" fill="#0a7cc1"/>
+  <text x="108" y="108" font-family="Helvetica, Arial, sans-serif" font-size="30" font-weight="800" letter-spacing="2" fill="#ffffff">PALEX</text>
+  <text x="108" y="128" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="600" letter-spacing="6" fill="#ffffff" fill-opacity="0.75">MEDICAL</text>
+  <text font-family="Helvetica, Arial, sans-serif" font-size="74" font-weight="700" fill="#ffffff" letter-spacing="-2">
+    <tspan x="80" y="330">Soluciones logísticas</tspan>
+    <tspan x="80" y="414">integrales</tspan>
+  </text>
+  <line x1="80" y1="470" x2="200" y2="470" stroke="#5cc3f5" stroke-width="2"/>
+  <text x="80" y="528" font-family="Helvetica, Arial, sans-serif" font-size="22" letter-spacing="3" fill="#5cc3f5">TRANSPORTE · ALMACENAJE · DISTRIBUCIÓN · SOLUCIONES ESPECIALES</text>
+</svg>

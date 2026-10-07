@@ -1,0 +1,26 @@
+---
+/**
+ * Identificador del catálogo según la versión:
+ *  - Con branding: logotipo oficial (si se configura `logo`) o wordmark tipográfico.
+ *  - Sin branding: etiqueta neutra, sin logotipo.
+ */
+import type { CatalogConfig } from '@/data/catalog/config';
+
+interface Props {
+  b: CatalogConfig;
+}
+const { b } = Astro.props;
+const [first, ...rest] = b.brandName.split(' ');
+---
+{b.showBranding ? (
+  b.logo ? (
+    <img class="brand__logo" src={b.logo} alt={b.brandName} width="160" height="34" />
+  ) : (
+    <span class="brand" role="img" aria-label={b.brandName}>
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__word" aria-hidden="true">{first}{rest.length > 0 && <small>{rest.join(' ')}</small>}</span>
+    </span>
+  )
+) : (
+  <span class="brand brand--label"><span class="brand__dot" aria-hidden="true"></span>{b.label}</span>
+)}

@@ -1,0 +1,94 @@
+---
+/**
+ * Layout del catálogo. Independiente de la web principal: sin su cabecera, pie ni intro.
+ * Toda la identidad (colores, tipografías, logo, contacto, SEO, favicon) sale de catalogConfig.
+ * La versión sin branding no contiene ninguna referencia a la marca, tampoco en el código fuente.
+ */
+import '@/styles/catalog.css';
+import CatalogHeader from '@/components/catalog/CatalogHeader.astro';
+import CatalogFooter from '@/components/catalog/CatalogFooter.astro';
+import { catalogConfig, type CatalogConfig } from '@/data/catalog/config';
+
+interface Props {
+  b: CatalogConfig;
+  /** Título de la página. En la portada se usa el título SEO de la versión. */
+  title?: string;
+  description?: string;
+  current?: string;
+  noindex?: boolean;
+  /** Imagen para compartir (por defecto la de la versión). */
+  ogImage?: string;
+}
+const { b, title, description = b.seo.description, current, noindex = false, ogImage = b.seo.ogImage } = Astro.props;
+
+const suffix = b.showBranding ? 'PALEX Medical' : 'Soluciones logísticas';
+const pageTitle = title ? `${title} | ${suffix}` : b.seo.title;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogUrl = new URL(ogImage, Astro.site).href;
+
+// Solo la versión con branding conoce la ruta de la otra (interruptor interno).
+const altRoot = b.showBranding ? `/catalogo/${catalogConfig.neutro.slug}/` : '';
+
+const vars = [
+  `--c-primary:${b.primaryColor}`,
+  `--c-secondary:${b.secondaryColor}`,
+  `--c-accent:${b.accentColor}`,
+  `--c-on-accent:${b.onAccent}`,
+  `--c-accent-text:${b.accentText}`,
+  `--c-accent-soft:${b.accentSoft}`,
+  `--c-ink:${b.inkColor}`,
+  `--c-paper:${b.paperColor}`,
+  `--c-surface:${b.surfaceColor}`,
+  `--c-muted:${b.mutedColor}`,
+  `--c-line:${b.lineColor}`,
+  `--f-display:${b.fontDisplay}`,
+  `--f-body:${b.fontBody}`,
+].join(';');
+
+const schema = b.showBranding
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: pageTitle,
+      description,
+      url: canonical,
+      publisher: { '@type': 'Organization', name: b.brandName, ...(b.legalName && { legalName: b.legalName }) },
+    }
+  : { '@context': 'https://schema.org', '@type': 'WebPage', name: pageTitle, description, url: canonical };
+---
+<!doctype html>
+<html lang="es" data-layout={b.layout} style={vars}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>document.documentElement.classList.add('cat-js');</script>
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <meta name="theme-color" content={b.themeColor} />
+    <link rel="icon" href={b.favicon} type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={b.fontsHref} />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </head>
+  <body class="catalog" data-catalog-root={`/catalogo/${b.slug}/`} data-alt-root={altRoot || undefined}>
+    <a href="#c-main" class="skip">Saltar al contenido</a>
+    <CatalogHeader b={b} current={current} shareTitle={pageTitle} />
+    <main id="c-main">
+      <slot />
+    </main>
+    <CatalogFooter b={b} />
+    <script>
+      import '@/scripts/catalog';
+    </script>
+  </body>
+</html>

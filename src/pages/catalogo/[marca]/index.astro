@@ -1,0 +1,87 @@
+---
+/** Portada del catálogo: /catalogo/palex/ y /catalogo/neutro/ (mismos componentes, distinta identidad). */
+import CatalogLayout from '@/layouts/CatalogLayout.astro';
+import CatalogCover from '@/components/catalog/CatalogCover.astro';
+import CategoryIndex from '@/components/catalog/CategoryIndex.astro';
+import Finder from '@/components/catalog/Finder.astro';
+import Process from '@/components/catalog/Process.astro';
+import CatalogCta from '@/components/catalog/CatalogCta.astro';
+import CIcon from '@/components/catalog/CIcon.astro';
+import Photo from '@/components/Photo.astro';
+import { activeBrands, catalogConfig, catalogPath, type CatalogConfig } from '@/data/catalog/config';
+import { getCategory } from '@/data/catalog/content';
+
+export function getStaticPaths() {
+  return activeBrands.map((id) => ({ params: { marca: catalogConfig[id].slug }, props: { b: catalogConfig[id] } }));
+}
+const { b } = Astro.props as { b: CatalogConfig };
+const medida = getCategory('medida');
+---
+<CatalogLayout b={b} current="inicio">
+  <CatalogCover b={b} />
+
+  <section class="sec--tight" aria-label="Valores">
+    <div class="wrap">
+      <ul role="list" class="pillars">
+        {b.pillars.map((p, i) => <li data-rv style={`--i:${i}`}>{p}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="sec" style="padding-top: 0">
+    <div class="wrap">
+      <p class="statement" data-rv>{b.statement}</p>
+    </div>
+  </section>
+
+  <section class="sec on-surface" id="indice" aria-labelledby="indice-title">
+    <div class="wrap">
+      <div class="s-head s-head--split">
+        <div>
+          <p class="kicker" data-rv>Índice</p>
+          <h2 id="indice-title" class="d-title h-lg" data-rv style="--i:1">Siete líneas de servicio.</h2>
+        </div>
+        <p class="lead" data-rv style="--i:2">Combinables entre sí para cubrir desde una necesidad puntual hasta la externalización completa de la logística.</p>
+      </div>
+      <CategoryIndex b={b} />
+    </div>
+  </section>
+
+  <section class="sec" id="buscador" aria-labelledby="buscador-title">
+    <div class="wrap">
+      <div class="s-head">
+        <p class="kicker" data-rv>Todos los servicios</p>
+        <h2 id="buscador-title" class="sr">Buscador de servicios</h2>
+      </div>
+      <Finder b={b} />
+    </div>
+  </section>
+
+  <section class="sec on-ink" aria-labelledby="medida-title">
+    <div class="wrap">
+      <div class="s-head s-head--split">
+        <div>
+          <p class="kicker" data-rv>{medida.num} · {medida.name}</p>
+          <h2 id="medida-title" class="d-title h-xl" data-rv style="--i:1">{medida.tagline}</h2>
+        </div>
+        <div style="display:grid;gap:1.5rem;justify-items:start">
+          <p class="lead" data-rv style="--i:2">{medida.intro}</p>
+          <a href={catalogPath(b, medida.slug)} class="link" data-rv style="--i:3">Cómo trabajamos <CIcon name="arrow" /></a>
+        </div>
+      </div>
+      <div class="medida-grid">
+        <Process steps={medida.process!} variant="flow" />
+        <div class="medida-photo" data-rv data-rv-img><Photo image="medida" sizes="(min-width: 960px) 40vw, 100vw" /></div>
+      </div>
+    </div>
+  </section>
+
+  <CatalogCta b={b} shareTitle={b.seo.title} />
+</CatalogLayout>
+
+<style>
+  .medida-grid { display: grid; gap: 3rem; }
+  .medida-photo { position: relative; min-height: 360px; overflow: hidden; border-radius: var(--radius); }
+  .medida-photo :global(.photo) { position: absolute; inset: 0; }
+  @media (min-width: 960px) { .medida-grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: stretch; } }
+</style>

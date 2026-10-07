@@ -1,0 +1,27 @@
+---
+/** Portada visual de cada categoría. */
+import Photo from '@/components/Photo.astro';
+import { catalogPath, type CatalogConfig } from '@/data/catalog/config';
+import type { Category } from '@/data/catalog/content';
+
+interface Props {
+  b: CatalogConfig;
+  c: Category;
+}
+const { b, c } = Astro.props;
+---
+<section class="cat-cover" aria-labelledby="cat-title">
+  {b.layout === 'corporate' && <div class="cat-cover__media" aria-hidden="true"><Photo image={c.image} eager /></div>}
+  <div class="wrap cat-cover__body">
+    <nav aria-label="Ruta" style="grid-column: 1 / -1">
+      <ol role="list" class="crumbs">
+        <li><a href={catalogPath(b)}>Catálogo</a></li>
+        <li><span aria-current="page">{c.name}</span></li>
+      </ol>
+    </nav>
+    <span class="cat-cover__num" aria-hidden="true">{c.num}</span>
+    <h1 id="cat-title" class="d-title h-xl cat-cover__title">{c.name}</h1>
+    <p class="cat-cover__tag">{c.tagline}</p>
+  </div>
+  {b.layout === 'editorial' && <div class="cat-cover__media" aria-hidden="true"><Photo image={c.image} eager /></div>}
+</section>

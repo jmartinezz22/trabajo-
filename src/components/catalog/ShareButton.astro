@@ -1,0 +1,24 @@
+---
+/** Compartir el catálogo o la página actual: WhatsApp, email, copiar enlace (y menú nativo en móvil). */
+import CIcon from './CIcon.astro';
+
+interface Props {
+  title: string;
+  label?: string;
+  up?: boolean;
+  class?: string;
+}
+const { title, label = 'Compartir catálogo', up = false, class: className } = Astro.props;
+---
+<div class:list={['share', { 'share--up': up }, className]} data-share data-share-title={title}>
+  <button type="button" class="share__btn" aria-haspopup="true" aria-expanded="false" aria-label={label} data-share-toggle>
+    <CIcon name="share" /><span>{label}</span>
+  </button>
+  <div class="share__menu" role="menu" hidden data-share-menu>
+    <button type="button" role="menuitem" data-share-action="native" hidden><CIcon name="share" />Compartir…</button>
+    <button type="button" role="menuitem" data-share-action="whatsapp"><CIcon name="whatsapp" />WhatsApp</button>
+    <button type="button" role="menuitem" data-share-action="email"><CIcon name="mail" />Email</button>
+    <button type="button" role="menuitem" data-share-action="copy"><CIcon name="link" />Copiar enlace</button>
+    <p class="share__ok" role="status" aria-live="polite" data-share-status></p>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+---
+/**
+ * Proceso por fases.
+ *  row:  "01 — Planificación" en fila (Eventos y congresos).
+ *  flow: ANALIZAMOS ↓ DISEÑAMOS ↓ … (Soluciones a medida).
+ */
+import CIcon from './CIcon.astro';
+import type { Step } from '@/data/catalog/content';
+
+interface Props {
+  steps: Step[];
+  variant?: 'row' | 'flow';
+}
+const { steps, variant = 'row' } = Astro.props;
+---
+{variant === 'flow' ? (
+  <ol role="list" class="flow">
+    {steps.map((s, i) => (
+      <li class="flow__step" data-rv style={`--i:${i}`}>
+        <span class="d-title flow__title">{s.title}</span>
+        <span class="flow__text">{s.text}</span>
+        {i < steps.length - 1 && <CIcon name="down" class="flow__arrow" />}
+      </li>
+    ))}
+  </ol>
+) : (
+  <ol role="list" class="process process--row" style={`--steps:${steps.length}`}>
+    {steps.map((s, i) => (
+      <li class="process__step" data-rv style={`--i:${i}`}>
+        <span class="process__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <span class="d-title process__title">{s.title}</span>
+        <span class="process__text">{s.text}</span>
+      </li>
+    ))}
+  </ol>
+)}

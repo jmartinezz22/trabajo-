@@ -1,0 +1,38 @@
+---
+/**
+ * Portada del catálogo.
+ *  corporate (PALEX): panel corporativo con logotipo + fotografía.
+ *  editorial (neutro): fotografía a sangre y titular gigante, sin logotipo.
+ */
+import Photo from '@/components/Photo.astro';
+import BrandMark from './BrandMark.astro';
+import CIcon from './CIcon.astro';
+import { proposalHref, type CatalogConfig } from '@/data/catalog/config';
+
+interface Props {
+  b: CatalogConfig;
+}
+const { b } = Astro.props;
+const subtitle = ['Transporte', 'Almacenaje', 'Distribución', 'Soluciones especiales'];
+---
+<section class="cover" aria-labelledby="cover-title">
+  <div class="cover__media" aria-hidden="true">
+    <Photo image="hero" eager sizes={b.layout === 'corporate' ? '(min-width: 960px) 55vw, 100vw' : '100vw'} />
+  </div>
+  <div class="cover__panel">
+    <div class="cover__brand">
+      {b.showBranding ? <BrandMark b={b} /> : <span></span>}
+      <p class="kicker">{b.showBranding ? 'Catálogo de servicios' : b.kicker}</p>
+    </div>
+    <div>
+      <h1 id="cover-title" class="d-title cover__title">Soluciones logísticas integrales</h1>
+      <p class="cover__sub">{subtitle.map((s) => <span>{s}</span>)}</p>
+    </div>
+    <div class="cover__foot">
+      <div class="btn-row">
+        <a href="#indice" class="btn">Ver el catálogo <CIcon name="down" /></a>
+        <a href={proposalHref(b)} class="btn btn--ghost">Solicitar propuesta</a>
+      </div>
+    </div>
+  </div>
+</section>

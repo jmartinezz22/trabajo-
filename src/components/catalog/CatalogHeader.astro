@@ -1,0 +1,49 @@
+---
+import BrandMark from './BrandMark.astro';
+import ShareButton from './ShareButton.astro';
+import CIcon from './CIcon.astro';
+import { catalogPath, type CatalogConfig } from '@/data/catalog/config';
+import { categories } from '@/data/catalog/content';
+
+interface Props {
+  b: CatalogConfig;
+  current?: string;
+  shareTitle: string;
+}
+const { b, current, shareTitle } = Astro.props;
+const navKeys = ['transporte', 'logistica', 'especiales', 'eventos', 'consultoria'] as const;
+const links = [
+  { key: 'inicio', label: 'Inicio', href: catalogPath(b) },
+  { key: 'servicios', label: 'Servicios', href: `${catalogPath(b)}#buscador` },
+  ...navKeys.map((k) => {
+    const c = categories.find((x) => x.key === k)!;
+    return { key: c.key, label: c.short, href: catalogPath(b, c.slug) };
+  }),
+  { key: 'contacto', label: 'Contacto', href: catalogPath(b, 'contacto') },
+];
+---
+<header class="c-header" data-c-header>
+  <div class="wrap c-header__in">
+    <a href={catalogPath(b)} aria-label={`${b.showBranding ? b.brandName : b.label} — Inicio del catálogo`}><BrandMark b={b} /></a>
+    <nav class="c-nav" aria-label="Catálogo">
+      <ul role="list">
+        {links.map((l) => <li><a href={l.href} aria-current={l.key === current ? 'page' : undefined}>{l.label}</a></li>)}
+      </ul>
+    </nav>
+    <div class="c-tools">
+      <ShareButton title={shareTitle} label="Compartir" />
+      <button type="button" class="menu-btn" aria-expanded="false" aria-controls="c-mobile" data-c-menu>
+        <span aria-hidden="true"></span><span class="sr">Menú</span>
+      </button>
+    </div>
+  </div>
+  <nav id="c-mobile" class="c-mobile" aria-label="Catálogo (móvil)" hidden data-c-mobile>
+    <ul role="list">
+      {links.map((l) => <li><a href={l.href} aria-current={l.key === current ? 'page' : undefined}>{l.label}<CIcon name="arrow" class="mi" /></a></li>)}
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .c-mobile :global(.mi) { width: 20px; height: 20px; color: var(--c-accent); align-self: center; }
+</style>

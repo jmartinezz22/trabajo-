@@ -1,0 +1,37 @@
+---
+/** Servicio en formato tesela con fotografía (resultados del buscador y relacionados). */
+import Photo from '@/components/Photo.astro';
+import { catalogPath, type CatalogConfig } from '@/data/catalog/config';
+import { getCategory, localize, needs, type CatalogItem } from '@/data/catalog/content';
+
+interface Props {
+  b: CatalogConfig;
+  item: CatalogItem;
+  index?: number;
+  /** Atributos para el buscador. */
+  searchable?: boolean;
+  headingLevel?: 'h3' | 'h4';
+}
+const { b, item: raw, index = 0, searchable = false, headingLevel = 'h3' } = Astro.props;
+const item = localize(raw, b.showBranding);
+const cat = getCategory(item.category);
+const H = headingLevel;
+const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const text = searchable
+  ? norm([item.name, cat.name, cat.short, item.summary, item.offer, item.keywords ?? '', ...item.needs.map((n) => needs[n]), ...item.applications].join(' '))
+  : undefined;
+---
+<article
+  class="tile"
+  data-rv
+  style={`--i:${index % 3}`}
+  data-item={searchable ? '' : undefined}
+  data-cat={searchable ? item.category : undefined}
+  data-needs={searchable ? item.needs.join(' ') : undefined}
+  data-text={text}
+>
+  <div class="tile__media" data-rv-img><Photo image={item.image} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" /></div>
+  <p class="tile__cat">{cat.num} · {cat.short}</p>
+  <H class="d-title tile__name"><a href={catalogPath(b, cat.slug, item.slug)}>{item.name}</a></H>
+  <p class="tile__text">{item.summary}</p>
+</article>
