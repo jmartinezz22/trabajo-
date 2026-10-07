@@ -1,0 +1,496 @@
+---
+/**
+ * Catálogo PDF · presentación corporativa (A4 horizontal, una página = una lámina).
+ * Misma plantilla y mismo contenido para las dos versiones; la identidad sale de catalogConfig.pdf.
+ * Se convierte en PDF con scripts/catalog-pdf.mjs (o el workflow "Catálogo PDF" de GitHub Actions).
+ * No está enlazada desde la web y no se indexa.
+ */
+import Photo from '@/components/Photo.astro';
+import { activeBrands, catalogConfig, PENDING, type CatalogConfig } from '@/data/catalog/config';
+import { categories, itemsOf, localize, localizeCategory, type Category, type CatalogItem, type Step } from '@/data/catalog/content';
+import type { PhotoKey } from '@/data/images';
+
+export function getStaticPaths() {
+  return activeBrands.map((id) => ({ params: { marca: catalogConfig[id].slug }, props: { b: catalogConfig[id] } }));
+}
+const { b } = Astro.props as { b: CatalogConfig };
+const p = b.pdf;
+const year = new Date().getFullYear();
+const branded = b.showBranding;
+const ORD = ['primera', 'segunda', 'tercera', 'cuarta', 'quinta', 'sexta', 'séptima'];
+const two = (n: number) => String(n).padStart(2, '0');
+
+/* — Contenido adicional por categoría (procedente de las líneas de servicio reales) — */
+type Extra = { label: string; title: string; lead: string; steps: Step[]; image?: PhotoKey; numbered: boolean };
+const extras: Partial<Record<Category['key'], Extra>> = {
+  transporte: {
+    label: 'Transporte · Cómo planificamos',
+    title: 'Cada transporte empieza por las preguntas correctas',
+    lead: 'Antes de elegir la modalidad analizamos la mercancía, sus condiciones y el plazo. El resultado es el transporte adecuado para cada carga.',
+    steps: [
+      { title: 'Mercancía', text: 'Tipo de producto, volumen, peso y requisitos de manipulación.' },
+      { title: 'Condiciones', text: 'Rango de temperatura y necesidad de registro durante el trayecto.' },
+      { title: 'Plazo', text: 'Ventana de recogida y entrega, urgencia y franjas del destinatario.' },
+      { title: 'Modalidad', text: 'Paquetería, grupaje, camión completo o express según el caso.' },
+      { title: 'Seguimiento', text: 'Información de estado y entrega para el cliente.' },
+    ],
+    image: 'frio',
+    numbered: true,
+  },
+  logistica: {
+    label: 'Logística · Flujo de trabajo',
+    title: 'Del muelle de entrada al cliente final',
+    lead: 'Cinco fases coordinadas entre sí y con el transporte adecuado, configuradas según el producto, el canal y el volumen de cada cliente.',
+    steps: [
+      { title: 'Recepción', text: 'Entrada de mercancía, verificación y registro.' },
+      { title: 'Almacenaje', text: 'Ubicación según rotación y características del producto.' },
+      { title: 'Preparación', text: 'Picking, manipulados y control del pedido.' },
+      { title: 'Packing', text: 'Embalaje y etiquetado para cada canal.' },
+      { title: 'Expedición', text: 'Salida coordinada con el transporte adecuado.' },
+    ],
+    image: 'picking',
+    numbered: true,
+  },
+  especiales: {
+    label: 'Servicios especiales · Control',
+    title: 'Protección, trazabilidad y control en cada manipulación',
+    lead: 'En equipos sensibles y de alto valor, cada movimiento se planifica antes de producirse y queda registrado.',
+    steps: [
+      { title: 'Protección', text: 'Embalaje y manipulación definidos según la fragilidad y el valor del equipo.' },
+      { title: 'Trazabilidad', text: 'Registro del estado del envío durante el almacenamiento y el transporte.' },
+      { title: 'Control de impactos', text: 'Indicadores ShockWatch 50G que detectan posibles golpes durante la manipulación.' },
+      { title: 'Gestión de incidencias', text: 'Cada incidencia detectada se registra para actuar y documentarla.' },
+    ],
+    image: 'ecografo',
+    numbered: false,
+  },
+  eventos: {
+    label: 'Eventos y congresos · Modo de trabajo',
+    title: 'Siete fases. Un calendario.',
+    lead: 'Fechas cerradas y múltiples destinos coordinados por un único interlocutor, desde la planificación hasta la retirada del material.',
+    steps: [],
+    numbered: true,
+  },
+  consultoria: {
+    label: 'Consultoría · Modo de trabajo',
+    title: 'Del diagnóstico a la implantación',
+    lead: 'Consultoría con base operativa: proponemos lo que sabemos ejecutar y acompañamos la puesta en marcha.',
+    steps: [
+      { title: 'Diagnóstico', text: 'Datos, procesos y visitas a la operación actual.' },
+      { title: 'Análisis', text: 'Identificación de cuellos de botella y oportunidades.' },
+      { title: 'Propuesta', text: 'Escenarios de mejora con su alcance.' },
+      { title: 'Implantación', text: 'Acompañamiento en la puesta en marcha.' },
+      { title: 'Seguimiento', text: 'Revisión de resultados y ajustes.' },
+    ],
+    image: 'tecnologia',
+    numbered: true,
+  },
+};
+
+/* — Secuencia de láminas — */
+type Page =
+  | { t: 'cover' }
+  | { t: 'contents' }
+  | { t: 'intro' }
+  | { t: 'divider'; c: Category; i: number }
+  | { t: 'services'; c: Category; list: CatalogItem[]; cols: 3 | 4; long: boolean; band: PhotoKey | null; short: boolean }
+  | { t: 'split'; c: Category; x: Extra }
+  | { t: 'process'; c: Category; x: Extra; steps: Step[] }
+  | { t: 'medida'; c: Category; item: CatalogItem }
+  | { t: 'closing' };
+
+/** Franja fotográfica que cierra cada página de servicios (distinta de la del separador). */
+const bandPhoto: Partial<Record<Category['key'], PhotoKey>> = {
+  transporte: 'transporte2',
+  logistica: 'capacity',
+  especiales: 'especiales2',
+  eventos: 'eventos2',
+  consultoria: 'consultoria',
+  excedentes: 'industria',
+};
+const pages: Page[] = [{ t: 'cover' }, { t: 'contents' }, { t: 'intro' }];
+const startPage: Record<string, number> = {};
+categories.forEach((raw, i) => {
+  const c = localizeCategory(raw, branded);
+  const list = itemsOf(c.key).map((it) => localize(it, branded));
+  startPage[c.key] = pages.length + 1;
+  pages.push({ t: 'divider', c, i });
+  const x = extras[c.key];
+  if (c.key === 'medida') pages.push({ t: 'medida', c, item: list[0] });
+  else {
+    const cnt = list.length;
+    pages.push({
+      t: 'services', c, list,
+      cols: cnt === 4 || cnt === 8 ? 4 : 3,
+      long: cnt > 0 && cnt < 7,
+      band: bandPhoto[c.key] ?? null,
+      short: cnt > 8,
+    });
+  }
+  if (x && c.key === 'eventos') pages.push({ t: 'process', c, x, steps: c.process ?? [] });
+  else if (x) pages.push({ t: 'split', c, x });
+});
+pages.push({ t: 'closing' });
+
+const sectionLabel = (c?: Category) => (c ? `${c.num} · ${c.name}` : 'Catálogo de servicios');
+const sectionOf = (pg: Page) => ('c' in pg ? pg.c : undefined);
+const clean = (s: string) => s.replace(PENDING, '').trim();
+
+const intro = branded
+  ? {
+      label: 'Presentación',
+      title: 'Experiencia formada en el entorno más exigente: el hospital',
+      paras: [
+        'Desde 1998 desarrollamos soluciones de gestión de material sanitario, medicación y procesos logísticos en el entorno hospitalario, donde un error de stock o de trazabilidad no es una incidencia menor.',
+        'Esa experiencia se extiende hoy a la gestión de almacenes, el transporte, la automatización y la trazabilidad de cualquier operación: un único interlocutor que diseña, implanta y gestiona la solución logística de cada cliente.',
+        'Entre los proyectos publicados destaca la automatización y digitalización de los procesos logísticos del Hospital Sant Joan de Déu (Barcelona), con RFID y las soluciones propias Dyane.',
+      ],
+      stats: [
+        { n: '1998', l: 'Inicio de la experiencia en logística hospitalaria' },
+        { n: '176', l: 'Almacenes en el proyecto del Hospital Sant Joan de Déu' },
+        { n: 'RFID', l: 'Trazabilidad con soluciones propias Dyane' },
+      ],
+      image: 'hospital' as PhotoKey,
+    }
+  : {
+      label: 'Presentación',
+      title: 'Un único interlocutor para toda la operación logística',
+      paras: [
+        'Transporte, almacenaje, distribución, operaciones especiales, eventos y consultoría: servicios que pueden contratarse por separado o combinarse en una misma operación.',
+        'Partimos del análisis de cada caso para diseñar una solución adaptada al producto, los volúmenes, los plazos y los destinos del cliente. Después la implantamos, la gestionamos y la mejoramos de forma continua.',
+        'El objetivo es sencillo: que la logística deje de ser una preocupación para el cliente y se convierta en una ventaja para su negocio.',
+      ],
+      stats: [
+        { n: '7', l: 'Líneas de servicio combinables entre sí' },
+        { n: '39', l: 'Servicios descritos en este catálogo' },
+        { n: '1', l: 'Interlocutor para toda la operación' },
+      ],
+      image: 'logistica2' as PhotoKey,
+    };
+
+const contact = {
+  email: b.contactEmail || PENDING,
+  phone: b.phones[0],
+  phone2: b.phones[1],
+  address: b.address,
+};
+const vars = [
+  `--dark:${p.dark}`, `--paper:${p.paper}`, `--ink:${p.ink}`, `--muted:${p.muted}`, `--line:${p.line}`, `--accent:${p.accent}`,
+  `--fh:${p.fontHead}`, `--fb:${p.fontBody}`,
+].join(';');
+const docTitle = branded ? 'PALEX Medical · Catálogo de servicios' : 'Catálogo de servicios logísticos';
+---
+<!doctype html>
+<html lang="es" style={vars}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{docTitle}</title>
+    <link rel="icon" href={b.favicon} type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={p.fontsHref} />
+  </head>
+  <body data-pdf-ready="0">
+    {pages.map((pg, idx) => {
+      const n = two(idx + 1);
+      const c = sectionOf(pg);
+      const dark = pg.t === 'cover' || pg.t === 'divider' || pg.t === 'closing';
+      return (
+        <section class:list={['pg', `pg--${pg.t}`, { 'is-dark': dark }]}>
+          {p.mark && <p class="mark">{p.mark}</p>}
+
+          {pg.t === 'cover' && (
+            <Fragment>
+              <div class="bleed"><Photo image="hero" eager sizes="1600px" /></div>
+              <div class="veil veil--cover"></div>
+              <div class="cover-body">
+                <span class="rule"></span>
+                <p class="label label--lg">Catálogo de servicios</p>
+                <h1 class="ttl ttl--cover">Soluciones logísticas<br />integrales</h1>
+                <p class="body body--light">{p.coverText}</p>
+              </div>
+              <div class="foot"><span>Presentación corporativa · {year}</span><span>{p.coverNote}</span></div>
+            </Fragment>
+          )}
+
+          {pg.t === 'contents' && (
+            <Fragment>
+              <p class="label top">Contenido</p>
+              <h2 class="ttl ttl--lg">Siete líneas de servicio,<br />un mismo objetivo: tu operación.</h2>
+              <p class="body lead">Este catálogo recoge lo que hacemos en cada una de ellas. Todas pueden contratarse por separado o combinarse en una misma operación, con un único interlocutor.</p>
+              <ol class="toc">
+                {categories.map((cc) => (
+                  <li>
+                    <span class="num-lg">{cc.num}</span>
+                    <span class="toc-name">{cc.name}</span>
+                    <span class="body small">{cc.tagline}</span>
+                    <span class="toc-page">{two(startPage[cc.key])}</span>
+                  </li>
+                ))}
+              </ol>
+              <div class="foot"><span>Catálogo de servicios</span><span>{n}</span></div>
+            </Fragment>
+          )}
+
+          {pg.t === 'intro' && (
+            <Fragment>
+              <div class="half-photo half-photo--right"><Photo image={intro.image} eager sizes="800px" /></div>
+              <div class="half-text">
+                <p class="label top">{intro.label}</p>
+                <h2 class="ttl ttl--md">{intro.title}</h2>
+                {intro.paras.map((t) => <p class="body para">{t}</p>)}
+                <div class="stats">
+                  {intro.stats.map((s) => <div><span class="stat-n">{s.n}</span><span class="small-sans">{s.l}</span></div>)}
+                </div>
+              </div>
+              <div class="foot"><span>Presentación</span><span>{n}</span></div>
+            </Fragment>
+          )}
+
+          {pg.t === 'divider' && (
+            <Fragment>
+              <div class="half-photo half-photo--right"><Photo image={pg.c.image} eager sizes="800px" /><div class="veil veil--side"></div></div>
+              <div class="div-body">
+                <span class="num-xl">{pg.c.num}</span>
+                <span class="rule rule--short"></span>
+                <p class="label">Sección {ORD[pg.i]}</p>
+                <h2 class="ttl ttl--div">{pg.c.name}</h2>
+                <p class="body body--light">{pg.c.intro}</p>
+              </div>
+              <div class="foot"><span>{sectionLabel(pg.c)}</span><span>{n}</span></div>
+            </Fragment>
+          )}
+
+          {pg.t === 'services' && (
+            <Fragment>
+              <p class="label top">{pg.c.name} · Servicios</p>
+              <h2 class="ttl ttl--md wide">{pg.c.tagline}</h2>
+              <p class="body lead">{pg.list.length} servicios que pueden contratarse por separado o combinarse en una misma operación.</p>
+              <div class:list={['svc-grid', `cols-${pg.cols}`, { compact: !pg.long }]}>
+                {pg.list.map((it, k) => (
+                  <article>
+                    <p class="label">Servicio {two(k + 1)}</p>
+                    <h3 class="svc-name">{it.name}</h3>
+                    <p class="body small">{pg.long ? clean(it.offer) : it.summary}</p>
+                  </article>
+                ))}
+              </div>
+              {pg.band && <div class:list={['band', { 'band--short': pg.short }]}><Photo image={pg.band} eager sizes="1600px" /></div>}
+              <div class="foot"><span>{sectionLabel(pg.c)}</span><span>{n}</span></div>
+            </Fragment>
+          )}
+
+          {pg.t === 'split' && (
+            <Fragment>
+              <div class="half-photo half-photo--left"><Photo image={pg.x.image!} eager sizes="800px" /></div>
+              <div class="half-text half-text--right">
+                <p class="label top">{pg.x.label}</p>
+                <h2 class="ttl ttl--md">{pg.x.title}</h2>
+                <p class="body para">{pg.x.lead}</p>
+                <div class="steps-2">
+                  {pg.x.steps.map((s, k) => (
+                    <div>
+                      {pg.x.numbered && <span class="num-md">{two(k + 1)}</span>}
+                      <h3 class="svc-name">{s.title}</h3>
+                      <p class="body small">{s.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div class="foot"><span>{sectionLabel(pg.c)}</span><span>{n}</span></div>
+            </Fragment>
+          )}
+
+          {pg.t === 'process' && (
+            <Fragment>
+              <p class="label top">{pg.x.label}</p>
+              <h2 class="ttl ttl--lg">{pg.x.title}</h2>
+              <p class="body lead">{pg.x.lead}</p>
+              <ol class="proc">
+                {pg.steps.map((s, k) => (
+                  <li>
+                    <span class="num-md">{two(k + 1)}</span>
+                    <h3 class="svc-name">{s.title}</h3>
+                    <p class="body small">{s.text}</p>
+                  </li>
+                ))}
+              </ol>
+              <div class="foot"><span>{sectionLabel(pg.c)}</span><span>{n}</span></div>
+            </Fragment>
+          )}
+
+          {pg.t === 'medida' && (
+            <Fragment>
+              <p class="label top">{pg.c.name} · Proceso</p>
+              <h2 class="ttl ttl--lg">{pg.c.tagline}</h2>
+              <p class="body lead">{pg.item.offer}</p>
+              <ol class="proc proc--5">
+                {(pg.c.process ?? []).map((s, k) => (
+                  <li>
+                    <span class="num-md">{two(k + 1)}</span>
+                    <h3 class="svc-name svc-name--caps">{s.title}</h3>
+                    <p class="body small">{s.text}</p>
+                  </li>
+                ))}
+              </ol>
+              <div class="band band--short"><Photo image="capacity" eager sizes="1600px" /></div>
+              <div class="foot"><span>{sectionLabel(pg.c)}</span><span>{n}</span></div>
+            </Fragment>
+          )}
+
+          {pg.t === 'closing' && (
+            <Fragment>
+              <div class="closing-body">
+                <span class="rule"></span>
+                <p class="label">Siguiente paso</p>
+                <h2 class="ttl ttl--lg">Cuéntanos qué mueves,<br />qué almacenas y qué necesitas.</h2>
+                <p class="body body--light">
+                  Te devolvemos una propuesta concreta para tu operación: el servicio que necesitas hoy o la solución logística completa, diseñada a medida.
+                </p>
+              </div>
+              <div class="contact">
+                <div><p class="label">Email</p><p class="c-main">{contact.email}</p><p class="c-sub">Atención comercial</p></div>
+                {contact.phone ? (
+                  <div><p class="label">Teléfono</p><p class="c-main">{contact.phone.number}</p><p class="c-sub">{contact.phone2 ? `${contact.phone2.label}: ${contact.phone2.number}` : contact.phone.label}</p></div>
+                ) : (
+                  <div><p class="label">Servicios</p><p class="c-main">Transporte · Almacenaje</p><p class="c-sub">Distribución · Soluciones especiales</p></div>
+                )}
+                {contact.address ? (
+                  <div><p class="label">{b.brandName}</p><p class="c-main">{contact.address.split(' · ')[0]}</p><p class="c-sub">{contact.address.split(' · ')[1]}</p></div>
+                ) : (
+                  <div><p class="label">Cobertura</p><p class="c-main">Soluciones a medida</p><p class="c-sub">Para cada operación</p></div>
+                )}
+              </div>
+              <div class="foot"><span>Catálogo de servicios · {year}</span><span>{n}</span></div>
+            </Fragment>
+          )}
+        </section>
+      );
+    })}
+
+    <script is:inline>
+      // Señal para el generador de PDF: tipografías e imágenes cargadas
+      Promise.all([
+        document.fonts ? document.fonts.ready : Promise.resolve(),
+        ...Array.from(document.images).map((img) => (img.complete ? Promise.resolve() : new Promise((r) => { img.onload = img.onerror = r; }))),
+      ]).then(() => document.body.setAttribute('data-pdf-ready', '1'));
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  @page { size: 297mm 210mm; margin: 0; }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; background: #6b6b6b; color: var(--ink); font-family: var(--fb); -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, p, ol { margin: 0; padding: 0; }
+  ol { list-style: none; }
+
+  .pg { position: relative; width: 297mm; height: 210mm; overflow: hidden; background: var(--paper); padding: 0 15mm; break-after: page; page-break-after: always; }
+  .pg.is-dark { background: var(--dark); color: #fff; }
+  @media screen { .pg { margin: 10mm auto; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35); } }
+  @media print { body { background: none; } }
+
+  /* Cabecera y pie */
+  .mark { position: absolute; z-index: 5; top: 13mm; left: 15mm; font-family: var(--fh); font-size: 7.5pt; letter-spacing: 0.55em; text-transform: uppercase; }
+  .foot { position: absolute; z-index: 5; left: 15mm; right: 15mm; bottom: 9mm; display: flex; justify-content: space-between; font-family: var(--fh); font-size: 6.5pt; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
+  .is-dark .foot { color: rgba(255, 255, 255, 0.6); }
+
+  /* Tipografía */
+  .label { font-family: var(--fh); font-size: 7pt; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink); }
+  .is-dark .label { color: rgba(255, 255, 255, 0.72); }
+  .label--lg { font-size: 11pt; letter-spacing: 0.32em; color: #fff !important; }
+  .label.top { margin-top: 26mm; margin-bottom: 4mm; }
+  .ttl { font-family: var(--fh); font-weight: 400; letter-spacing: -0.025em; line-height: 1.08; }
+  .ttl--cover { margin: 5mm 0 6mm; font-size: 40pt; font-weight: 300; }
+  .ttl--lg { font-size: 27pt; }
+  .ttl--md { font-size: 23pt; max-width: 120mm; }
+  .ttl--md.wide { max-width: 210mm; }
+  .ttl--div { margin: 4mm 0 6mm; font-size: 32pt; font-weight: 300; max-width: 110mm; }
+  .body { font-size: 10pt; line-height: 1.55; color: color-mix(in srgb, var(--ink) 86%, transparent); }
+  .body--light { color: rgba(255, 255, 255, 0.82); font-size: 11pt; max-width: 118mm; }
+  .body.small { font-size: 8.8pt; line-height: 1.5; color: color-mix(in srgb, var(--ink) 78%, transparent); }
+  .lead { margin-top: 5mm; font-size: 11pt; max-width: 165mm; }
+  .para { margin-top: 3.5mm; }
+  .half-text .para:first-of-type { margin-top: 6mm; }
+  .svc-name { font-family: var(--fh); font-weight: 400; font-size: 11.5pt; letter-spacing: -0.01em; margin: 2.2mm 0 2mm; color: var(--ink); }
+  .svc-name--caps { text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; }
+  .num-xl { display: block; font-family: var(--fh); font-weight: 300; font-size: 64pt; line-height: 1; letter-spacing: -0.04em; }
+  .num-lg { display: block; font-family: var(--fh); font-weight: 300; font-size: 28pt; line-height: 1; letter-spacing: -0.03em; }
+  .num-md { display: block; font-family: var(--fh); font-weight: 300; font-size: 19pt; line-height: 1; letter-spacing: -0.02em; }
+  .small-sans { display: block; margin-top: 2mm; font-family: var(--fh); font-size: 7.5pt; line-height: 1.4; color: var(--muted); max-width: 42mm; }
+  .rule { display: block; width: 32mm; height: 0.6pt; background: currentColor; opacity: 0.8; }
+  .rule--short { width: 25mm; margin: 7mm 0 7mm; opacity: 0.5; }
+
+  /* Fotografía */
+  .bleed, .half-photo, .band { position: absolute; overflow: hidden; }
+  .bleed { inset: 0; }
+  .bleed .photo, .half-photo .photo, .band .photo { position: absolute !important; inset: 0; }
+  .half-photo { top: 0; bottom: 0; width: 50%; }
+  .half-photo--right { right: 0; }
+  .half-photo--left { left: 0; width: 42%; }
+  .pg--intro .half-photo { width: 44%; }
+  .veil { position: absolute; inset: 0; z-index: 2; }
+  .veil--cover { background: linear-gradient(90deg, color-mix(in srgb, var(--dark) 92%, transparent) 0%, color-mix(in srgb, var(--dark) 70%, transparent) 42%, color-mix(in srgb, var(--dark) 20%, transparent) 100%); }
+  .veil--side { background: linear-gradient(90deg, color-mix(in srgb, var(--dark) 45%, transparent), transparent 40%); }
+  .band { left: 0; right: 0; bottom: 0; height: 56mm; }
+  .band--short { height: 40mm; }
+  .band::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, color-mix(in srgb, var(--dark) 0%, transparent) 60%, color-mix(in srgb, var(--dark) 55%, transparent)); }
+  .pg:has(.band) .foot { color: rgba(255, 255, 255, 0.85); }
+
+  /* Portada */
+  .cover-body { position: absolute; z-index: 3; left: 15mm; top: 52mm; max-width: 135mm; }
+  .cover-body .rule { margin-bottom: 8mm; }
+  .pg--cover .foot { color: rgba(255, 255, 255, 0.7); }
+
+  /* Índice */
+  .toc { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7mm 8mm; margin-top: 11mm; }
+  .toc li { display: grid; grid-template-rows: auto auto 1fr; padding-top: 4mm; border-top: 0.7pt solid var(--ink); position: relative; }
+  .toc-name { margin: 3mm 0 1.5mm; font-family: var(--fh); font-size: 11.5pt; letter-spacing: -0.01em; }
+  .toc-page { position: absolute; top: 4.5mm; right: 0; font-family: var(--fh); font-size: 7pt; letter-spacing: 0.15em; color: var(--muted); }
+  .toc .body.small { font-size: 8.4pt; }
+
+  /* Mitad texto */
+  .half-text { position: absolute; top: 0; bottom: 0; left: 15mm; width: calc(56% - 25mm); }
+  .half-text--right { left: calc(42% + 13mm); width: calc(58% - 28mm); }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6mm; margin-top: 10mm; }
+  .stat-n { display: block; font-family: var(--fh); font-weight: 400; font-size: 22pt; letter-spacing: -0.02em; line-height: 1; }
+
+  /* Separador de sección */
+  .div-body { position: absolute; z-index: 3; left: 15mm; top: 40mm; width: calc(50% - 25mm); }
+
+  /* Servicios */
+  .svc-grid { display: grid; gap: 7mm 8mm; margin-top: 10mm; }
+  .svc-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .svc-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+  .svc-grid article { padding-top: 3.5mm; border-top: 0.6pt solid var(--line); }
+  .svc-grid.compact { gap: 5mm 8mm; margin-top: 8mm; }
+  .svc-grid.compact .svc-name { margin: 1.6mm 0 1.2mm; }
+  .pg--services:has(.band) .svc-grid { margin-top: 8mm; }
+
+  .steps-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm 8mm; margin-top: 9mm; }
+  .steps-2 > div { padding-top: 3.5mm; border-top: 0.6pt solid var(--line); }
+  .steps-2 > div:last-child:nth-child(odd) { grid-column: span 2; }
+
+  .proc { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8mm 8mm; margin-top: 11mm; }
+  .proc li { padding-top: 4mm; border-top: 0.6pt solid var(--line); }
+  .proc--5 { grid-template-columns: repeat(5, 1fr); }
+
+  /* Cierre */
+  .closing-body { position: absolute; left: 15mm; top: 40mm; max-width: 175mm; }
+  .closing-body .label { margin: 6mm 0 5mm; }
+  .closing-body .ttl { margin-bottom: 7mm; font-weight: 300; }
+  .contact { position: absolute; left: 15mm; right: 15mm; bottom: 20mm; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8mm; padding-top: 6mm; border-top: 0.6pt solid rgba(255, 255, 255, 0.25); }
+  .c-main { margin-top: 3mm; font-family: var(--fh); font-size: 11pt; color: #fff; }
+  .c-sub { margin-top: 1mm; font-family: var(--fh); font-size: 7.5pt; color: rgba(255, 255, 255, 0.6); }
+
+  /* Acento discreto */
+  .pg--contents .num-lg, .proc .num-md, .steps-2 .num-md { color: var(--ink); }
+  .pg--contents .toc li::before, .proc li::before { content: ''; position: absolute; }
+  .rule, .is-dark .num-xl { color: #fff; }
+  .toc li:first-child { border-top-color: var(--accent); }
+  .pg--cover .rule { background: var(--accent); opacity: 1; height: 1pt; }
+  .pg--closing .rule { background: var(--accent); opacity: 1; height: 1pt; }
+</style>

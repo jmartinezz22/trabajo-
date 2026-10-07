@@ -6,3 +6,6 @@ dist/
 !.env.example
 .DS_Store
 dist-offline/
+
+# Previsualizaciones locales del catálogo PDF
+catalogo-pdf/*.png

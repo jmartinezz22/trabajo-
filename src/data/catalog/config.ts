@@ -67,6 +67,25 @@ export interface CatalogConfig {
   seo: { title: string; description: string; ogImage: string };
   favicon: string;
   themeColor: string;
+  /** Catálogo PDF (presentación corporativa A4 horizontal). */
+  pdf: {
+    /** Marca espaciada de cabecera ('' = sin marca). */
+    mark: string;
+    dark: string;
+    paper: string;
+    ink: string;
+    muted: string;
+    line: string;
+    accent: string;
+    fontHead: string;
+    fontBody: string;
+    fontsHref: string;
+    /** Texto de la portada. */
+    coverText: string;
+    /** Línea inferior derecha de la portada. */
+    coverNote: string;
+    fileName: string;
+  };
 }
 
 const env = import.meta.env;
@@ -127,6 +146,24 @@ export const catalogConfig: Record<BrandId, CatalogConfig> = {
     },
     favicon: '/catalogo/favicon-palex.svg',
     themeColor: '#0b2f55',
+    pdf: {
+      mark: 'PALEX MEDICAL',
+      // [CONFIRMAR] Colores con el manual de marca de PALEX.
+      dark: '#0b2238',
+      paper: '#f8f8f6',
+      ink: '#13202c',
+      muted: '#5a6672',
+      line: '#d8dbdd',
+      accent: '#0a7cc1',
+      fontHead: "'Inter Tight', 'Helvetica Neue', Arial, sans-serif",
+      fontBody: "'Source Serif 4', Georgia, serif",
+      fontsHref:
+        'https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap',
+      coverText:
+        'Transporte, almacenaje, distribución y soluciones especiales, con experiencia en logística hospitalaria desde 1998 y un único interlocutor para toda la operación.',
+      coverNote: 'PALEX MEDICAL · Sant Cugat del Vallès (Barcelona)',
+      fileName: 'Catalogo_Servicios_PALEX.pdf',
+    },
   },
 
   neutro: {
@@ -171,6 +208,23 @@ export const catalogConfig: Record<BrandId, CatalogConfig> = {
     },
     favicon: '/catalogo/favicon-neutro.svg',
     themeColor: '#111111',
+    pdf: {
+      mark: '',
+      dark: '#161616',
+      paper: '#f6f5f1',
+      ink: '#171717',
+      muted: '#5e5e5a',
+      line: '#d9d7d1',
+      accent: '#b84a22',
+      fontHead: "'Archivo', 'Helvetica Neue', Arial, sans-serif",
+      fontBody: "'Lora', Georgia, serif",
+      fontsHref:
+        'https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600&family=Lora:wght@400;500&display=swap',
+      coverText:
+        'Transporte, almacenaje, distribución y operaciones especiales diseñados alrededor de cada cliente, con un único interlocutor de principio a fin.',
+      coverNote: 'Transporte · Almacenaje · Distribución · Soluciones especiales',
+      fileName: 'Catalogo_Servicios_Logisticos.pdf',
+    },
   },
 };
 

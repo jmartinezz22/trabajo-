@@ -1,0 +1,49 @@
+name: Catálogo PDF
+
+# Genera los catálogos PDF (versión PALEX y versión neutra) con fotografías y tipografías
+# y los guarda en la carpeta catalogo-pdf/ de la misma rama.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'src/pages/catalogo/**/pdf.astro'
+      - 'src/data/catalog/**'
+      - 'src/data/images.ts'
+      - 'scripts/catalog-pdf.mjs'
+      - '.github/workflows/catalogo-pdf.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalogo-pdf-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx astro build
+      - name: Playwright
+        run: |
+          npm i --no-save playwright
+          npx playwright install --with-deps chromium
+      - run: node scripts/catalog-pdf.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: catalogos-pdf
+          path: catalogo-pdf/*.pdf
+      - name: Guardar los PDF en la rama
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898+github-actions[bot]@users.noreply.github.com"
+          git add catalogo-pdf/*.pdf
+          if git diff --cached --quiet; then echo "Sin cambios"; exit 0; fi
+          git commit -m "Catálogos PDF generados [skip ci]"
+          git push
