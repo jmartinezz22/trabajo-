@@ -104,10 +104,12 @@ const bandPhoto: Partial<Record<Category['key'], PhotoKey>> = {
   transporte: 'transporte2',
   logistica: 'capacity',
   especiales: 'especiales2',
-  eventos: 'eventos2',
+  eventos: 'ecommerce',
   consultoria: 'consultoria',
-  excedentes: 'industria',
+  excedentes: 'otros',
 };
+/** Foto del separador cuando debe ser distinta de la de la web. */
+const dividerPhoto: Partial<Record<Category['key'], PhotoKey>> = { eventos: 'eventos2' };
 const pages: Page[] = [{ t: 'cover' }, { t: 'contents' }, { t: 'intro' }];
 const startPage: Record<string, number> = {};
 categories.forEach((raw, i) => {
@@ -203,7 +205,7 @@ const docTitle = branded ? 'PALEX Medical · Catálogo de servicios' : 'Catálog
 
           {pg.t === 'cover' && (
             <Fragment>
-              <div class="bleed"><Photo image="hero" eager sizes="1600px" /></div>
+              <div class="bleed"><Photo image="hero" eager sizes="1200px" /></div>
               <div class="veil veil--cover"></div>
               <div class="cover-body">
                 <span class="rule"></span>
@@ -236,7 +238,7 @@ const docTitle = branded ? 'PALEX Medical · Catálogo de servicios' : 'Catálog
 
           {pg.t === 'intro' && (
             <Fragment>
-              <div class="half-photo half-photo--right"><Photo image={intro.image} eager sizes="800px" /></div>
+              <div class="half-photo half-photo--right"><Photo image={intro.image} eager sizes="700px" /></div>
               <div class="half-text">
                 <p class="label top">{intro.label}</p>
                 <h2 class="ttl ttl--md">{intro.title}</h2>
@@ -251,7 +253,7 @@ const docTitle = branded ? 'PALEX Medical · Catálogo de servicios' : 'Catálog
 
           {pg.t === 'divider' && (
             <Fragment>
-              <div class="half-photo half-photo--right"><Photo image={pg.c.image} eager sizes="800px" /><div class="veil veil--side"></div></div>
+              <div class="half-photo half-photo--right"><Photo image={dividerPhoto[pg.c.key] ?? pg.c.image} eager sizes="700px" /><div class="veil veil--side"></div></div>
               <div class="div-body">
                 <span class="num-xl">{pg.c.num}</span>
                 <span class="rule rule--short"></span>
@@ -277,14 +279,14 @@ const docTitle = branded ? 'PALEX Medical · Catálogo de servicios' : 'Catálog
                   </article>
                 ))}
               </div>
-              {pg.band && <div class:list={['band', { 'band--short': pg.short }]}><Photo image={pg.band} eager sizes="1600px" /></div>}
+              {pg.band && <div class:list={['band', { 'band--short': pg.short }]}><Photo image={pg.band} eager sizes="1200px" /></div>}
               <div class="foot"><span>{sectionLabel(pg.c)}</span><span>{n}</span></div>
             </Fragment>
           )}
 
           {pg.t === 'split' && (
             <Fragment>
-              <div class="half-photo half-photo--left"><Photo image={pg.x.image!} eager sizes="800px" /></div>
+              <div class="half-photo half-photo--left"><Photo image={pg.x.image!} eager sizes="700px" /></div>
               <div class="half-text half-text--right">
                 <p class="label top">{pg.x.label}</p>
                 <h2 class="ttl ttl--md">{pg.x.title}</h2>
@@ -335,7 +337,7 @@ const docTitle = branded ? 'PALEX Medical · Catálogo de servicios' : 'Catálog
                   </li>
                 ))}
               </ol>
-              <div class="band band--short"><Photo image="capacity" eager sizes="1600px" /></div>
+              <div class="band band--short"><Photo image="capacity" eager sizes="1200px" /></div>
               <div class="foot"><span>{sectionLabel(pg.c)}</span><span>{n}</span></div>
             </Fragment>
           )}

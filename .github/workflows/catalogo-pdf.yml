@@ -35,10 +35,21 @@ jobs:
           npm i --no-save playwright
           npx playwright install --with-deps chromium
       - run: node scripts/catalog-pdf.mjs
-      - uses: actions/upload-artifact@v4
+      - name: Copia en alta calidad (artefacto, no se guarda en la rama)
+        uses: actions/upload-artifact@v4
         with:
-          name: catalogos-pdf
+          name: catalogos-pdf-alta-calidad
           path: catalogo-pdf/*.pdf
+      - name: Comprimir para envío por email
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ghostscript
+          for f in catalogo-pdf/*.pdf; do
+            gs -q -sDEVICE=pdfwrite -dCompatibilityLevel=1.6 -dPDFSETTINGS=/printer \
+               -dDownsampleColorImages=true -dColorImageResolution=170 -dColorImageDownsampleType=/Bicubic \
+               -dAutoFilterColorImages=false -dColorImageFilter=/DCTEncode -dJPEGQ=82 \
+               -dNOPAUSE -dBATCH -sOutputFile="$f.tmp" "$f" && mv "$f.tmp" "$f"
+            ls -lh "$f"
+          done
       - name: Guardar los PDF en la rama
         run: |
           git config user.name "github-actions[bot]"
