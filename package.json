@@ -3,13 +3,14 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Web corporativa de PALEX MEDICAL — soluciones logísticas B2B",
+  "description": "Web de servicio — soluciones logísticas B2B",
   "scripts": {
     "dev": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "images": "node scripts/fetch-images.mjs"
+    "images": "node scripts/fetch-images.mjs",
+    "offline": "astro build && node scripts/make-offline.mjs"
   },
   "engines": {
     "node": ">=20.3.0"

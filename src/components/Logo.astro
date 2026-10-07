@@ -1,18 +1,18 @@
 ---
 /**
  * [SUSTITUIR] Wordmark tipográfico provisional.
- * Reemplazar el contenido por el SVG oficial del logotipo de PALEX MEDICAL
+ * La web se presenta como servicio, sin nombre de empresa.
  * (manteniendo `aria-label`). No se ha recreado el logo para no inventar marca.
  */
 interface Props {
-  tone?: 'dark' | 'light' | 'inherit';
+  tone?: 'dark' | 'light';
   class?: string;
 }
 const { tone = 'dark', class: className } = Astro.props;
 ---
-<span class:list={['logo', `logo--${tone}`, className]} role="img" aria-label="PALEX MEDICAL">
+<span class:list={['logo', `logo--${tone}`, className]} role="img" aria-label="Soluciones Logísticas">
   <span class="logo__mark" aria-hidden="true"></span>
-  <span class="logo__word" aria-hidden="true">PALEX<span class="logo__sub">MEDICAL</span></span>
+  <span class="logo__word" aria-hidden="true">Soluciones<span class="logo__sub">Logísticas</span></span>
 </span>
 
 <style>
@@ -22,29 +22,28 @@ const { tone = 'dark', class: className } = Astro.props;
     gap: 0.625rem;
     font-family: var(--font-display);
     line-height: 1;
-    color: inherit;
+    color: var(--ink);
   }
-  .logo--dark { color: var(--fg); }
   .logo--light { color: #fff; }
-  .logo--inherit { color: inherit; }
   .logo__mark {
     width: 10px;
-    height: 24px;
+    height: 32px;
     background: var(--brand);
     border-radius: 1px;
   }
   .logo__word {
     display: inline-flex;
-    align-items: baseline;
-    gap: 0.4rem;
-    font-size: 1.25rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
   .logo__sub {
-    font-size: 0.6875rem;
-    font-weight: 500;
-    letter-spacing: 0.24em;
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
     opacity: 0.72;
   }
 </style>

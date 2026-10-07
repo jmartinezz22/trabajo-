@@ -1,8 +1,7 @@
 ---
 /**
- * Hero de página.
- * - Con `image`: fotografía a sangre bajo cabecera transparente (BaseLayout overlay).
- * - Sin imagen: hero editorial claro.
+ * Cabecera de página. Con `image`: fotografía de fondo relacionada con el
+ * contenido (animación lenta de fondo + parallax); sin imagen: cabecera clara.
  */
 import Photo from './Photo.astro';
 import type { PhotoKey } from '@/data/images';
@@ -11,15 +10,20 @@ import type { Crumb } from '@/layouts/BaseLayout.astro';
 interface Props {
   eyebrow: string;
   title: string;
-  intro?: string;
+  intro: string;
   breadcrumbs?: Crumb[];
   image?: PhotoKey;
-  size?: 'full' | 'large';
+  caption?: string;
 }
-const { eyebrow, title, intro, breadcrumbs = [], image, size = 'large' } = Astro.props;
+const { eyebrow, title, intro, breadcrumbs = [], image } = Astro.props;
 ---
-<section class:list={['page-hero', image ? `is-photo is-${size} on-dark` : 'is-plain']}>
-  {image && <Photo image={image} eager overlay="left" class="bg" parallax />}
+<section class:list={['page-hero', image ? 'has-photo on-dark' : 'is-plain']}>
+  {image && (
+    <div class="bg" aria-hidden="true">
+      <Photo image={image} eager kenburns sizes="100vw" />
+      <div class="shade"></div>
+    </div>
+  )}
   <div class="container inner">
     {breadcrumbs.length > 0 && (
       <nav aria-label="Ruta de navegación" class="crumbs">
@@ -34,7 +38,7 @@ const { eyebrow, title, intro, breadcrumbs = [], image, size = 'large' } = Astro
     <div class="copy">
       <p class="eyebrow" data-reveal>{eyebrow}</p>
       <h1 data-reveal style="--reveal-i:1">{title}</h1>
-      {intro && <p class="lead" data-reveal style="--reveal-i:2">{intro}</p>}
+      <p class="lead" data-reveal style="--reveal-i:2">{intro}</p>
       {Astro.slots.has('default') && <div class="btn-row" data-reveal style="--reveal-i:3"><slot /></div>}
     </div>
   </div>
@@ -42,22 +46,28 @@ const { eyebrow, title, intro, breadcrumbs = [], image, size = 'large' } = Astro
 
 <style>
   .page-hero { position: relative; overflow: hidden; }
-  .bg { position: absolute; inset: 0; z-index: 0; }
-  .inner { position: relative; z-index: 1; display: flex; flex-direction: column; }
-  .copy { display: grid; gap: var(--space-5); justify-items: start; max-width: 62rem; }
-  .copy h1 { font-size: clamp(2.5rem, 1.5rem + 4.4vw, 6rem); max-width: 18ch; }
-  .copy .lead { max-width: 50ch; }
-  .copy .btn-row { margin-top: var(--space-4); }
+  .bg { position: absolute; inset: 0; }
+  .bg :global(.photo) { position: absolute; inset: 0; }
+  .shade {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background:
+      linear-gradient(90deg, rgba(14, 26, 36, 0.82) 0%, rgba(14, 26, 36, 0.5) 50%, rgba(14, 26, 36, 0.12) 100%),
+      linear-gradient(0deg, rgba(14, 26, 36, 0.45) 0%, rgba(14, 26, 36, 0) 40%);
+  }
+  .inner { position: relative; z-index: 3; }
+  .has-photo { background: var(--ink); }
+  .has-photo .inner { display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-8); min-height: clamp(520px, 74svh, 820px); padding-block: clamp(2rem, 1rem + 3vw, 3.5rem) clamp(3.5rem, 2.5rem + 4vw, 6rem); }
+  .is-plain { padding-block: clamp(2rem, 1rem + 3vw, 3.5rem) var(--section-y); border-bottom: 1px solid var(--line); }
+  .is-plain .crumbs { margin-bottom: clamp(2.5rem, 2rem + 3vw, 5rem); }
   .crumbs ol { display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: var(--fs-sm); color: var(--text-muted); }
-  .is-photo .crumbs ol { color: rgba(255, 255, 255, 0.82); }
-  .crumbs li + li::before { content: '/'; margin-right: 0.5rem; }
+  .has-photo .crumbs ol { color: rgba(255, 255, 255, 0.82); }
+  .crumbs li + li::before { content: '/'; margin-right: 0.5rem; opacity: 0.6; }
   .crumbs a:hover { text-decoration: underline; text-underline-offset: 3px; }
-
-  .is-photo { display: flex; min-height: 78svh; }
-  .is-photo.is-full { min-height: 100svh; }
-  .is-photo .inner { justify-content: space-between; padding-top: calc(var(--header-h) + var(--space-6)); padding-bottom: clamp(3rem, 2rem + 5vw, 7rem); }
-  .is-photo .lead { color: rgba(255, 255, 255, 0.82); }
-
-  .is-plain .inner { padding-block: var(--space-7) clamp(4rem, 3rem + 5vw, 8rem); gap: clamp(3rem, 2rem + 5vw, 7rem); }
-  .is-plain .crumbs { color: var(--text-muted); }
+  .crumbs [aria-current] { color: inherit; font-weight: 500; }
+  .copy { display: grid; gap: var(--space-5); justify-items: start; max-width: 54rem; }
+  .copy h1 { max-width: 20ch; font-size: clamp(2.25rem, 1.5rem + 3.2vw, 4.5rem); }
+  .has-photo .lead { color: rgba(255, 255, 255, 0.86); }
+  .copy .btn-row { margin-top: var(--space-3); }
 </style>

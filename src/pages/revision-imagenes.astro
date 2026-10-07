@@ -1,0 +1,71 @@
+---
+/**
+ * Página interna de revisión fotográfica (noindex, fuera del sitemap).
+ * Permite validar de un vistazo cada foto: calidad, orden, estética y licencia.
+ * Para sustituir una foto: cambiar su id en src/data/images.ts.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Photo from '@/components/Photo.astro';
+import { photos, sourcePage, type PhotoKey } from '@/data/images';
+
+const usage: Record<string, string> = {
+  hero: 'Home · portada narrativa',
+  capacity: 'Home · capacidad; Empresa; Servicio excedentes (bloque adaptación)',
+  transporte: 'Servicio transporte (portada); Home · índice de servicios',
+  transporte2: 'Home · franja Transporte; Servicio transporte (adaptación)',
+  logistica: 'Servicio logística (portada); Home · índice; Servicios',
+  logistica2: 'Home · franja Logística; Servicio logística (adaptación)',
+  especiales: 'Servicio especiales (portada); Home · índice',
+  especiales2: 'Home · franja Operaciones especiales; Servicio especiales (adaptación)',
+  eventos: 'Servicio eventos (portada); Home · índice',
+  eventos2: 'Servicio eventos (adaptación)',
+  excedentes: 'Servicio excedentes (portada); Home · índice',
+  consultoria: 'Servicio consultoría (portada); Home · índice; Soluciones; Tecnología (SAP)',
+  tecnologia: 'Home · tecnología; Tecnología (portada); Consultoría (adaptación)',
+  hospital: 'Caso Sant Joan de Déu (imagen principal, ilustrativa)',
+  hospital2: 'Caso Sant Joan de Déu (imagen superpuesta, ilustrativa)',
+  pharma: 'Sectores (portada); página del caso',
+  empresa: 'Empresa (portada)',
+  rutas: 'Sostenibilidad (portada)',
+};
+const keys = Object.keys(photos) as PhotoKey[];
+---
+<BaseLayout title="Revisión de imágenes" description="Página interna de revisión fotográfica." noindex hideStickyCta>
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Uso interno</p>
+      <h1 class="h2">Revisión de fotografía</h1>
+      <p class="lead">
+        Comprueba cada imagen: debe transmitir orden, limpieza y profesionalidad. Si alguna no encaja, cambia su identificador en
+        <code>src/data/images.ts</code>. Ninguna representa instalaciones propias: son imágenes de contexto.
+      </p>
+      <ul role="list" class="grid-r">
+        {keys.map((k) => (
+          <li>
+            <div class="ph"><Photo image={k} sizes="(max-width: 900px) 100vw, 33vw" /></div>
+            <p class="k">{k}</p>
+            <p class="u">{usage[k] ?? '—'}</p>
+            <p class="m">
+              {photos[k].credit ?? 'Autor sin confirmar'} ·
+              <a href={sourcePage(photos[k].pexels)} target="_blank" rel="noopener">Ver en Pexels ({photos[k].pexels})</a>
+            </p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  h1 { margin: var(--space-4) 0 var(--space-5); }
+  code { font-size: 0.9em; padding: 0.1em 0.35em; background: var(--surface); }
+  .grid-r { display: grid; gap: var(--space-7) var(--space-6); margin-top: var(--space-8); }
+  @media (min-width: 700px) { .grid-r { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .grid-r { grid-template-columns: repeat(3, 1fr); } }
+  .ph { position: relative; aspect-ratio: 3 / 2; margin-bottom: var(--space-4); }
+  .ph :global(.photo) { position: absolute; inset: 0; }
+  .k { font-family: var(--font-display); font-size: var(--fs-lg); color: var(--fg); }
+  .u { font-size: var(--fs-sm); color: var(--text); }
+  .m { font-size: var(--fs-xs); color: var(--text-muted); }
+  .m a { color: var(--accent-text); text-decoration: underline; }
+</style>

@@ -1,58 +1,45 @@
 /* ==========================================================================
-   PALEX MEDICAL · Design tokens (v4 — oscuro, grafito y dorado‑cobre)
-   Único archivo a editar para ajustar la paleta y la tipografía.
-   Nota: el acento dorado sustituye al verde corporativo por decisión de diseño;
-   para volver a la identidad Palex basta con cambiar --accent.
+   Design tokens
+   Único archivo a editar para ajustar la marca (colores, tipografías, ritmo).
+   [CONFIRMAR] Valores de color y tipografía con el manual de marca oficial.
    ========================================================================== */
 
 :root {
-  color-scheme: dark;
+  /* — Marca — */
+  --brand: #00a886;          /* Verde corporativo (acento principal, CTA, rutas) */
+  --brand-strong: #008a6e;   /* Hover / texto sobre claro (contraste AA) */
+  --brand-ink: #006b56;      /* Texto de acento sobre fondos claros */
+  --brand-soft: #e3f4ef;     /* Fondos de estado suaves */
+  --signal: #f4823a;         /* Naranja secundario: uso puntual (máx. 1 por pantalla) */
 
-  /* — Acento dorado‑cobre: solo CTA, enlaces, indicadores y detalles — */
-  --accent: #c9a066;          /* Oro envejecido */
-  --accent-strong: #dcb984;   /* Hover / brillo */
-  --accent-deep: #9a6b3c;     /* Cobre profundo (líneas, degradados) */
-  --accent-wash: rgba(201, 160, 102, 0.1);
+  /* — Neutros — */
+  --ink: #0e1a24;            /* Tinta principal / fondos oscuros */
+  --ink-2: #16252f;          /* Superficie oscura elevada */
+  --ink-3: #22333e;          /* Bordes sobre oscuro */
+  --text: #1c2830;
+  --text-muted: #56636b;
+  --text-on-dark: #eef2f1;
+  --text-on-dark-muted: #9fb0b5;
+  --paper: #f7f7f4;          /* Fondo cálido principal */
+  --surface: #ffffff;
+  --surface-2: #eeeeea;
+  --line: #d9dbd6;
+  --line-strong: #b9bdb7;
 
-  /* Alias heredados (los componentes usan --brand*) */
-  --brand: var(--accent);
-  --brand-strong: var(--accent-strong);
-  --brand-ink: var(--accent);
-  --signal: #e2a26f;          /* Marcadores de contenido pendiente */
+  /* — Tipografía — */
+  --font-display: 'Inter Tight', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
-  /* — Negros y grafitos — */
-  --ink: #070708;             /* Negro profundo (secciones de máximo contraste) */
-  --paper: #0d0d0f;           /* Fondo principal */
-  --surface: #141417;         /* Grafito */
-  --stone: #1a1b1e;           /* Grafito claro */
-  --ink-2: #1f2023;
-  --ink-3: #2c2d31;           /* Divisores sobre negro */
-
-  /* — Texto — */
-  --fg: #f2ede4;              /* Titulares: marfil cálido */
-  --text: #d9d3c9;
-  --text-muted: #a49e94;
-  --text-soft: #8f897f;
-  --text-on-dark: #f2ede4;
-  --text-on-dark-muted: #a49e94;
-
-  /* — Líneas — */
-  --line: #2a2a2e;
-  --line-strong: #44434a;
-  --rule: #5a554c;            /* Línea de énfasis (cálida) */
-
-  /* — Tipografía: serif con personalidad + sans limpia — */
-  --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
-  --font-body: 'Manrope', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-
+  /* Escala fluida (móvil → escritorio) */
   --fs-xs: 0.75rem;
   --fs-sm: 0.875rem;
-  --fs-base: 1.0625rem;
-  --fs-md: clamp(1.125rem, 1.05rem + 0.3vw, 1.3125rem);
-  --fs-lg: clamp(1.375rem, 1.2rem + 0.7vw, 1.75rem);
-  --fs-xl: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem);
-  --fs-2xl: clamp(2.25rem, 1.6rem + 2.8vw, 4rem);
-  --fs-3xl: clamp(2.75rem, 1.6rem + 5vw, 7rem);
+  --fs-base: 1rem;
+  --fs-md: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --fs-lg: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --fs-xl: clamp(1.5rem, 1.25rem + 1.1vw, 2.125rem);
+  --fs-2xl: clamp(2rem, 1.5rem + 2.2vw, 3.25rem);
+  --fs-3xl: clamp(2.5rem, 1.6rem + 3.9vw, 5rem);
 
   /* — Espaciado — */
   --space-1: 0.25rem;
@@ -62,22 +49,52 @@
   --space-5: 1.5rem;
   --space-6: 2rem;
   --space-7: 3rem;
-  --space-8: 4.5rem;
-  --space-9: 7rem;
-  --section-y: clamp(6rem, 3.5rem + 9vw, 13rem);
-  --gutter: clamp(1.25rem, 0.5rem + 3vw, 3.5rem);
-  --container: 1360px;
-  --container-narrow: 880px;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --section-y: clamp(4.5rem, 3rem + 6vw, 9rem);
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
+  --container: 1280px;
+  --container-narrow: 840px;
 
   /* — Forma y movimiento — */
-  --radius: 2px;
-  --header-h: 84px;
-  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --dur: 320ms;
-  --dur-slow: 1100ms;
+  --radius: 3px;
+  --radius-sm: 2px;
+  --header-h: 72px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 240ms;
+  --dur-slow: 700ms;
+  --shadow-1: 0 1px 2px rgba(14, 26, 36, 0.06), 0 8px 24px -12px rgba(14, 26, 36, 0.18);
 }
 
-@media (max-width: 900px) {
-  :root { --header-h: 64px; }
+@media (max-width: 768px) {
+  :root { --header-h: 60px; }
+}
+
+/* ==========================================================================
+   Tokens de compatibilidad para los componentes añadidos después
+   (portada narrativa, ubicación y horario, intro, fotografía).
+   ========================================================================== */
+:root {
+  --accent: var(--brand);
+  --accent-strong: #00c49c;
+  --accent-text: var(--brand-ink);
+  --accent-wash: rgba(0, 168, 134, 0.1);
+  --on-accent: var(--ink);
+  --black: #0b141b;
+  --fg: var(--ink);
+  --text-soft: #5f6b72;
+  --rule: var(--ink);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* Dentro de secciones oscuras los tokens de texto y líneas se invierten */
+.on-dark {
+  --fg: #ffffff;
+  --text: var(--text-on-dark);
+  --text-muted: var(--text-on-dark-muted);
+  --text-soft: #93a4aa;
+  --line: var(--ink-3);
+  --line-strong: #3a4d58;
+  --surface: var(--ink-2);
+  --accent-text: #2fd1ad;
+  --rule: #ffffff;
 }

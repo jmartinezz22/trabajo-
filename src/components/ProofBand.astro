@@ -1,0 +1,59 @@
+---
+/**
+ * Pruebas de experiencia. SOLO datos verificados (src/data/trust.ts).
+ * Los contadores muestran el valor final sin JavaScript.
+ */
+import { site } from '@/data/site';
+
+interface Props {
+  tone?: 'light' | 'dark';
+}
+const { tone = 'light' } = Astro.props;
+
+const proofs = [
+  { prefix: '+', value: 25, unit: 'años', label: `De experiencia en soluciones de logística hospitalaria, desde ${site.hospitalLogisticsSince}.` },
+  { value: 176, unit: 'almacenes', label: 'En el proyecto de automatización y trazabilidad del Hospital Sant Joan de Déu (Barcelona).' },
+  { text: 'RFID', unit: 'Dyane', label: 'Soluciones propias de trazabilidad y reposición: SmartKanban, SmartCabinet y Captis.' },
+  { text: 'SAP', unit: 'HANA · EWM', label: 'Experiencia en la implantación de SAP HANA y del módulo EWM en centros propios.' },
+];
+---
+<ul role="list" class:list={['proofs', `proofs--${tone}`]}>
+  {proofs.map((p, i) => (
+    <li data-reveal style={`--reveal-i:${i}`}>
+      <p class="figure">
+        {p.prefix && <span class="pre">{p.prefix}</span>}
+        {'value' in p ? <span data-count={p.value}>{p.value}</span> : <span>{p.text}</span>}
+        <span class="unit">{p.unit}</span>
+      </p>
+      <p class="label">{p.label}</p>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .proofs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-4); border-top: 1px solid var(--line); }
+  li { display: grid; gap: var(--space-3); align-content: start; padding: var(--space-5) var(--space-3) var(--space-5) 0; border-bottom: 1px solid var(--line); }
+  .figure {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.15rem 0.35rem;
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.5rem + 2.5vw, 3.75rem);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .pre { color: var(--brand-ink); }
+  .unit { font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--brand-ink); }
+  .label { font-size: var(--fs-sm); color: var(--text-muted); max-width: 32ch; }
+  .proofs--dark { border-color: var(--ink-3); }
+  .proofs--dark li { border-color: var(--ink-3); }
+  .proofs--dark .figure { color: #fff; }
+  .proofs--dark .pre, .proofs--dark .unit { color: var(--brand); }
+  .proofs--dark .label { color: var(--text-on-dark-muted); }
+  @media (min-width: 640px) { .proofs { column-gap: var(--space-6); } li { padding-block: var(--space-6); } }
+  @media (min-width: 1100px) { .proofs { grid-template-columns: repeat(4, 1fr); } }
+</style>

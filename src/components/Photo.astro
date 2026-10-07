@@ -2,7 +2,7 @@
 /**
  * Fotografía a sangre. Rellena su contenedor (object-fit: cover).
  * Usa las versiones locales optimizadas si existen (npm run images);
- * si no, carga desde Unsplash. Fondo oscuro neutro mientras carga.
+ * si no, carga desde el CDN de Pexels. Fondo oscuro neutro mientras carga.
  */
 import { photos, getLocal, remoteUrl, REMOTE_WIDTHS, type PhotoKey } from '@/data/images';
 
@@ -17,6 +17,8 @@ interface Props {
   zoom?: boolean;
   parallax?: boolean;
   overlay?: 'none' | 'bottom' | 'left' | 'full';
+  /** Zoom lento y continuo de fondo (animación de fondo). */
+  kenburns?: boolean;
 }
 const {
   image,
@@ -27,16 +29,17 @@ const {
   zoom = false,
   parallax = false,
   overlay = 'none',
+  kenburns = false,
 } = Astro.props;
 
 const slot = photos[image];
 const local = getLocal(image);
 const pos = slot.position ?? '50% 50%';
 const loading = eager ? 'eager' : 'lazy';
-const remoteSrcset = REMOTE_WIDTHS.map((w) => `${remoteUrl(slot.unsplash, w)} ${w}w`).join(', ');
+const remoteSrcset = REMOTE_WIDTHS.map((w) => `${remoteUrl(slot.pexels, w)} ${w}w`).join(', ');
 ---
 <div
-  class:list={['photo', `ov-${overlay}`, { zoom }, className]}
+  class:list={['photo', `ov-${overlay}`, { zoom, kb: kenburns }, className]}
   data-parallax={parallax ? '' : undefined}
 >
   {local ? (
@@ -57,7 +60,7 @@ const remoteSrcset = REMOTE_WIDTHS.map((w) => `${remoteUrl(slot.unsplash, w)} ${
     </picture>
   ) : (
     <img
-      src={remoteUrl(slot.unsplash, 1400)}
+      src={remoteUrl(slot.pexels, 1400)}
       srcset={remoteSrcset}
       sizes={sizes}
       alt={slot.alt}
@@ -79,7 +82,7 @@ const remoteSrcset = REMOTE_WIDTHS.map((w) => `${remoteUrl(slot.unsplash, w)} ${
     position: relative;
     overflow: hidden;
     /* Fondo de respaldo: tono neutro oscuro con leve degradado */
-    background: linear-gradient(160deg, #2a2724 0%, #17161a 55%, #0d0d0f 100%);
+    background: linear-gradient(160deg, #2c4350 0%, #162630 55%, #0e1a24 100%);
     isolation: isolate;
   }
   .photo :global(img) {
@@ -89,7 +92,6 @@ const remoteSrcset = REMOTE_WIDTHS.map((w) => `${remoteUrl(slot.unsplash, w)} ${
     height: 100%;
     object-fit: cover;
     color: transparent; /* oculta el texto alternativo si la imagen falla */
-    filter: grayscale(0.55) sepia(0.12) contrast(1.06) brightness(0.88);
     transition: transform 1.2s var(--ease-out);
   }
   .photo :global(picture) { position: absolute; inset: 0; }
@@ -101,9 +103,18 @@ const remoteSrcset = REMOTE_WIDTHS.map((w) => `${remoteUrl(slot.unsplash, w)} ${
   :global(.photo-hover:hover) .zoom :global(img) { transform: scale(1.04); }
 
   .photo::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1; }
-  .ov-bottom::after { background: linear-gradient(180deg, rgba(7, 7, 8, 0) 35%, rgba(7, 7, 8, 0.85) 100%); }
-  .ov-left::after { background: linear-gradient(90deg, rgba(7, 7, 8, 0.88) 0%, rgba(7, 7, 8, 0.55) 45%, rgba(7, 7, 8, 0.1) 100%); }
-  .ov-full::after { background: rgba(7, 7, 8, 0.62); }
+  .ov-bottom::after { background: linear-gradient(180deg, rgba(14, 26, 36, 0) 35%, rgba(14, 26, 36, 0.85) 100%); }
+  .ov-left::after { background: linear-gradient(90deg, rgba(14, 26, 36, 0.88) 0%, rgba(14, 26, 36, 0.55) 45%, rgba(14, 26, 36, 0.1) 100%); }
+  .ov-full::after { background: rgba(14, 26, 36, 0.62); }
+
+  /* Animación de fondo: zoom lento (respeta reduced-motion vía global.css) */
+  @media (prefers-reduced-motion: no-preference) {
+    .kb :global(img) { animation: kenburns 24s ease-in-out infinite alternate; }
+  }
+  @keyframes kenburns {
+    from { transform: scale(1.02) translate3d(0, 0, 0); }
+    to { transform: scale(1.12) translate3d(-1.5%, -1%, 0); }
+  }
 
   .ctx {
     position: absolute;

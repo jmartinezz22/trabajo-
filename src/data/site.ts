@@ -1,5 +1,6 @@
 /**
- * Datos corporativos de PALEX MEDICAL.
+ * Datos del servicio. La web se presenta como servicio, sin marca;
+ * la sociedad titular (legalName) solo aparece en los textos legales.
  *
  * Solo contiene DATOS VERIFICADOS (ver docs/03-registro-de-datos.md).
  * Un campo `null` = dato no encontrado: la web muestra el marcador pendiente
@@ -51,7 +52,7 @@ const centralWarehouse: Address = {
 };
 
 export const site = {
-  name: 'PALEX MEDICAL',
+  name: 'Soluciones Logísticas',
   legalName: 'PALEX MEDICAL, S.A.',
   taxId: null as string | null, // No verificado: no publicar hasta confirmación
   tagline: 'Soluciones logísticas integrales adaptadas a cada operación',
@@ -60,14 +61,14 @@ export const site = {
   locale: 'es_ES',
   lang: 'es',
 
-  /** Inicio de la división de Logística Hospitalaria e Ingeniería (verificado). */
+  /** Inicio de la experiencia del servicio en logística hospitalaria (verificado). */
   hospitalLogisticsSince: 1998,
 
   contact: {
     /** Teléfono principal de la web (CTA, cabecera, Schema.org). */
     phone: { label: 'Teléfono general', number: '+34 934 006 500' } as Phone,
     customerService: { label: 'Atención al cliente', number: '900 180 132' } as Phone,
-    email: null as string | null, // No encontrado: no inventar
+    email: 'palexmedical@palex.es' as string | null,
     address: headquarters as Address | null,
     hours: null as string | null, // No encontrado
   },

@@ -1,0 +1,257 @@
+---
+/**
+ * Entrada de la web (≈3,3 s, se puede saltar):
+ *  1. Una ruta logística se dibuja de lado a lado; un punto (el envío) la recorre
+ *     y enciende las paradas Recogida → Almacén → Transporte → Entrega.
+ *  2. Palabras: Movemos → Almacenamos → Conectamos → Optimizamos → Soluciones logísticas.
+ *  3. Contador 000 → 100 % sincronizado con la ruta.
+ *  4. Telón con filo verde que sube y da paso a la portada (que entra animada).
+ *
+ *  - Se muestra al entrar en la web desde fuera o al recargar; no al navegar entre páginas.
+ *  - Nunca con prefers-reduced-motion. Se salta con clic, tecla, rueda o gesto táctil.
+ * La clase html.intro-on la activa un script inline en <head> (BaseLayout) antes de pintar.
+ */
+const words = ['Movemos', 'Almacenamos', 'Conectamos', 'Optimizamos'];
+const stops = ['Recogida', 'Almacén', 'Transporte', 'Entrega'];
+---
+<div class="intro" data-intro aria-hidden="true">
+  <svg class="map" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <pattern id="intro-grid" width="48" height="48" patternUnits="userSpaceOnUse">
+        <circle cx="1" cy="1" r="1" fill="#0e1a24" fill-opacity="0.12" />
+      </pattern>
+    </defs>
+    <rect class="grid" width="1440" height="900" fill="url(#intro-grid)" />
+    <path class="route-ghost" d="M -40 700 C 180 700, 250 470, 460 480 S 760 690, 990 590 S 1250 360, 1480 380" />
+    <path class="route" data-intro-route d="M -40 700 C 180 700, 250 470, 460 480 S 760 690, 990 590 S 1250 360, 1480 380" />
+    {stops.map((s, i) => (
+      <g class="stop" data-intro-stop={(0.2 + i * 0.22).toFixed(2)}>
+        <circle class="halo" r="22" />
+        <circle class="dot" r="7" />
+        <text class="lbl" y="-34" text-anchor="middle">{String(i + 1).padStart(2, '0')} · {s}</text>
+      </g>
+    ))}
+    <circle class="mover" data-intro-mover r="9" />
+  </svg>
+
+  <div class="brand"><span class="mark"></span>Soluciones <span>Logísticas</span></div>
+
+  <div class="words">
+    {words.map((w, i) => <span class={`w w${i}`}><span>{w}</span></span>)}
+    <span class="w final"><span>Soluciones <em>logísticas.</em></span></span>
+  </div>
+
+  <p class="count mono"><span data-intro-count>000</span><small>%</small> <span class="count-lbl">Preparando la operación</span></p>
+  <button type="button" class="skip" data-intro-skip>Saltar introducción</button>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const intro = document.querySelector<HTMLElement>('[data-intro]');
+  const releaseHero = () => root.classList.remove('hero-wait');
+
+  if (intro && root.classList.contains('intro-on')) {
+    const route = intro.querySelector<SVGPathElement>('[data-intro-route]')!;
+    const mover = intro.querySelector<SVGCircleElement>('[data-intro-mover]')!;
+    const count = intro.querySelector<HTMLElement>('[data-intro-count]')!;
+    const stops = Array.from(intro.querySelectorAll<SVGGElement>('[data-intro-stop]'));
+    // En móvil vertical la ruta se redibuja para que quepa entera en pantalla
+    if (window.innerWidth < 720 && window.innerHeight > window.innerWidth) {
+      const d = 'M 40 640 C 110 640, 130 470, 220 480 S 330 700, 400 640 S 470 450, 560 450';
+      const fr = ['0.15', '0.38', '0.62', '0.88'];
+      stops.forEach((g, i) => (g.dataset.introStop = fr[i]));
+      stops.forEach((g) => { const t = g.querySelector('text'); if (t) t.textContent = t.textContent!.replace(/^\d+ · /, ''); });
+      intro.querySelector('svg')?.setAttribute('viewBox', '0 0 600 1000');
+      intro.querySelectorAll('path').forEach((p) => p.setAttribute('d', d));
+      intro.classList.add('is-portrait');
+    }
+    const len = route.getTotalLength();
+    route.style.strokeDasharray = `${len}`;
+    route.style.strokeDashoffset = `${len}`;
+    // Coloca cada parada sobre la ruta
+    stops.forEach((g) => {
+      const pt = route.getPointAtLength(len * Number(g.dataset.introStop));
+      g.setAttribute('transform', `translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)})`);
+    });
+
+    const DRAW = 2300; // duración del recorrido
+    const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    let start = 0;
+    let raf = 0;
+    const frame = (now: number) => {
+      if (!start) start = now;
+      const t = Math.min(1, (now - start) / DRAW);
+      const e = ease(t);
+      route.style.strokeDashoffset = `${len * (1 - e)}`;
+      const pt = route.getPointAtLength(len * e);
+      mover.setAttribute('cx', pt.x.toFixed(1));
+      mover.setAttribute('cy', pt.y.toFixed(1));
+      count.textContent = String(Math.round(e * 100)).padStart(3, '0');
+      stops.forEach((g) => g.classList.toggle('is-on', e >= Number(g.dataset.introStop)));
+      if (t < 1) raf = requestAnimationFrame(frame);
+    };
+    raf = requestAnimationFrame(frame);
+
+    let done = false;
+    const end = (fast = false) => {
+      if (done) return;
+      done = true;
+      cancelAnimationFrame(raf);
+      intro.classList.add(fast ? 'is-skip' : 'is-out');
+      // La portada empieza a entrar mientras sube el telón
+      window.setTimeout(releaseHero, fast ? 80 : 260);
+      window.setTimeout(() => {
+        root.classList.remove('intro-on');
+        intro.remove();
+      }, fast ? 340 : 1000);
+      ['keydown', 'wheel', 'touchstart'].forEach((ev) => window.removeEventListener(ev, skip));
+    };
+    const skip = () => end(true);
+    intro.querySelector('[data-intro-skip]')?.addEventListener('click', skip);
+    intro.addEventListener('click', skip);
+    ['keydown', 'wheel', 'touchstart'].forEach((ev) => window.addEventListener(ev, skip, { passive: true }));
+    window.setTimeout(() => end(false), 3300);
+  } else {
+    intro?.remove();
+    releaseHero();
+  }
+</script>
+
+<style>
+  .intro { display: none; }
+  :global(.intro-on) .intro {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    display: block;
+    overflow: hidden;
+    background: var(--paper);
+    color: var(--ink);
+    cursor: pointer;
+    transition: transform 900ms cubic-bezier(0.76, 0, 0.24, 1), opacity 300ms var(--ease);
+  }
+  /* Filo verde del telón */
+  .intro::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 6px;
+    background: var(--brand);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .intro.is-out { transform: translateY(-100%); }
+  .intro.is-out::after { transform: scaleX(1); transition: transform 300ms var(--ease); }
+  .intro.is-skip { opacity: 0; }
+
+  /* — Mapa y ruta — */
+  .map { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .grid { opacity: 0; animation: fade 600ms var(--ease) 50ms forwards; }
+  .route-ghost { fill: none; stroke: #0e1a24; stroke-opacity: 0.1; stroke-width: 2; stroke-dasharray: 2 10; stroke-linecap: round; }
+  .route { fill: none; stroke: var(--brand); stroke-width: 3.5; stroke-linecap: round; }
+  .mover { fill: var(--ink); stroke: var(--paper); stroke-width: 4; }
+  .stop .dot { fill: var(--paper); stroke: #b9bdb7; stroke-width: 2; transition: fill 300ms var(--ease), stroke 300ms var(--ease); }
+  .stop .halo { fill: var(--brand); opacity: 0; transform: scale(0.3); transform-box: fill-box; transform-origin: center; }
+  .stop .lbl {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    fill: var(--text-muted);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 400ms var(--ease), transform 400ms var(--ease);
+  }
+  .is-portrait .stop .lbl { font-size: 16px; letter-spacing: 0.06em; }
+  .stop.is-on .dot { fill: var(--brand); stroke: var(--brand); }
+  .stop.is-on .halo { animation: ping 900ms var(--ease-out) forwards; }
+  .stop.is-on .lbl { opacity: 1; transform: none; fill: var(--ink); }
+  @keyframes ping {
+    0% { opacity: 0.35; transform: scale(0.3); }
+    100% { opacity: 0; transform: scale(2.2); }
+  }
+
+  /* — Marca — */
+  .brand {
+    position: absolute;
+    top: clamp(1.25rem, 1rem + 1vw, 2rem);
+    left: var(--gutter);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    opacity: 0;
+    animation: fade 500ms var(--ease) 100ms forwards;
+  }
+  .brand span:not(.mark) { font-family: var(--font-body); font-weight: 600; font-size: 0.625rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--text-muted); }
+  .mark { width: 10px; height: 28px; background: var(--brand); border-radius: 1px; }
+
+  /* — Palabras — */
+  .words {
+    position: absolute;
+    left: var(--gutter);
+    right: var(--gutter);
+    top: 24%;
+    height: 1.15em;
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 1.2rem + 7.5vw, 9rem);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 1.05;
+  }
+  .w { position: absolute; inset: 0; overflow: hidden; padding-bottom: 0.12em; }
+  .w > span { display: block; transform: translateY(110%); }
+  .w0 > span { animation: word 560ms cubic-bezier(0.65, 0, 0.35, 1) 150ms both; }
+  .w1 > span { animation: word 560ms cubic-bezier(0.65, 0, 0.35, 1) 680ms both; }
+  .w2 > span { animation: word 560ms cubic-bezier(0.65, 0, 0.35, 1) 1210ms both; }
+  .w3 > span { animation: word 560ms cubic-bezier(0.65, 0, 0.35, 1) 1740ms both; }
+  .final { bottom: auto; white-space: nowrap; font-size: clamp(2.25rem, 0.9rem + 6vw, 7.5rem); }
+  .final > span { transform: translateY(110%); animation: rise 700ms cubic-bezier(0.16, 1, 0.3, 1) 2280ms both; }
+  .final em { font-style: normal; color: var(--brand-ink); }
+  @keyframes word {
+    0% { transform: translateY(110%); }
+    30%, 72% { transform: translateY(0); }
+    100% { transform: translateY(-110%); }
+  }
+  @keyframes rise { from { transform: translateY(110%); } to { transform: translateY(0); } }
+  @keyframes fade { to { opacity: 1; } }
+
+  /* — Contador y saltar — */
+  .count {
+    position: absolute;
+    left: var(--gutter);
+    bottom: clamp(1.25rem, 1rem + 1vw, 2rem);
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    margin: 0;
+    font-size: clamp(1.75rem, 1.2rem + 2vw, 3rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .count small { font-size: 0.45em; color: var(--brand-ink); }
+  .count-lbl { margin-left: 0.75rem; font-size: 0.6875rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-muted); }
+  .skip {
+    position: absolute;
+    right: var(--gutter);
+    bottom: clamp(1.4rem, 1.1rem + 1vw, 2.15rem);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--line-strong);
+    padding-bottom: 0.2rem;
+  }
+  .skip:hover { color: var(--ink); }
+  @media (max-width: 560px) {
+    .words { top: 18%; }
+    .final { white-space: normal; font-size: clamp(2.25rem, 1rem + 6vw, 3rem); }
+    .count-lbl { display: none; }
+  }
+</style>

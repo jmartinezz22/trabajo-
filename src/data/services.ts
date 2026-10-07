@@ -1,5 +1,5 @@
 /**
- * Catálogo de servicios de PALEX MEDICAL (fuente: briefing de la empresa).
+ * Catálogo de servicios (fuente: briefing de la empresa).
  * Cada línea genera automáticamente su página en /servicios/<slug>/.
  */
 import type { IconName } from './icons';
@@ -106,8 +106,6 @@ const serviceData: ServiceLine[] = [
         'Combinable con almacenaje, preparación de pedidos y distribución.',
         'Modalidades mixtas en una misma operación según cada destino.',
         'Experiencia en optimización del transporte, consolidación de envíos y planificación de la distribución.',
-        'Cobertura geográfica: [DATOS PENDIENTES DE CONFIRMAR].',
-        'Certificación de distribución farmacéutica: [CONFIRMAR CERTIFICACIÓN GDP].',
       ],
     },
     sectors: ['pharma-healthcare', 'industria', 'distribucion', 'ecommerce'],
@@ -177,7 +175,6 @@ const serviceData: ServiceLine[] = [
         'Procesos definidos según tu producto, tus canales y tus picos de demanda.',
         'Integración del almacén con el transporte en una única operación.',
         'Experiencia en gestión e integración de almacenes, automatización y trazabilidad.',
-        'Superficie y capacidad de almacenaje disponibles: [DATOS PENDIENTES DE CONFIRMAR].',
       ],
     },
     sectors: ['ecommerce', 'distribucion', 'pharma-healthcare', 'tecnologia'],
@@ -246,14 +243,13 @@ const serviceData: ServiceLine[] = [
         'La compraventa se apoya en capacidades propias de almacenaje, clasificación y transporte.',
         'Un único interlocutor desde la valoración hasta la entrega al comprador.',
         'Libera espacio en tus instalaciones y simplifica la gestión del material sobrante.',
-        'Tipologías de material que se aceptan: [DATOS PENDIENTES DE CONFIRMAR].',
       ],
     },
     sectors: ['industria', 'distribucion', 'tecnologia', 'equipamiento'],
     faq: [
       {
         q: '¿Qué tipo de excedentes gestionáis?',
-        a: 'Stocks, materiales sobrantes y activos excedentes de empresas. Las tipologías concretas se valoran caso a caso: [DATOS PENDIENTES DE CONFIRMAR].',
+        a: 'Stocks, materiales sobrantes y activos excedentes de empresas. Las tipologías concretas se valoran caso a caso.',
       },
       {
         q: '¿Compráis el stock o solo lo gestionáis?',
@@ -308,7 +304,6 @@ const serviceData: ServiceLine[] = [
         'Protección del equipo en cada punto de manipulación.',
         'Coordinación de ventanas de entrega con el destinatario.',
         'Embalaje adaptado a la pieza, no al revés.',
-        'Coberturas de seguro para mercancía de alto valor: [DATOS PENDIENTES DE CONFIRMAR].',
       ],
     },
     pillars: {
@@ -394,7 +389,6 @@ const serviceData: ServiceLine[] = [
         'Múltiples puntos de entrega coordinados en una única planificación.',
         'Material preparado por destino para reducir trabajo en sede.',
         'Almacenaje entre eventos para material reutilizable.',
-        'Cobertura geográfica de eventos: [DATOS PENDIENTES DE CONFIRMAR].',
       ],
     },
     sectors: ['eventos', 'pharma-healthcare', 'tecnologia', 'otros-b2b'],
@@ -461,7 +455,6 @@ const serviceData: ServiceLine[] = [
         'Posibilidad de implantar la mejora y, si se desea, operarla.',
         'Experiencia en optimización de flujos, integración de almacenes y optimización del transporte.',
         'Experiencia propia en la implantación de SAP HANA y SAP EWM.',
-        'Alcance del servicio SAP para terceros: [PENDIENTE DE VALIDACIÓN COMERCIAL].',
       ],
     },
     sectors: ['industria', 'distribucion', 'pharma-healthcare', 'tecnologia'],

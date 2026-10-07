@@ -2,7 +2,6 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageHero from '@/components/PageHero.astro';
 import FlowSteps from '@/components/FlowSteps.astro';
-import EditorialList from '@/components/EditorialList.astro';
 import CtaBand from '@/components/CtaBand.astro';
 import Icon from '@/components/Icon.astro';
 import { methodSteps } from '@/data/navigation';
@@ -10,43 +9,46 @@ import { methodSteps } from '@/data/navigation';
 const crumbs = [{ name: 'Soluciones a medida', href: '/soluciones-a-medida/' }];
 
 const signals = [
-  'Tu mercancía necesita condiciones que un servicio estándar no garantiza.',
-  'Coordinas almacenaje, transporte y manipulados con varios proveedores que no se hablan entre sí.',
+  'Tu mercancía necesita condiciones especiales que un servicio estándar no garantiza.',
+  'Combinas almacenaje, transporte y manipulados con varios proveedores que no se coordinan.',
   'Tienes picos, campañas o eventos con fechas que no se pueden mover.',
   'Tu almacén se ha quedado pequeño o desordenado y no sabes si el problema es espacio o proceso.',
   'Tienes stock o material sin salida ocupando espacio y capital.',
-  'Necesitas que la logística se integre con tus sistemas.',
+  'Necesitas que la logística se integre con tus sistemas, por ejemplo SAP HANA.',
 ];
+
 const deliverables = [
-  { title: 'Diagnóstico de la operación', text: 'Situación actual, restricciones y oportunidades.' },
-  { title: 'Diseño de la solución', text: 'Procesos, recursos, transporte y sistemas implicados.' },
-  { title: 'Plan de implantación', text: 'Fases, responsables y calendario de puesta en marcha.' },
-  { title: 'Indicadores de seguimiento', text: 'Qué se mide y cómo se revisa la operación.' },
-];
+  { icon: 'target', title: 'Diagnóstico de la operación', text: 'Situación actual, restricciones y oportunidades.' },
+  { icon: 'blueprint', title: 'Diseño de la solución', text: 'Procesos, recursos, transporte y sistemas implicados.' },
+  { icon: 'implant', title: 'Plan de implantación', text: 'Fases, responsables y calendario de puesta en marcha.' },
+  { icon: 'chart', title: 'Indicadores de seguimiento', text: 'Qué se mide y cómo se revisa la operación.' },
+] as const;
 ---
 <BaseLayout
   title="Soluciones logísticas a medida"
   description="Analizamos tu operación, identificamos las necesidades y diseñamos una solución logística adaptada. Después la implantamos, gestionamos y optimizamos."
   breadcrumbs={crumbs}
-  overlay
 >
   <PageHero
     eyebrow="Soluciones a medida"
-    title="Tu operación. Nuestra solución."
-    intro="Analizamos tu operación, identificamos las necesidades y diseñamos una solución adaptada. Después la implantamos, la gestionamos y la optimizamos."
+    title="¿Tu operación no encaja en un estándar? Diseñamos una que sí."
+    intro="Cada empresa tiene un producto, unos volúmenes y unas restricciones diferentes. Analizamos tu operación, identificamos las necesidades y diseñamos una solución adaptada."
     breadcrumbs={crumbs}
-    image="capacity"
+    image="medida"
   >
     <a href="/contacto/?servicio=solucion-a-medida" class="btn">Cuéntanos tu proyecto <Icon name="arrow" /></a>
   </PageHero>
 
-  <section class="section bg-stone">
+  <section class="section">
     <div class="container">
-      <div class="section-head">
-        <p class="eyebrow" data-reveal>Método</p>
-        <h2 data-reveal style="--reveal-i:1">Cinco fases. Un responsable.</h2>
+      <div class="section-head split">
+        <div>
+          <p class="eyebrow" data-reveal>Proceso</p>
+          <h2 data-reveal style="--reveal-i:1">Cinco fases. Un responsable.</h2>
+        </div>
+        <p class="lead" data-reveal style="--reveal-i:2">Puedes entrar en cualquier fase: desde un diagnóstico puntual hasta la gestión completa de la operación.</p>
       </div>
-      <FlowSteps steps={methodSteps} showText />
+      <FlowSteps steps={methodSteps} />
     </div>
   </section>
 
@@ -54,11 +56,14 @@ const deliverables = [
     <div class="container signals">
       <div>
         <p class="eyebrow" data-reveal>Señales</p>
-        <h2 data-reveal style="--reveal-i:1">Cuándo necesitas una solución a medida.</h2>
+        <h2 data-reveal style="--reveal-i:1">Cuándo necesitas una solución a medida</h2>
       </div>
       <ol role="list">
         {signals.map((s, i) => (
-          <li data-reveal style={`--reveal-i:${i % 3}`}><span class="n">{String(i + 1).padStart(2, '0')}</span>{s}</li>
+          <li data-reveal style={`--reveal-i:${i % 3}`}>
+            <span class="mono">{String(i + 1).padStart(2, '0')}</span>
+            <p>{s}</p>
+          </li>
         ))}
       </ol>
     </div>
@@ -68,20 +73,32 @@ const deliverables = [
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>Entregables</p>
-        <h2 data-reveal style="--reveal-i:1">Qué recibes.</h2>
+        <h2 data-reveal style="--reveal-i:1">Qué recibes al trabajar con nosotros</h2>
       </div>
-      <EditorialList items={deliverables} />
+      <ul role="list" class="grid grid-4 deliv">
+        {deliverables.map((d, i) => (
+          <li data-reveal style={`--reveal-i:${i}`}>
+            <span class="mono num">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{d.title}</h3>
+            <p>{d.text}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
 
-  <CtaBand title="Cuéntanos tu proyecto." href="/contacto/?servicio=solucion-a-medida" label="Cuéntanos tu proyecto" />
+  <CtaBand eyebrow="Soluciones a medida" title="Cuéntanos tu proyecto." text="Cuanto más sepamos de tu operación, más precisa será la propuesta." href="/contacto/?servicio=solucion-a-medida" label="Cuéntanos tu proyecto" />
 </BaseLayout>
 
 <style>
-  .signals { display: grid; gap: var(--space-8); }
-  .signals h2 { max-width: 14ch; }
+  .signals { display: grid; gap: var(--space-7); }
   .signals ol { border-top: 1px solid var(--ink-3); }
-  .signals li { display: grid; grid-template-columns: 3.5rem 1fr; padding: var(--space-5) 0; border-bottom: 1px solid var(--ink-3); font-size: var(--fs-md); color: #e3e8e8; }
-  .signals .n { font-size: var(--fs-sm); color: var(--text-on-dark-muted); padding-top: 0.2rem; }
-  @media (min-width: 1024px) { .signals { grid-template-columns: 1fr 1.4fr; gap: var(--space-9); } }
+  .signals li { display: grid; grid-template-columns: 3rem 1fr; gap: var(--space-4); padding: var(--space-5) 0; border-bottom: 1px solid var(--ink-3); }
+  .signals .mono { color: var(--brand); padding-top: 0.2rem; }
+  .signals p { font-size: var(--fs-md); color: #dbe3e3; }
+  @media (min-width: 1024px) { .signals { grid-template-columns: 1fr 1.5fr; gap: var(--space-9); } }
+  .deliv li { display: grid; gap: var(--space-3); align-content: start; padding-top: var(--space-5); border-top: 1px solid var(--ink); }
+  .deliv .num { font-size: var(--fs-xs); color: var(--brand-ink); margin-bottom: var(--space-4); }
+  .deliv h3 { font-size: var(--fs-lg); letter-spacing: -0.02em; }
+  .deliv p { font-size: var(--fs-sm); color: var(--text-muted); }
 </style>

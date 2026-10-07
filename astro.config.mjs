@@ -3,7 +3,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 // [CONFIRMAR] Dominio definitivo. Se usa para canonical, Open Graph y sitemap.
-const SITE_URL = process.env.SITE_URL ?? 'https://www.palexmedical-logistica.example';
+const SITE_URL = process.env.SITE_URL ?? 'https://www.soluciones-logisticas.example';
 
 export default defineConfig({
   site: SITE_URL,
@@ -14,7 +14,7 @@ export default defineConfig({
   integrations: [
     sitemap({
       // Excluye páginas noindex (404 y legales)
-      filter: (page) => !/\/(404|aviso-legal|politica-de-privacidad|politica-de-cookies)\/?$/.test(page),
+      filter: (page) => !/\/(404|aviso-legal|politica-de-privacidad|politica-de-cookies|revision-imagenes)\/?$/.test(page),
       i18n: undefined,
     }),
   ],

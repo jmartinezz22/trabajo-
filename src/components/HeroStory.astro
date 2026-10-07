@@ -1,0 +1,211 @@
+---
+/**
+ * Portada clara con narrativa de scroll.
+ *  1. Fondo claro, titular grande y una gran ventana fotográfica (zoom lento de fondo).
+ *  2. Al hacer scroll la ventana se abre hasta ocupar toda la pantalla, el titular
+ *     se retira y aparecen las áreas: Transporte · Logística · Tecnología · Consultoría.
+ * Mejora progresiva: sin JS, con reduced-motion o en móvil es una portada estática.
+ * El progreso (--p, 0→1) y la altura del bloque de texto (--wt) los calcula src/scripts/main.ts.
+ */
+import Icon from './Icon.astro';
+import Photo from './Photo.astro';
+
+const areas = ['Transporte', 'Logística', 'Tecnología', 'Consultoría'];
+// Titular partido en palabras para la entrada animada (cada palabra sube desde una máscara)
+const lead = 'Soluciones logísticas para operaciones que'.split(' ');
+const accent = 'no pueden fallar.'.split(' ');
+---
+<section class="story" data-story aria-label="Presentación">
+  <div class="pin">
+    <div class="container stage" data-story-copy>
+      <div class="s1">
+        <p class="eyebrow in" style="--d:0ms">Partner logístico B2B</p>
+        <h1>
+          {lead.map((w, i) => <><span class="hw"><span style={`--d:${80 + i * 70}ms`}>{w}</span></span>{' '}</>)}
+          <span class="hl">{accent.map((w, i) => <><span class="hw"><span style={`--d:${80 + (lead.length + i) * 70}ms`}>{w}</span></span>{i < accent.length - 1 ? ' ' : ''}</>)}</span>
+        </h1>
+        <div class="s1-foot in" style="--d:700ms">
+          <p class="lead">
+            Transporte, logística, tecnología y soluciones a medida para operaciones que requieren precisión y control. Con experiencia en logística hospitalaria desde 1998.
+          </p>
+          <div class="btn-row">
+            <a href="/contacto/" class="btn">Solicitar una solución <Icon name="arrow" /></a>
+            <a href="#servicios" class="btn btn-ghost">Descubrir los servicios</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="window">
+      <Photo image="hero" eager kenburns class="bg" sizes="100vw" />
+      <div class="shade" aria-hidden="true"></div>
+      <ul role="list" class="s2" aria-label="Áreas de actividad">
+        {areas.map((a, i) => (
+          <li style={`--i:${i}`}><span class="n">{String(i + 1).padStart(2, '0')}</span>{a}</li>
+        ))}
+      </ul>
+      <div class="hint" aria-hidden="true"><span class="hint-line"></span>Desliza</div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .story { position: relative; background: var(--paper); }
+  .pin { position: relative; display: flex; flex-direction: column; }
+
+  /* — Texto — */
+  .stage { position: relative; z-index: 1; padding-top: clamp(2.25rem, 1.5rem + 3vw, 4.5rem); padding-bottom: clamp(1.75rem, 1rem + 2vw, 3rem); }
+  .s1 { display: grid; gap: var(--space-5); }
+  .s1 h1 {
+    font-size: clamp(2.6rem, 1.3rem + 5.4vw, 7rem);
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    max-width: 16ch;
+    color: var(--ink);
+  }
+  .hl { color: var(--brand-ink); }
+  .s1-foot { display: grid; gap: var(--space-5); justify-items: start; }
+  .s1 .lead { max-width: 52ch; color: var(--text-muted); }
+  @media (min-width: 1024px) {
+    .s1-foot { grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: var(--space-8); }
+  }
+  @media (max-width: 560px) {
+    .s1 .btn-row { width: 100%; }
+    .s1 .btn-row .btn { flex: 1 1 100%; }
+  }
+
+  /* — Entrada de la portada (tras la intro). Solo si html.hero-wait existió: sin JS
+       o con reduced-motion el contenido se ve directamente. — */
+  .hw { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+  .hw > span { display: inline-block; transition: transform 1000ms cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0ms); }
+  .in { transition: opacity 900ms var(--ease) var(--d, 0ms), transform 900ms cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0ms); }
+  :global(.hero-wait) .hw > span { transform: translateY(105%); transition: none; }
+  :global(.hero-wait) .in { opacity: 0; transform: translateY(24px); transition: none; }
+  .hl { background: linear-gradient(transparent 62%, rgba(0, 168, 134, 0.18) 62%) no-repeat 0 0 / 100% 100%; transition: background-size 900ms var(--ease) 900ms; }
+  :global(.hero-wait) .hl { background-size: 0% 100%; transition: none; }
+
+  /* — Ventana fotográfica — */
+  .window {
+    position: relative;
+    margin: 0 var(--gutter) var(--gutter);
+    height: clamp(340px, 62svh, 760px);
+    border-radius: 6px;
+    overflow: hidden;
+    background: #cfd8d6;
+    isolation: isolate;
+  }
+  .window :global(.bg) { position: absolute; inset: 0; background: #cfd8d6; transition: transform 1800ms cubic-bezier(0.16, 1, 0.3, 1) 350ms; }
+  /* Telón claro que se retira y descubre la foto */
+  .window::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    background: var(--paper);
+    transform-origin: top;
+    transform: scaleY(0);
+    transition: transform 1100ms cubic-bezier(0.76, 0, 0.24, 1) 300ms;
+    pointer-events: none;
+  }
+  :global(.hero-wait) .window::after { transform: scaleY(1); transition: none; }
+  :global(.hero-wait) .window :global(.bg) { transform: scale(1.25); transition: none; }
+  .shade {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(0deg, rgba(14, 26, 36, 0.62) 0%, rgba(14, 26, 36, 0.18) 38%, rgba(14, 26, 36, 0) 60%);
+  }
+  .s2 {
+    position: absolute;
+    z-index: 3;
+    left: clamp(1.25rem, 0.5rem + 2.5vw, 3rem);
+    right: clamp(1.25rem, 0.5rem + 2.5vw, 3rem);
+    bottom: clamp(1.25rem, 0.5rem + 2.5vw, 2.75rem);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) clamp(1.25rem, 0.5rem + 2.5vw, 3rem);
+  }
+  .s2 li {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-family: var(--font-display);
+    font-size: var(--fs-md);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: #fff;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.3);
+  }
+  .s2 .n { font-family: var(--font-mono); font-size: 0.6875rem; color: #7ff0d4; }
+
+  .hint {
+    position: absolute;
+    z-index: 3;
+    right: clamp(1.25rem, 0.5rem + 2.5vw, 3rem);
+    bottom: clamp(1.25rem, 0.5rem + 2.5vw, 2.75rem);
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    writing-mode: vertical-rl;
+    font-size: 0.6875rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  .hint-line { width: 1px; height: 48px; background: linear-gradient(rgba(255, 255, 255, 0), #fff); }
+
+  /* — Modo narrativo (main.ts lo activa en escritorio con JS y sin reduced-motion) — */
+  :global(.story-live) .story {
+    --e: clamp(0, calc((var(--p, 0) - 0.06) * 2.4), 1);
+    height: calc(220svh);
+  }
+  :global(.story-live) .pin {
+    position: sticky;
+    top: var(--header-h);
+    height: calc(100svh - var(--header-h));
+    overflow: hidden;
+  }
+  :global(.story-live) .stage {
+    opacity: clamp(0, calc(1 - var(--e) * 1.6), 1);
+    transform: translate3d(0, calc(var(--e) * -40px), 0);
+    will-change: opacity, transform;
+  }
+  :global(.story-live) .window {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    height: auto;
+    border-radius: 0;
+    clip-path: inset(
+      calc(var(--wt, 55%) * (1 - var(--e))) calc(var(--gutter) * (1 - var(--e))) calc(var(--gutter) * (1 - var(--e)))
+      round calc(6px * (1 - var(--e)))
+    );
+    will-change: clip-path;
+  }
+  :global(.story-live) .shade {
+    background:
+      linear-gradient(90deg, rgba(14, 26, 36, 0.55) 0%, rgba(14, 26, 36, 0.12) 55%, rgba(14, 26, 36, 0) 100%),
+      linear-gradient(0deg, rgba(14, 26, 36, 0.5) 0%, rgba(14, 26, 36, 0) 50%);
+    opacity: clamp(0, calc((var(--p, 0) - 0.3) * 4), 1);
+  }
+  :global(.story-live) .s2 {
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    flex-direction: column;
+    gap: var(--space-1);
+    left: max(var(--gutter), calc((100% - var(--container)) / 2));
+  }
+  :global(.story-live) .s2 li {
+    font-size: clamp(2.75rem, 1.2rem + 5.6vw, 7rem);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    opacity: clamp(0, calc((var(--p, 0) - 0.42 - var(--i) * 0.09) * 9), 1);
+    transform: translate3d(calc((1 - clamp(0, calc((var(--p, 0) - 0.42 - var(--i) * 0.09) * 9), 1)) * 48px), 0, 0);
+  }
+  :global(.story-live) .s2 .n { font-size: 0.8125rem; align-self: center; }
+  :global(.story-live) .hint { display: flex; opacity: clamp(0, calc(1 - var(--e) * 3), 1); }
+  :global(.story-live.story-past) .stage { pointer-events: none; }
+</style>

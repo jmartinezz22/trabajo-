@@ -2,7 +2,7 @@
  * Descarga y optimiza la fotografía de la web (ejecutar con acceso a Internet):
  *   npm run images
  * - Si existe public/images/source/<slot>.jpg (foto propia) se usa ese archivo.
- * - Si no, se descarga desde Unsplash (licencia Unsplash).
+ * - Si no, se descarga desde Pexels (licencia Pexels).
  * Genera AVIF + WebP en varios anchos y el manifiesto src/data/images.local.json.
  */
 import fs from 'node:fs/promises';
@@ -15,7 +15,7 @@ const srcDir = path.join(outDir, 'source');
 const WIDTHS = [640, 1024, 1600, 2400];
 
 const registry = await fs.readFile(path.join(root, 'src/data/images.ts'), 'utf8');
-const slots = [...registry.matchAll(/^\s+(\w+): \{ unsplash: '([^']+)'/gm)].map(([, key, id]) => ({ key, id }));
+const slots = [...registry.matchAll(/^\s+(\w+): \{ pexels: (\d+)/gm)].map(([, key, id]) => ({ key, id }));
 await fs.mkdir(srcDir, { recursive: true });
 
 const manifest = {};
@@ -26,7 +26,7 @@ for (const { key, id } of slots) {
     input = await fs.readFile(own);
     console.log(`· ${key}: foto propia`);
   } catch {
-    const res = await fetch(`https://unsplash.com/photos/${id}/download?w=2400`, { redirect: 'follow' });
+    const res = await fetch(`https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=2400`);
     if (!res.ok) { console.warn(`✗ ${key}: HTTP ${res.status}`); continue; }
     input = Buffer.from(await res.arrayBuffer());
     console.log(`· ${key}: descargada (${id})`);

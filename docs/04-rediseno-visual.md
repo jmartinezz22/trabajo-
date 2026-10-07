@@ -94,3 +94,36 @@ y las reglas de datos verificados):
 
 Archivos principales: `src/styles/tokens.css`, `src/styles/global.css`, `src/scripts/main.ts`,
 `src/components/VisitSection.astro` (HTML + CSS + JS del horario y el mapa).
+
+---
+
+# v5 · Refinamiento visual profesional
+
+## Auditoría previa (estado v4)
+
+| Problema detectado | Impacto | Corrección v5 |
+|---|---|---|
+| Fotografía de palets/cajas poco cuidada y otras elegidas sin verificar | Transmite desorden: lo contrario de precisión y control | Sustituidas **todas** las fotos dudosas; criterio estricto (moderno, limpio, ordenado, licencia gratuita, sin renders 3D ni IA); página de revisión `/revision-imagenes/` |
+| Paleta dorada ajena a la marca | Rompe la identidad PALEX | Vuelta a blanco / negro / petróleo con verde PALEX solo como acento |
+| Portada estática | Poco memorable | Portada narrativa con scroll + introducción de entrada opcional |
+| Fotos "dentro" de bloques | La imagen no forma parte del diseño | Franjas fotográficas a sangre con texto superpuesto por área |
+| Caso Sant Joan de Déu como bloque más | No demuestra capacidad | Sección completa sobre petróleo, composición de dos fotografías, cifras verificadas |
+| Certificaciones en cajas | Poca importancia visual | Filas editoriales con tipografía grande |
+| Espaciado | Algo comprimido | +15–20 % de aire entre secciones y bloques |
+
+## Fotografía: criterio de selección
+
+Prioridad aplicada: (1) fotos reales de PALEX → no hay públicas utilizables; (2–4) Unsplash con
+licencia gratuita. Se descartan: fotos Unsplash+ (de pago / Getty), renders 3D, imágenes con aspecto
+generado, almacenes desordenados, palets rotos, mercancía abandonada. Ninguna imagen se repite en la Home.
+Todas son **imágenes de contexto**; las del caso hospitalario se etiquetan como ilustrativas.
+**Pendiente:** validación visual en navegador (el entorno de desarrollo no tiene acceso a Unsplash).
+
+## Auditoría final (v5)
+
+| Perfil | Pregunta | Respuesta | Por qué |
+|---|---|---|---|
+| Director de Supply Chain (farma) | ¿Puede PALEX gestionar una operación compleja? | **Sí** | Experiencia hospitalaria desde 1998, caso real de 176 almacenes, trazabilidad RFID, SAP HANA/EWM, transporte a temperatura controlada |
+| Director de compras | ¿Me transmite confianza? | **Sí, con matices** | Datos verificados, sede y teléfonos reales, sin cifras infladas. Pendiente: certificaciones validadas y fotos propias |
+| Director de operaciones | ¿Capacidad tecnológica y operativa? | **Sí** | Sección de tecnología, soluciones propias Dyane, control de impactos, método en 5 fases |
+| Cliente nuevo | ¿Entiendo rápido qué ofrecen? | **Sí** | Portada → cuatro áreas → capacidad → franjas por área → seis servicios con imagen al pasar el ratón |

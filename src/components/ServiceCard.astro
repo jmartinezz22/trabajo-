@@ -1,0 +1,99 @@
+---
+import Icon from './Icon.astro';
+import Visual from './Visual.astro';
+import { serviceHref, type ServiceLine } from '@/data/services';
+
+interface Props {
+  service: ServiceLine;
+  variant?: 'row' | 'card';
+  index?: number;
+}
+const { service: s, variant = 'row', index = 0 } = Astro.props;
+---
+{variant === 'row' ? (
+  <li class="row" data-reveal style={`--reveal-i:${index % 3}`}>
+    <a href={serviceHref(s.slug)} class="row-link">
+      <span class="mono num">{s.num}</span>
+      <span class="row-name">{s.name}</span>
+      <span class="row-desc">{s.short}</span>
+      <span class="row-go" aria-hidden="true"><Icon name="arrow" /></span>
+    </a>
+  </li>
+) : (
+  <li class="card" data-reveal style={`--reveal-i:${index % 3}`}>
+    <a href={serviceHref(s.slug)} class="card-link">
+      <Visual image={s.image} ratio="landscape" />
+      <div class="card-body">
+        <div class="card-top">
+          <span class="mono num">{s.num}</span>
+        </div>
+        <h3>{s.name}</h3>
+        <p>{s.short}</p>
+        <span class="link-arrow">Ver servicio <Icon name="arrow" /></span>
+      </div>
+    </a>
+  </li>
+)}
+
+<style>
+  /* — Variante fila (índice editorial) — */
+  .row { border-bottom: 1px solid var(--line); }
+  .row-link {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: 2.5rem 1fr auto;
+    gap: var(--space-2) var(--space-4);
+    align-items: baseline;
+    padding: var(--space-6) 0;
+  }
+  .row-link::before {
+    content: '';
+    position: absolute;
+    inset: 0 calc(var(--gutter) * -1);
+    background: var(--surface);
+    opacity: 0;
+    z-index: -1;
+    transition: opacity var(--dur) var(--ease);
+  }
+  .row-link:hover::before { opacity: 1; }
+  .num { color: var(--brand-ink); }
+  .row-name {
+    font-family: var(--font-display);
+    font-size: var(--fs-xl);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .row-desc { grid-column: 2 / 3; font-size: var(--fs-sm); color: var(--text-muted); max-width: 52ch; }
+  .row-go {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    align-self: center;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    color: var(--ink);
+    transition: background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+  .row-link:hover .row-go { background: var(--brand); border-color: var(--brand); transform: translateX(4px); }
+  @media (min-width: 960px) {
+    .row-link { grid-template-columns: 4rem 1.1fr 1.4fr auto; padding: var(--space-6) 0; }
+    .row-desc { grid-column: 3; }
+    .row-go { grid-column: 4; grid-row: 1; }
+  }
+
+  /* — Variante tarjeta — */
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+  .card:hover { border-color: var(--line-strong); box-shadow: var(--shadow-1); }
+  .card-link { display: grid; height: 100%; grid-template-rows: auto 1fr; }
+  .card-link :global(.visual) { border-radius: 0; }
+  .card-body { display: grid; align-content: start; gap: var(--space-3); padding: var(--space-5) var(--space-5) var(--space-6); }
+  .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2); }
+  .card p { font-size: var(--fs-sm); color: var(--text-muted); margin-bottom: var(--space-3); }
+  .card .link-arrow { align-self: end; }
+</style>

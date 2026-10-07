@@ -1,0 +1,83 @@
+---
+import Icon from './Icon.astro';
+import Photo from './Photo.astro';
+import { sectors, type SectorSlug } from '@/data/sectors';
+import type { PhotoKey } from '@/data/images';
+
+/** Fotografía de fondo relacionada con cada sector (imágenes ilustrativas). */
+const sectorPhoto: Record<SectorSlug, PhotoKey> = {
+  'pharma-healthcare': 'pharma',
+  industria: 'industria',
+  tecnologia: 'tecnologia',
+  ecommerce: 'ecommerce',
+  distribucion: 'distribucion',
+  eventos: 'eventos',
+  equipamiento: 'equipamiento',
+  'otros-b2b': 'otros',
+};
+import { getService, serviceHref } from '@/data/services';
+
+interface Props {
+  detailed?: boolean;
+}
+const { detailed = false } = Astro.props;
+---
+<ul role="list" class:list={['sectors', { detailed }]}>
+  {sectors.map((s, i) => (
+    <li class="sector on-dark photo-hover" id={detailed ? s.slug : undefined} data-reveal style={`--reveal-i:${i % 4}`}>
+      <div class="media" aria-hidden="true"><Photo image={sectorPhoto[s.slug]} zoom sizes="(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 25vw" /></div>
+      <div class="head">
+        <span class="mono">{String(i + 1).padStart(2, '0')}</span>
+      </div>
+      <h3>{s.name}</h3>
+      <p class="challenge"><span class="mono k">Necesidad</span>{s.challenge}</p>
+      <p class="answer"><span class="mono k">Respuesta</span>{s.answer}</p>
+      {detailed && (
+        <ul role="list" class="links">
+          {s.services.map((slug) => {
+            const svc = getService(slug);
+            return svc && <li><a href={serviceHref(slug)}>{svc.name} <Icon name="arrow" size={14} /></a></li>;
+          })}
+        </ul>
+      )}
+    </li>
+  ))}
+</ul>
+
+<style>
+  .sectors { display: grid; gap: var(--space-3); }
+  .sector {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-height: 320px;
+    padding: var(--space-6) var(--space-5);
+    border-radius: var(--radius);
+    background: var(--ink);
+  }
+  .media { position: absolute; inset: 0; z-index: -1; }
+  .media :global(.photo) { position: absolute; inset: 0; }
+  .media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(180deg, rgba(14, 26, 36, 0.35) 0%, rgba(14, 26, 36, 0.78) 45%, rgba(14, 26, 36, 0.94) 100%);
+    transition: opacity var(--dur) var(--ease);
+  }
+  .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: auto; padding-bottom: var(--space-5); }
+  .head .mono { color: #7ff0d4; }
+  h3 { font-size: var(--fs-lg); color: #fff; }
+  p { font-size: var(--fs-sm); color: rgba(255, 255, 255, 0.8); }
+  .k { display: block; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.12em; color: #7ff0d4; margin-bottom: 0.15rem; }
+  .answer { color: #fff; }
+  .links { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: var(--space-3); }
+  .links a { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.3rem 0.7rem; border: 1px solid rgba(255, 255, 255, 0.4); border-radius: var(--radius-sm); font-size: var(--fs-xs); font-weight: 500; color: #fff; transition: background var(--dur) var(--ease), color var(--dur) var(--ease); }
+  .links a:hover { background: #fff; color: var(--ink); }
+  @media (min-width: 640px) { .sectors { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .sectors { grid-template-columns: repeat(4, 1fr); } .sector { min-height: 440px; } }
+  @media (min-width: 1100px) { .sectors.detailed { grid-template-columns: repeat(2, 1fr); } }
+</style>

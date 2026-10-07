@@ -28,7 +28,7 @@ const toH = (t: string) => {
 const pct = (h: number) => `${(((Math.min(Math.max(h, START), END) - START) / SPAN) * 100).toFixed(3)}%`;
 const ticks = [6, 8, 10, 12, 14, 16, 18, 20, 22];
 ---
-<section class="visit section" data-visit>
+<section class="visit section on-dark" data-visit>
   <div class="container">
     <div class="section-head split">
       <div>
@@ -74,12 +74,13 @@ const ticks = [6, 8, 10, 12, 14, 16, 18, 20, 22];
           </a>
 
           <!-- Horario visual -->
+          {l.hours && (
           <div class="schedule" data-schedule data-hours={l.hours ? JSON.stringify(l.hours) : ''} data-reveal style="--reveal-i:3">
             <div class="sch-head">
               <p class="k">Horario</p>
               <p class="status" data-status>
                 {l.hours ? <span class="dot"></span> : null}
-                {l.hours ? <span data-status-text>Consultando…</span> : <span class="pending">[HORARIO PENDIENTE DE CONFIRMAR]</span>}
+                <span data-status-text>Consultando…</span>
               </p>
             </div>
             <div class="scale" aria-hidden="true">
@@ -112,6 +113,7 @@ const ticks = [6, 8, 10, 12, 14, 16, 18, 20, 22];
             </ol>
             <p class="tz">Hora de España peninsular · <span data-clock></span></p>
           </div>
+          )}
         </div>
 
         <!-- Mapa: vista ligera, Google Maps bajo demanda -->
@@ -235,7 +237,7 @@ const ticks = [6, 8, 10, 12, 14, 16, 18, 20, 22];
 </script>
 
 <style>
-  .visit { background: var(--surface); border-top: 1px solid var(--line); }
+  .visit { background: var(--surface); }
 
   /* Pestañas */
   .tabs { display: none; gap: 0; margin-bottom: var(--space-7); border-bottom: 1px solid var(--line); }
@@ -270,7 +272,7 @@ const ticks = [6, 8, 10, 12, 14, 16, 18, 20, 22];
   .tabs button[aria-selected='true'] { color: var(--fg); }
   .tabs button[aria-selected='true']::after { transform: scaleX(1); }
   .tabs button:hover { color: var(--fg); }
-  .t-num { font-family: var(--font-body); font-size: var(--fs-xs); color: var(--accent); letter-spacing: 0.1em; }
+  .t-num { font-family: var(--font-body); font-size: var(--fs-xs); color: var(--accent-text); letter-spacing: 0.1em; }
   .t-city { width: 100%; padding-left: 1.6rem; font-family: var(--font-body); font-size: var(--fs-xs); letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-soft); }
 
   /* Panel */
@@ -280,7 +282,7 @@ const ticks = [6, 8, 10, 12, 14, 16, 18, 20, 22];
   .has-tabs .panel + .panel { margin-top: 0; }
   .info { display: grid; gap: var(--space-5); align-content: start; justify-items: start; }
   .addr { font-style: normal; font-family: var(--font-display); font-size: clamp(2rem, 1.3rem + 2.6vw, 3.5rem); font-weight: 300; line-height: 1.05; letter-spacing: -0.02em; color: var(--fg); }
-  .addr span { color: var(--accent); font-style: italic; }
+  .addr span { color: var(--accent-text); font-style: italic; }
   .meta { display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-7); }
   .k { display: block; margin-bottom: 0.15rem; font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-soft); }
   .meta a { color: var(--fg); border-bottom: 1px solid var(--line-strong); transition: color var(--dur), border-color var(--dur); }
@@ -292,17 +294,17 @@ const ticks = [6, 8, 10, 12, 14, 16, 18, 20, 22];
   .status { display: inline-flex; align-items: center; gap: 0.6rem; font-size: var(--fs-sm); color: var(--text-muted); }
   .status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-soft); }
   .is-open .status { color: var(--fg); }
-  .is-open .status .dot { background: var(--accent); box-shadow: 0 0 0 0 rgba(201, 160, 102, 0.6); animation: pulse 2.2s infinite; }
+  .is-open .status .dot { background: var(--accent); box-shadow: 0 0 0 0 rgba(0, 168, 134, 0.6); animation: pulse 2.2s infinite; }
   .scale { position: relative; height: 1.25rem; margin-left: 3.25rem; font-size: 0.6875rem; color: var(--text-soft); font-variant-numeric: tabular-nums; }
   .scale span { position: absolute; top: 0; transform: translateX(-50%); }
   .days { display: grid; gap: 0.45rem; }
   .days li { display: grid; grid-template-columns: 3.25rem 1fr; align-items: center; }
   .d { font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-soft); }
-  .is-today .d { color: var(--accent); }
+  .is-today .d { color: var(--accent-text); }
   .track { position: relative; height: 30px; border-radius: 1px; background: rgba(255, 255, 255, 0.025); box-shadow: inset 0 0 0 1px var(--line); }
-  .is-today .track { box-shadow: inset 0 0 0 1px var(--rule); background: rgba(201, 160, 102, 0.04); }
+  .is-today .track { box-shadow: inset 0 0 0 1px var(--rule); background: rgba(0, 168, 134, 0.04); }
   .track.unknown {
-    background-image: repeating-linear-gradient(135deg, rgba(201, 160, 102, 0.09) 0 1px, transparent 1px 9px);
+    background-image: repeating-linear-gradient(135deg, rgba(0, 168, 134, 0.09) 0 1px, transparent 1px 9px);
   }
   .grid { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); }
   .bar {
@@ -318,16 +320,16 @@ const ticks = [6, 8, 10, 12, 14, 16, 18, 20, 22];
     transform-origin: left;
     animation: grow 1.2s var(--ease-out) both;
   }
-  .bar-t { font-size: 0.6875rem; font-weight: 600; color: var(--ink); white-space: nowrap; }
+  .bar-t { font-size: 0.6875rem; font-weight: 600; color: var(--on-accent); white-space: nowrap; }
   .closed { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-soft); }
-  .now { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; background: var(--fg); box-shadow: 0 0 10px rgba(242, 237, 228, 0.6); }
+  .now { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; background: var(--fg); box-shadow: 0 0 10px rgba(243, 245, 244, 0.6); }
   .now::before { content: ''; position: absolute; top: -3px; left: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--fg); }
   .tz { margin-top: var(--space-4); font-size: var(--fs-xs); color: var(--text-soft); }
 
   /* Mapa */
-  .map { position: relative; min-height: 420px; overflow: hidden; background: #111113; box-shadow: inset 0 0 0 1px var(--line); }
+  .map { position: relative; min-height: 420px; overflow: hidden; background: #0d1214; box-shadow: inset 0 0 0 1px var(--line); }
   .map-static { position: absolute; inset: 0; background:
-      radial-gradient(circle at 50% 46%, rgba(201, 160, 102, 0.14), transparent 45%),
+      radial-gradient(circle at 50% 46%, rgba(0, 168, 134, 0.14), transparent 45%),
       repeating-linear-gradient(0deg, transparent 0 46px, rgba(255, 255, 255, 0.035) 46px 47px),
       repeating-linear-gradient(90deg, transparent 0 46px, rgba(255, 255, 255, 0.035) 46px 47px); }
   .road { position: absolute; background: rgba(255, 255, 255, 0.09); }
@@ -340,7 +342,7 @@ const ticks = [6, 8, 10, 12, 14, 16, 18, 20, 22];
   .b2 { right: 10%; top: 56%; width: 24%; height: 22%; }
   .b3 { left: 8%; bottom: 8%; width: 18%; height: 14%; }
   .pin { position: absolute; left: 50%; top: 46%; width: 18px; height: 18px; transform: translate(-50%, -50%); }
-  .core { position: absolute; inset: 3px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--paper); }
+  .core { position: absolute; inset: 3px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px #0d1214; }
   .ring { position: absolute; inset: 0; border-radius: 50%; border: 1px solid var(--accent); animation: ripple 2.8s var(--ease-out) infinite; }
   .ring.r-2 { animation-delay: 1.4s; }
   .map-card {
@@ -352,18 +354,18 @@ const ticks = [6, 8, 10, 12, 14, 16, 18, 20, 22];
     gap: var(--space-2);
     justify-items: start;
     padding: var(--space-5);
-    background: rgba(13, 13, 15, 0.86);
+    background: rgba(8, 11, 13, 0.86);
     backdrop-filter: blur(8px);
     border: 1px solid var(--line);
   }
-  .mc-label { font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+  .mc-label { font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-text); }
   .mc-addr { font-family: var(--font-display); font-size: var(--fs-md); color: var(--fg); margin-bottom: var(--space-3); }
   .mc-note { font-size: 0.6875rem; color: var(--text-soft); }
   .map :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: grayscale(1) invert(0.92) contrast(0.9) brightness(0.95) sepia(0.15); }
   .map.is-live .map-card, .map.is-live .pin { display: none; }
 
   @keyframes ripple { from { transform: scale(1); opacity: 0.9; } to { transform: scale(4.5); opacity: 0; } }
-  @keyframes pulse { 70% { box-shadow: 0 0 0 10px rgba(201, 160, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(201, 160, 102, 0); } }
+  @keyframes pulse { 70% { box-shadow: 0 0 0 10px rgba(0, 168, 134, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 168, 134, 0); } }
   @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
   @media (min-width: 1024px) {
