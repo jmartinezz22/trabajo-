@@ -3,7 +3,7 @@ import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 import { serviceLinks, companyLinks, legalLinks } from '@/data/navigation';
 import { sectors } from '@/data/sectors';
-import { site, telHref, PENDING } from '@/data/site';
+import { site, telHref } from '@/data/site';
 
 const { contact, social } = site;
 const year = new Date().getFullYear();
@@ -60,12 +60,14 @@ const year = new Date().getFullYear();
             ))}
             <li>
               <Icon name="mail" size={18} />
-              {contact.email ? <a href={`mailto:${contact.email}`}>{contact.email}</a> : <span class="pending">Email {PENDING}</span>}
+              {contact.email && <a href={`mailto:${contact.email}`}>{contact.email}</a>}
             </li>
-            <li>
-              <Icon name="linkedin" size={18} />
-              {social.linkedin ? <a href={social.linkedin} rel="noopener" target="_blank">LinkedIn</a> : <span class="pending">LinkedIn {PENDING}</span>}
-            </li>
+            {social.linkedin && (
+              <li>
+                <Icon name="linkedin" size={18} />
+                <a href={social.linkedin} rel="noopener" target="_blank">LinkedIn</a>
+              </li>
+            )}
           </ul>
         </div>
       </nav>

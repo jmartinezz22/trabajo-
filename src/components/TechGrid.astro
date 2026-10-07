@@ -13,9 +13,6 @@ const { tone = 'dark', showDetail = false } = Astro.props;
       <span class="num mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
       <h3>{t.title}</h3>
       <p>{t.text}</p>
-      {!t.confirmed && (
-        <p class="pending">{showDetail && t.detail ? `${t.detail}: ` : ''}[CONFIRMAR TECNOLOGÍA]</p>
-      )}
     </li>
   ))}
 </ul>

@@ -68,7 +68,7 @@ export const site = {
     /** Teléfono principal de la web (CTA, cabecera, Schema.org). */
     phone: { label: 'Teléfono general', number: '+34 934 006 500' } as Phone,
     customerService: { label: 'Atención al cliente', number: '900 180 132' } as Phone,
-    email: null as string | null, // No encontrado: no inventar
+    email: 'palexmedical@palex.es' as string | null,
     address: headquarters as Address | null,
     hours: null as string | null, // No encontrado
   },

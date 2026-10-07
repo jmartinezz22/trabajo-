@@ -2,7 +2,8 @@
 /**
  * Formulario cualificador de propuesta.
  * Envío: POST JSON a PUBLIC_FORM_ENDPOINT (ver .env.example).
- * Sin endpoint configurado, valida y muestra un aviso (no se pierde la UX).
+ * Sin endpoint configurado, abre el correo del usuario con la solicitud redactada
+ * y dirigida al email de contacto (site.contact.email).
  * Preselección vía URL: /contacto/?servicio=<slug>
  */
 import Icon from './Icon.astro';
@@ -30,8 +31,9 @@ const needs = [
   'Integración de sistemas',
 ];
 const endpoint = site.formEndpoint ?? '';
+const mailto = site.contact.email ?? '';
 ---
-<form class="lead-form" data-lead-form data-endpoint={endpoint} novalidate>
+<form class="lead-form" data-lead-form data-endpoint={endpoint} data-mailto={mailto} novalidate>
   <fieldset>
     <legend class="mono">01 — Contacto</legend>
     <div class="fields two">
@@ -184,10 +186,25 @@ const endpoint = site.formEndpoint ?? '';
       delete payload.web;
 
       if (!endpoint) {
-        status.className = 'status is-warn';
-        status.textContent =
-          'Formulario validado. El envío está pendiente de configurar (PUBLIC_FORM_ENDPOINT). Contacta con el administrador de la web.';
-        console.info('[Formulario] Datos que se enviarían:', payload);
+        // Sin servicio de formularios: se abre el correo con la solicitud ya redactada
+        const to = form.dataset.mailto ?? '';
+        const labels: Record<string, string> = {
+          nombre: 'Nombre', empresa: 'Empresa', email: 'Email', telefono: 'Teléfono', sector: 'Sector',
+          servicio: 'Servicio', origen: 'Origen', destino: 'Destino', mercancia: 'Tipo de mercancía',
+          necesidades: 'Necesidades', mensaje: 'Mensaje',
+        };
+        const body = Object.entries(labels)
+          .map(([k, l]) => {
+            const v = payload[k];
+            const text = Array.isArray(v) ? v.join(', ') : String(v ?? '');
+            return text ? `${l}: ${text}` : '';
+          })
+          .filter(Boolean)
+          .join('\n');
+        const subject = `Solicitud de propuesta — ${String(payload.empresa ?? '')}`;
+        window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        status.className = 'status is-ok';
+        status.textContent = `Se ha abierto tu programa de correo con la solicitud preparada. Si no se abre, escríbenos a ${to}.`;
         return;
       }
 

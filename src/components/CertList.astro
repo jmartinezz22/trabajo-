@@ -3,7 +3,7 @@
  * Calidad y cumplimiento. Ninguna certificación se presenta como definitiva
  * (ni con logotipo) mientras su estado no sea 'verified' en src/data/trust.ts.
  */
-import { certifications, CERT_PENDING } from '@/data/trust';
+import { certifications } from '@/data/trust';
 
 interface Props {
   tone?: 'light' | 'dark';
@@ -16,11 +16,6 @@ const { tone = 'light', detailed = false } = Astro.props;
     <li class:list={[`is-${c.status}`]}>
       <p class="code">{c.code}</p>
       <p class="name">{c.name}</p>
-      {c.status === 'validation' && (
-        <p class="pending">{detailed ? `En validación · ${CERT_PENDING}` : '[CERTIFICACIÓN PENDIENTE DE VALIDACIÓN]'}</p>
-      )}
-      {c.status === 'not-found' && <p class="pending">{c.note}</p>}
-      {detailed && c.status === 'validation' && <p class="note">{c.note}</p>}
     </li>
   ))}
 </ul>

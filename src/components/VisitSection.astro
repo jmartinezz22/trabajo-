@@ -74,12 +74,13 @@ const ticks = [6, 8, 10, 12, 14, 16, 18, 20, 22];
           </a>
 
           <!-- Horario visual -->
+          {l.hours && (
           <div class="schedule" data-schedule data-hours={l.hours ? JSON.stringify(l.hours) : ''} data-reveal style="--reveal-i:3">
             <div class="sch-head">
               <p class="k">Horario</p>
               <p class="status" data-status>
                 {l.hours ? <span class="dot"></span> : null}
-                {l.hours ? <span data-status-text>Consultando…</span> : <span class="pending">[HORARIO PENDIENTE DE CONFIRMAR]</span>}
+                <span data-status-text>Consultando…</span>
               </p>
             </div>
             <div class="scale" aria-hidden="true">
@@ -112,6 +113,7 @@ const ticks = [6, 8, 10, 12, 14, 16, 18, 20, 22];
             </ol>
             <p class="tz">Hora de España peninsular · <span data-clock></span></p>
           </div>
+          )}
         </div>
 
         <!-- Mapa: vista ligera, Google Maps bajo demanda -->

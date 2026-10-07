@@ -15,15 +15,16 @@ const { c, index = 0 } = Astro.props;
   <header>
     <p class="mono tag">{c.tag}</p>
     <h3>{c.title}</h3>
-    {c.status === 'validation' && <p class="pending">Pendiente de validación interna</p>}
   </header>
   <dl>
     <div><dt class="mono">Reto</dt><dd>{c.problem}</dd></div>
     <div><dt class="mono">Solución</dt><dd>{c.solution}</dd></div>
-    <div>
-      <dt class="mono">Resultado</dt>
-      <dd>{c.results.map((r) => (r.startsWith('[') ? <span class="pending">{r}</span> : <span>{r}</span>))}</dd>
-    </div>
+    {c.results.some((r) => !r.startsWith('[')) && (
+      <div>
+        <dt class="mono">Resultado</dt>
+        <dd>{c.results.filter((r) => !r.startsWith('[')).map((r) => <span>{r}</span>)}</dd>
+      </div>
+    )}
   </dl>
   <ul role="list" class="chips">
     {[...c.services, ...c.technologies].map((s) => <li>{s}</li>)}

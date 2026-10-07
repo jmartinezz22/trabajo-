@@ -2,7 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import ContactForm from '@/components/ContactForm.astro';
 import Icon from '@/components/Icon.astro';
-import { site, telHref, formatAddress, PENDING } from '@/data/site';
+import { site, telHref, formatAddress } from '@/data/site';
 
 const crumbs = [{ name: 'Contacto', href: '/contacto/' }];
 const { contact } = site;
@@ -53,7 +53,7 @@ const steps = [
           ))}
           <li>
             <Icon name="mail" size={18} />
-            {contact.email ? <a href={`mailto:${contact.email}`}>{contact.email}</a> : <span class="pending">Email {PENDING}</span>}
+            {contact.email && <a href={`mailto:${contact.email}`}>{contact.email}</a>}
           </li>
           {site.locations.map((l) => (
             <li>
