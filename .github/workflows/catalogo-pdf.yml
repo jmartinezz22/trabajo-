@@ -10,6 +10,7 @@ on:
       - 'src/data/catalog/**'
       - 'src/data/images.ts'
       - 'scripts/catalog-pdf.mjs'
+      - 'scripts/shrink-pdf.py'
       - '.github/workflows/catalogo-pdf.yml'
 
 permissions:
@@ -44,12 +45,9 @@ jobs:
           path: catalogo-pdf/*.pdf
       - name: Comprimir para envío por email
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq ghostscript
+          pip install -q pikepdf pillow
           for f in catalogo-pdf/*.pdf; do
-            gs -q -sDEVICE=pdfwrite -dCompatibilityLevel=1.6 -dPDFSETTINGS=/printer \
-               -dDownsampleColorImages=true -dColorImageResolution=170 -dColorImageDownsampleType=/Bicubic \
-               -dAutoFilterColorImages=false -dColorImageFilter=/DCTEncode -dJPEGQ=82 \
-               -dNOPAUSE -dBATCH -sOutputFile="$f.tmp" "$f" && mv "$f.tmp" "$f"
+            python3 scripts/shrink-pdf.py "$f" "$f.tmp" 1600 80 && mv "$f.tmp" "$f"
             ls -lh "$f"
           done
       - name: Guardar los PDF en la rama
