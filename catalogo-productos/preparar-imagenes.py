@@ -68,7 +68,7 @@ def main():
         print('✓', name, rgb.size)
 
 
-if __name__ == '__main__' and '--plano' not in sys.argv:
+if __name__ == '__main__' and '--plano' not in sys.argv and '--escena' not in sys.argv:
     main()
     flatten_all()
 
@@ -102,3 +102,25 @@ def flatten_all():
 
 if __name__ == '__main__' and '--plano' in sys.argv:
     flatten_all()
+
+
+# — Fotos de escena (con su fondo real) para el catálogo de imprenta —
+def scene_all(margin=0.10):
+    for name, (n, box) in CROPS.items():
+        im = ImageOps.exif_transpose(Image.open(f'{ORIG}/foto-{n:02d}.jpg')).convert('RGB')
+        k = im.width / 1500
+        x0, y0, x1, y1 = (v * k for v in box)
+        mx, my = (x1 - x0) * margin, (y1 - y0) * margin
+        b = (max(0, int(x0 - mx)), max(0, int(y0 - my)), min(im.width, int(x1 + mx)), min(im.height, int(y1 + my)))
+        out = enhance(im.crop(b))
+        out.thumbnail((1800, 1800), Image.LANCZOS)
+        out.save(os.path.join(OUT, f'{name}-foto.jpg'), quality=86, optimize=True, progressive=True)
+    for n in range(1, 11):
+        im = enhance(ImageOps.exif_transpose(Image.open(f'{ORIG}/foto-{n:02d}.jpg')).convert('RGB'))
+        im.thumbnail((1800, 1800), Image.LANCZOS)
+        im.save(os.path.join(OUT, f'escena-{n:02d}.jpg'), quality=86, optimize=True, progressive=True)
+    print('✓ fotos de escena generadas')
+
+
+if __name__ == '__main__' and '--escena' in sys.argv:
+    scene_all()
