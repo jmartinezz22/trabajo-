@@ -392,4 +392,12 @@ const broken = await page.evaluate(() => Array.from(document.images).filter((i) 
 if (broken.length) console.warn('! Imágenes sin cargar:', [...new Set(broken)].join(', '));
 await page.pdf({ path: OUT_PDF, width: '297mm', height: '210mm', printBackground: true, preferCSSPageSize: true });
 await browser.close();
+// Versión ligera para email: recomprime las fotos (conserva transparencias)
+const { execFileSync } = await import('node:child_process');
+try {
+  execFileSync('python3', [path.join(ROOT, '..', 'scripts', 'shrink-pdf.py'), OUT_PDF, OUT_PDF + '.tmp', '1400', '82']);
+  (await import('node:fs')).renameSync(OUT_PDF + '.tmp', OUT_PDF);
+} catch (e) {
+  console.warn('! No se pudo comprimir el PDF (requiere pikepdf):', e.message);
+}
 console.log(`✓ ${path.relative(process.cwd(), OUT_PDF)}`);
