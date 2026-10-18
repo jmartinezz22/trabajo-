@@ -9,3 +9,7 @@ dist-offline/
 
 # Previsualizaciones locales del catálogo PDF
 catalogo-pdf/*.png
+
+# Catálogo de producto: intermedios
+catalogo-productos/.sin-fondo/
+catalogo-productos/build/catalogo.html
