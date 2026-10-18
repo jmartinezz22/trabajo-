@@ -68,5 +68,37 @@ def main():
         print('✓', name, rgb.size)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__' and '--plano' not in sys.argv:
     main()
+    flatten_all()
+
+
+# — Versión plana (JPEG sin transparencia) para el PDF —
+# Algunos visores de PDF (sobre todo en móvil) no muestran bien imágenes con transparencia.
+# Se integra cada producto sobre el color de fondo del catálogo con una sombra suave.
+TINT = (236, 238, 234)
+
+
+def flatten_all():
+    from PIL import ImageFilter
+    for f in sorted(os.listdir(OUT)):
+        if not f.endswith('.png'):
+            continue
+        im = Image.open(os.path.join(OUT, f)).convert('RGBA')
+        pad = int(max(im.size) * 0.06)
+        W, H = im.width + pad * 2, im.height + pad * 2
+        canvas = Image.new('RGBA', (W, H), TINT + (255,))
+        a = im.getchannel('A')
+        shadow = Image.new('RGBA', (W, H), (20, 30, 40, 0))
+        sh_a = Image.new('L', (W, H), 0)
+        sh_a.paste(a.point(lambda v: int(v * 0.28)), (pad, pad + int(pad * 0.45)))
+        sh_a = sh_a.filter(ImageFilter.GaussianBlur(pad * 0.35))
+        shadow.putalpha(sh_a)
+        canvas.alpha_composite(shadow)
+        canvas.alpha_composite(im, (pad, pad))
+        canvas.convert('RGB').save(os.path.join(OUT, f[:-4] + '.jpg'), quality=88, optimize=True, progressive=True)
+    print('✓ versiones planas (.jpg) generadas')
+
+
+if __name__ == '__main__' and '--plano' in sys.argv:
+    flatten_all()

@@ -19,7 +19,7 @@ const YEAR = new Date().getFullYear();
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const two = (n) => String(n).padStart(2, '0');
-const img = (id) => `../img/${id}.png`;
+const img = (id) => `../img/${id}.jpg`;
 /** Texto con el marcador de dato pendiente resaltado. */
 const txt = (s) => {
   const t = esc(s);
@@ -294,7 +294,7 @@ img { display: block; }
 .cover-panel { position: absolute; left: 0; top: 0; bottom: 0; width: 46%; background: var(--navy); color: #fff; padding: 0 15mm; }
 .cover-copy { position: absolute; left: 15mm; right: 14mm; top: 50mm; }
 .cover-art { position: absolute; left: 46%; right: 0; top: 0; bottom: 0; }
-.art { position: absolute; object-fit: contain; filter: drop-shadow(0 6mm 6mm rgba(20,30,40,.18)); }
+.art { position: absolute; object-fit: contain; }
 .art--a { left: 3%; top: 9%; height: 82%; width: 46%; }
 .art--b { left: 52%; right: 5%; top: 12%; width: auto; height: 34%; }
 .art--c { left: 52%; right: 5%; bottom: 12%; width: auto; height: 36%; }
@@ -314,7 +314,7 @@ img { display: block; }
 .intro-art { position: absolute; right: 15mm; top: 22mm; bottom: 20mm; width: 118mm; display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
 .tile { background: var(--tint); display: grid; place-items: center; padding: 5mm; border-radius: 1mm; }
 .tile { position: relative; min-height: 0; }
-.tile img { position: absolute; inset: 5mm; width: calc(100% - 10mm); height: calc(100% - 10mm); object-fit: contain; filter: drop-shadow(0 3mm 3mm rgba(20,30,40,.15)); }
+.tile img { position: absolute; inset: 5mm; width: calc(100% - 10mm); height: calc(100% - 10mm); object-fit: contain; }
 
 /* Separador */
 .pg--divider { padding: 0; }
@@ -324,12 +324,12 @@ img { display: block; }
 .div-list li { display: flex; justify-content: space-between; padding: 2mm 0; border-bottom: 0.6pt solid rgba(255,255,255,.15); font-family: var(--fh); font-size: 8.5pt; color: rgba(255,255,255,.85); }
 .div-list li span:last-child { color: #7fd6cc; letter-spacing: .1em; }
 .div-art { position: absolute; left: 50%; right: 0; top: 0; bottom: 0; background: var(--tint); }
-.div-art img { position: absolute; inset: 18mm; width: calc(100% - 36mm); height: calc(100% - 36mm); object-fit: contain; filter: drop-shadow(0 6mm 7mm rgba(20,30,40,.2)); }
+.div-art img { position: absolute; inset: 18mm; width: calc(100% - 36mm); height: calc(100% - 36mm); object-fit: contain; }
 
 /* Ficha */
 .pg--single { padding: 0; }
 .prod-art { position: absolute; left: 0; top: 0; bottom: 0; width: 50%; background: var(--tint); }
-.prod-img { position: absolute; inset: 16mm 14mm; width: calc(100% - 28mm); height: calc(100% - 32mm); object-fit: contain; filter: drop-shadow(0 6mm 7mm rgba(20,30,40,.2)); }
+.prod-img { position: absolute; inset: 16mm 14mm; width: calc(100% - 28mm); height: calc(100% - 32mm); object-fit: contain; }
 .prod-img.prod-img--main { inset: auto; left: 8%; top: 9%; width: 60%; height: 70%; }
 .prod-img.prod-img--second { inset: auto; right: 6%; bottom: 9%; width: 36%; height: 46%; }
 .ill { position: absolute; left: 10mm; bottom: 9mm; font-family: var(--fh); font-size: 6pt; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
@@ -351,7 +351,7 @@ img { display: block; }
 .grid.cols-1 { grid-template-columns: 1fr 1fr; }
 .g-img { position: relative; height: 62mm; background: var(--tint); border-radius: 1mm; }
 .grid.cols-2 .g-img { height: 66mm; }
-.g-img img { position: absolute; inset: 5mm; width: calc(100% - 10mm); height: calc(100% - 10mm); object-fit: contain; filter: drop-shadow(0 4mm 4mm rgba(20,30,40,.18)); }
+.g-img img { position: absolute; inset: 5mm; width: calc(100% - 10mm); height: calc(100% - 10mm); object-fit: contain; }
 .g-name { margin: 4mm 0 1.5mm; font-family: var(--fh); font-weight: 500; font-size: 11.5pt; color: var(--navy); }
 .grid .body.small { margin-bottom: 2mm; }
 
@@ -360,7 +360,7 @@ img { display: block; }
 .sus-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm 8mm; margin-top: 8mm; }
 .sus-grid > div { border-top: 0.6pt solid var(--line); padding-top: 3mm; }
 .sus-art { position: absolute; right: 0; top: 0; bottom: 0; width: 34%; background: var(--tint); }
-.sus-art img { position: absolute; inset: 14mm; width: calc(100% - 28mm); height: calc(100% - 28mm); object-fit: contain; filter: drop-shadow(0 6mm 7mm rgba(20,30,40,.2)); }
+.sus-art img { position: absolute; inset: 14mm; width: calc(100% - 28mm); height: calc(100% - 28mm); object-fit: contain; }
 .pg--sustain .foot { right: calc(34% + 10mm); }
 
 /* Cierre */
