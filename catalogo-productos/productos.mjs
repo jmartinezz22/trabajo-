@@ -43,7 +43,7 @@ export const families = [
   {
     id: 'identificacion',
     name: 'Identificación y documentación',
-    intro: 'Etiquetas de temperatura, etiquetas térmicas y sobres porta-documentos para que cada bulto viaje identificado.',
+    intro: 'Etiquetas de temperatura y etiquetas térmicas para que cada bulto viaje identificado.',
     image: 'etiquetas-frio',
   },
   {
@@ -269,15 +269,6 @@ export const products = [
     image: 'etiquetas-termicas',
     description: 'Rollo de etiquetas adhesivas blancas para impresión de etiquetas de expedición, ubicación o identificación de producto.',
     features: ['Etiqueta blanca adhesiva', 'Suministro en rollo', 'Tipo (térmica directa / transferencia) y medidas: ' + PENDING],
-  },
-  {
-    id: 'sobres-docs',
-    family: 'identificacion',
-    layout: 'grid',
-    name: 'Sobres porta-documentos',
-    image: 'sobres-docs',
-    description: 'Sobres adhesivos con la leyenda «Documentos / Packing list» para que la documentación viaje adherida al bulto.',
-    features: ['Leyenda «Documentos / Packing list»', 'Se adhieren al exterior del bulto', 'Medidas: ' + PENDING],
   },
 
   // 05 — ALMACENAJE Y MANIPULACIÓN
